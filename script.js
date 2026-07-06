@@ -8,9 +8,11 @@ const APP_CONFIG = {
   servicesList: "جبس بورد وورق جدران ودهانات داخلية وخارجية وباركيه هرميو SPC وساندوتش بانل وترميم وتشطيب",
   targetCity: "الرياض",
   
-  // أرقام التواصل والروابط
+  // أرقام التواصل والروابط للعميل صاحب الموقع (خاضعة للتتبع بالكامل)
   localPhone: "0573747885",
   intlWhatsapp: "966573747885",
+  
+  // رقم المطور المخصص للمبيعات المباشرة (معزول تماماً عن التتبع الإعلاني)
   localDev: "0578539687", 
   intlDev: "966578539687",
   domain: "https://example.com",
@@ -161,7 +163,7 @@ function hydrateHeader() {
   }
 }
 
-// حقن وتحديث الفوتر
+// حقن وتحديث الفوتر ليتطابق مع الهيكل النظيف والمبسط للمطور المعزول عن التتبع
 function hydrateFooter() {
   const footerElement = document.querySelector(".main-footer");
   if (!footerElement) return;
@@ -175,16 +177,15 @@ function hydrateFooter() {
       if (link.href.includes("tel:")) {
         link.href = `tel:${APP_CONFIG.localPhone}`;
         link.textContent = APP_CONFIG.localPhone;
-      } else if (link.href.includes("wa.me")) {
+      } else if (link.href.includes("wa.me") && !link.href.includes(APP_CONFIG.intlDev)) {
         link.href = `https://wa.me/${APP_CONFIG.intlWhatsapp}`;
         link.textContent = APP_CONFIG.intlWhatsapp;
       }
     });
 
-    const devLinks = footerElement.querySelectorAll(".developer-info a");
-    if (devLinks.length >= 2) {
-      devLinks[0].href = `tel:${APP_CONFIG.localDev}`;
-      devLinks[1].href = `https://wa.me/${APP_CONFIG.intlDev}`;
+    const devLink = footerElement.querySelector(".developer-info a");
+    if (devLink) {
+      devLink.href = `https://wa.me/${APP_CONFIG.intlDev}`;
     }
     return;
   }
@@ -217,7 +218,7 @@ function hydrateFooter() {
       <div class="footer-bottom">
         <div class="container bottom-bar">
           <p class="copyrights">جميع الحقوق محفوظة &copy; <span id="current-year"></span> لـ ${APP_CONFIG.businessName}</p>
-          <p class="developer-info">تطوير ودعم فني: <a href="tel:${APP_CONFIG.localDev}" class="dev-link">المطور المحلي</a> | <a href="https://wa.me/${APP_CONFIG.intlDev}" target="_blank" rel="noopener noreferrer" class="dev-link">الدعم الدولي للشركة</a></p>
+          <p class="developer-info">تطوير المواقع والإعلانات: <a href="https://wa.me/${APP_CONFIG.intlDev}" target="_blank" rel="noopener noreferrer" class="dev-link">طلب تصميم موقع مماثل</a></p>
         </div>
       </div>
     `;
@@ -230,16 +231,15 @@ function hydrateFooter() {
       if (link.href.includes("tel:")) {
         link.href = `tel:${APP_CONFIG.localPhone}`;
         link.textContent = APP_CONFIG.localPhone;
-      } else if (link.href.includes("wa.me")) {
+      } else if (link.href.includes("wa.me") && !link.href.includes(APP_CONFIG.intlDev)) {
         link.href = `https://wa.me/${APP_CONFIG.intlWhatsapp}`;
         link.textContent = APP_CONFIG.intlWhatsapp;
       }
     });
 
-    const devLinks = footerElement.querySelectorAll(".developer-info a");
-    if (devLinks.length >= 2) {
-      devLinks[0].href = `tel:${APP_CONFIG.localDev}`;
-      devLinks[1].href = `https://wa.me/${APP_CONFIG.intlDev}`;
+    const devLink = footerElement.querySelector(".developer-info a");
+    if (devLink) {
+      devLink.href = `https://wa.me/${APP_CONFIG.intlDev}`;
     }
   }
 }
@@ -450,15 +450,17 @@ function initGlobalTracking() {
 
     const hrefAttribute = targetLink.getAttribute("href") || "";
 
-    // المطابقة التامة للهاتف من دون تداخل
+    // المطابقة التامة للهاتف من دون تداخل (فقط لرقم صاحب الموقع)
     if (hrefAttribute === "tel:" + APP_CONFIG.localPhone) {
       trackConversion("phone_call");
     }
 
-    // المطابقة التامة للرابط الخاص بواتساب العميل
+    // المطابقة التامة للرابط الخاص بواتساب العميل (فقط لرقم صاحب الموقع)
     if (hrefAttribute === "https://wa.me/" + APP_CONFIG.intlWhatsapp) {
       trackConversion("whatsapp_chat");
     }
+    
+    // يرجى الملاحظة: روابط المطور المباشرة wa.me/${APP_CONFIG.intlDev} لن تطابق الشرطين أعلاه، وبالتالي فهي معزولة تماماً عن التتبع الإعلاني كما هو مطلوب.
   });
 }
 
