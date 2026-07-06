@@ -88,13 +88,14 @@ ul, ol {
 }
 
 /* ==========================================================================
-   2. أزرار التواصل العائمة مضافة إليها مواءمة آيفون (env-safe-area)
+   2. أزرار التواصل العائمة على اليمين ودعم آيفون (Right Aligned Floating Actions)
    ========================================================================== */
 .floating-actions {
   position: fixed;
   bottom: 20px;
   bottom: calc(20px + env(safe-area-inset-bottom)); /* دعم نتوء الآيفون السفلي أصلياً */
-  left: 20px;
+  right: 20px; /* تم نقلها لليمين بناء على طلبك */
+  left: auto;
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -112,12 +113,14 @@ ul, ol {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: var(--transition-smooth);
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* تم تغييرها لتظهر النصوص المنبثقة بشكل سليم */
 }
 
+/* تحسين اتجاه النص الإرشادي ليظهر لليسار لأن الأزرار العائمة باليمين */
 .float-btn .btn-text {
   position: absolute;
-  right: 60px;
+  left: auto;
+  right: 60px; /* يمتد لليسار ليبقى واضحاً داخل الشاشة */
   background-color: var(--secondary-color);
   color: var(--bg-white);
   padding: 6px 12px;
@@ -129,12 +132,13 @@ ul, ol {
   visibility: hidden;
   transition: var(--transition-smooth);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(-10px);
 }
 
 .float-btn:hover .btn-text {
   opacity: 1;
   visibility: visible;
-  right: 64px;
+  transform: translateX(0);
 }
 
 .float-phone {
@@ -153,6 +157,67 @@ ul, ol {
   width: 24px;
   height: 24px;
   stroke: currentColor;
+}
+
+/* ==========================================================================
+   2. مكرر: زر الصعود للأعلى من الجهة اليسرى (Scroll To Top Button)
+   ========================================================================== */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  left: 20px; /* تم وضعه باليسار بناء على طلبك */
+  right: auto;
+  z-index: 1000;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--secondary-color);
+  color: var(--bg-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  border: none;
+  opacity: 0;
+  visibility: hidden;
+  /* تسريع الرندرة الحركية */
+  will-change: transform, opacity;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-top-btn.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-top-btn:hover {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  transform: translateY(-5px);
+}
+
+.scroll-top-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2.5;
+}
+
+/* ==========================================================================
+   2. مكرر: شريط الإعلانات والخصم في أعلى الصفحة (Announcement Bar)
+   ========================================================================== */
+.announcement-bar {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  text-align: center;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  position: relative;
+  z-index: 1001; /* أعلى من الهيدر ليبقى بالقمة دائماً */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 /* ==========================================================================
@@ -286,17 +351,6 @@ ul, ol {
   color: var(--bg-white);
   padding: 40px var(--container-padding);
   text-align: center;
-}
-
-/* تم تصحيح الأقواس بدقة في هذا القسم لضمان رندرة الخلفية بالكامل */
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(30, 32, 34, 0.85), rgba(30, 32, 34, 0.7));
-  z-index: 2;
 }
 
 .hero-image-wrapper {
@@ -1130,5 +1184,84 @@ textarea.form-input {
 
   .footer-contact {
     flex: 1;
+  }
+}
+
+/* ==========================================================================
+   16. تنسيقات القائمة المنسدلة للخدمات (Dropdown Menu Styles)
+   ========================================================================== */
+.nav-item-dropdown {
+  position: relative;
+}
+
+/* القائمة المنسدلة الافتراضية على الديسكتوب */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 24px rgba(30, 32, 34, 0.12);
+  display: none;
+  min-width: 220px;
+  z-index: 1000;
+  padding: 10px 0;
+  /* تسريع حركة رندرة القائمة */
+  transform: translateY(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dropdown-item {
+  display: block;
+  padding: 10px 20px;
+  color: var(--text-main);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: right;
+  transition: var(--transition-smooth);
+}
+
+.dropdown-item:hover {
+  background-color: var(--bg-light);
+  color: var(--primary-color);
+  padding-right: 25px; /* إزاحة تفاعلية متميزة عند التمرير */
+}
+
+/* إظهار القائمة المنسدلة عند تمرير الماوس فوق كلمة خدماتنا في الديسكتوب */
+@media (min-width: 1024px) {
+  .nav-item-dropdown:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+/* تنسيق متجاوب وسهل الاستخدام للقائمة المنسدلة على شاشات الجوال */
+@media (max-width: 1023px) {
+  .dropdown-menu {
+    position: static;
+    display: block; /* جعلها منبثقة بشكل ثابت داخل القائمة المنسدلة الجانبية للجوال */
+    box-shadow: none;
+    border: none;
+    padding: 5px 20px 0 0; /* إزاحة لليمين لتوضيح التبعية */
+    background-color: transparent;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .dropdown-item {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    border-right: 2px solid var(--border-color); /* خط جانبي دلالي للتبعية */
+  }
+  
+  .dropdown-item:hover {
+    border-right-color: var(--primary-color);
+    padding-right: 15px;
   }
 }
