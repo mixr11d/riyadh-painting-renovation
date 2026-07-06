@@ -93,6 +93,7 @@ ul, ol {
 .floating-actions {
   position: fixed;
   bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom)); /* مواءمة نتوء الآيفون */
   left: 20px;
   z-index: 1000;
   display: flex;
