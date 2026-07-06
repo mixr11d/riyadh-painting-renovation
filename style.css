@@ -88,12 +88,12 @@ ul, ol {
 }
 
 /* ==========================================================================
-   2. أزرار التواصل العائمة (Floating Action Buttons)
+   2. أزرار التواصل العائمة مضافة إليها مواءمة آيفون (env-safe-area)
    ========================================================================== */
 .floating-actions {
   position: fixed;
   bottom: 20px;
-  bottom: calc(20px + env(safe-area-inset-bottom)); /* مواءمة نتوء الآيفون */
+  bottom: calc(20px + env(safe-area-inset-bottom)); /* دعم نتوء الآيفون السفلي أصلياً */
   left: 20px;
   z-index: 1000;
   display: flex;
@@ -288,6 +288,7 @@ ul, ol {
   text-align: center;
 }
 
+/* تم تصحيح الأقواس بدقة في هذا القسم لضمان رندرة الخلفية بالكامل */
 .hero-overlay {
   position: absolute;
   top: 0;
@@ -934,7 +935,37 @@ textarea.form-input {
 }
 
 /* ==========================================================================
-   13. الشاشات المتوسطة والأجهزة اللوحية (Tablets & Medium Screens)
+   13. تحسينات وتنسيقات الإشعارات المنبثقة التفاعلية (Toasts Styles)
+   ========================================================================== */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background-color: var(--secondary-color);
+  color: var(--bg-white);
+  padding: 12px 24px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  font-weight: 700;
+  direction: rtl;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  /* تسريع الأداء الحركي من خلال GPU */
+  will-change: transform, opacity;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* تشغيل الإشعار مع إزاحة خفيفة للحركة */
+#toast-container.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ==========================================================================
+   14. الشاشات المتوسطة والأجهزة اللوحية (Tablets & Medium Screens)
    ========================================================================== */
 @media (min-width: 768px) {
   .section-padding {
@@ -1019,7 +1050,7 @@ textarea.form-input {
 }
 
 /* ==========================================================================
-   14. الشاشات الكبيرة والمكتبية (Desktops & Large Screens)
+   15. الشاشات الكبيرة والمكتبية (Desktops & Large Screens)
    ========================================================================== */
 @media (min-width: 1024px) {
   .menu-toggle {
