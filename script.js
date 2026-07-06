@@ -15,16 +15,13 @@ const APP_CONFIG = {
   // رقم المطور المخصص للمبيعات المباشرة (معزول تماماً عن التتبع الإعلاني)
   localDev: "0578539687", 
   intlDev: "966578539687",
-  domain: "https://example.com",
+  domain: "./",
 
   // تهيئة وتتبع إعلانات جوجل المباشر (Google Ads Direct Tracking)
   googleAdsId: "AW-XXXXXXXX",                        // رقم تعريف حساب الإعلانات الأساسي
   phoneConversionLabel: "PHONE_CONVERSION_LABEL",     // تسمية التحويل الخاصة بالاتصال الهاتفي
   whatsappConversionLabel: "WHATS_CONVERSION_LABEL",  // تسمية التحويل الخاصة بنقرة الواتساب
-  formConversionLabel: "FORM_CONVERSION_LABEL",        // تسمية التحويل الخاصة بإرسال النموذج بنجاح
-  
-  // مفتاح الوصول لنموذج Web3Forms
-  web3FormsKey: "XXXXXXXX"
+  formConversionLabel: "FORM_CONVERSION_LABEL"        // تسمية التحويل الخاصة بإرسال النموذج بنجاح
 };
 
 /**
@@ -80,35 +77,14 @@ function showToast(message) {
   if (!toastContainer) {
     toastContainer = document.createElement("div");
     toastContainer.id = "toast-container";
-    
-    toastContainer.style.cssText = `
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-20px);
-      background-color: #1e2022;
-      color: #ffffff;
-      padding: 12px 24px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 10000;
-      font-weight: bold;
-      direction: rtl;
-      text-align: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    `;
     document.body.appendChild(toastContainer);
   }
 
   toastContainer.textContent = message;
-  toastContainer.style.opacity = "1";
-  toastContainer.style.transform = "translateX(-50%) translateY(0)";
+  toastContainer.classList.add("show"); // تفعيل كود الـ CSS برمجياً وبطريقة نظيفة
 
   setTimeout(() => {
-    toastContainer.style.opacity = "0";
-    toastContainer.style.transform = "translateX(-50%) translateY(-20px)";
+    toastContainer.classList.remove("show"); // إخفاء الإشعار
   }, 3000);
 }
 
@@ -145,15 +121,15 @@ function hydrateHeader() {
         <nav id="main-navigation" class="nav-menu" aria-label="القائمة الرئيسية">
           <ul class="nav-list">
             <li><a href="index.html" class="nav-link" aria-current="page">الرئيسية</a></li>
-            <li><a href="#services" class="nav-link">خدماتنا</a></li>
-            <li><a href="#why-us" class="nav-link">لماذا نحن</a></li>
-            <li><a href="#gallery" class="nav-link">معرض الأعمال</a></li>
-            <li><a href="#faq" class="nav-link">الأسئلة الشائعة</a></li>
-            <li><a href="#contact" class="nav-link">اتصل بنا</a></li>
+            <li><a href="index.html#services" class="nav-link">خدماتنا</a></li>
+            <li><a href="index.html#why-us" class="nav-link">لماذا نحن</a></li>
+            <li><a href="index.html#gallery" class="nav-link">معرض الأعمال</a></li>
+            <li><a href="index.html#faq" class="nav-link">الأسئلة الشائعة</a></li>
+            <li><a href="contact-us.html" class="nav-link">اتصل بنا</a></li>
           </ul>
         </nav>
         <div class="header-cta">
-          <a href="#contact" class="cta-btn primary-cta" aria-label="طلب عرض سعر مجاني">طلب عرض سعر</a>
+          <a href="contact-us.html" class="cta-btn primary-cta" aria-label="طلب عرض سعر مجاني">طلب عرض سعر</a>
         </div>
       </div>
     `;
@@ -256,7 +232,6 @@ function hydrateFloatingButtons() {
     document.body.appendChild(floatingContainer);
   }
 
-  // تم ضبط المعادلة وحذف أي قوس زائد
   floatingContainer.style.bottom = "calc(20px + env(safe-area-inset-bottom))";
 
   floatingContainer.innerHTML = `
@@ -348,19 +323,15 @@ function initFormHandler() {
 
   if (!form || !submitBtn) return;
 
-  const accessKeyInput = form.querySelector('input[name="access_key"]');
-  if (accessKeyInput) {
-    accessKeyInput.value = APP_CONFIG.web3FormsKey;
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  form.addEventListener("submit", (e) => {
+    e.preventDefault(); // منع السلوك الافتراضي المعتاد للارسال البريدي
 
     const clientName = document.getElementById("client_name").value.trim();
     const clientPhone = document.getElementById("client_phone").value.trim();
     const serviceType = document.getElementById("service_type").value;
     const projectDetails = document.getElementById("project_details").value.trim();
 
+    // التحقق من صحة البيانات محلياً قبل التوجيه لضمان سلامة الحملة الإعلانية
     if (clientName.length < 3 || !clientPhone.startsWith("05") || clientPhone.length !== 10) {
       showToast("الرجاء إدخال بيانات صحيحة");
       return;
@@ -368,40 +339,20 @@ function initFormHandler() {
 
     submitBtn.disabled = true;
     const originalBtnText = submitBtn.textContent;
-    submitBtn.textContent = "جاري إرسال طلبك وحفظ البيانات...";
+    submitBtn.textContent = "جاري توجيهك إلى واتساب...";
 
-    const formData = new FormData(form);
+    // 1. تسجيل حدث التحويل التابع للنموذج مباشرة في حساب إعلانات جوجل
+    trackConversion("form_submission");
+    form.reset();
+    
+    // 2. التحويل الفوري المباشر للواتساب بصياغة منسقة
+    redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, false);
 
-    try {
-      // 1. إرسال البيانات أولاً إلى Web3Forms لتسجيل البيانات وتفعيل التتبع
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Accept": "application/json"
-        }
-      });
-
-      const result = await response.json();
-
-      if (response.status === 200 && result.success) {
-        // تفعيل تتبع تحويل النموذج لـ Google Ads
-        trackConversion("form_submission");
-        form.reset();
-        
-        // التحويل المباشر والتلقائي للواتساب بعد نجاح الإرسال
-        redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, false);
-      } else {
-        // في حال فشل الاستجابة يتم نقله فوراً للواتساب كبديل فني
-        redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
-      }
-    } catch (error) {
-      // في حال انقطاع الشبكة أو أي خطأ برمي يتم نقله فوراً للواتساب كبديل فني
-      redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
-    } finally {
+    // 3. إعادة تفعيل الزر بعد ثوانٍ بسيطة من التوجيه
+    setTimeout(() => {
       submitBtn.disabled = false;
       submitBtn.textContent = originalBtnText;
-    }
+    }, 1500);
   });
 }
 
@@ -459,8 +410,6 @@ function initGlobalTracking() {
     if (hrefAttribute === "https://wa.me/" + APP_CONFIG.intlWhatsapp) {
       trackConversion("whatsapp_chat");
     }
-    
-    // يرجى الملاحظة: روابط المطور المباشرة wa.me/${APP_CONFIG.intlDev} لن تطابق الشرطين أعلاه، وبالتالي فهي معزولة تماماً عن التتبع الإعلاني كما هو مطلوب.
   });
 }
 
