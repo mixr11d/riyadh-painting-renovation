@@ -15,9 +15,13 @@ const APP_CONFIG = {
   intlDev: "966578539687",
   domain: "https://example.com",
 
-  // أكواد التتبع والنماذج
-  googleAdsId: "AW-XXXXXXXX",
-  googleAnalyticsId: "G-XXXXXXXX",
+  // تهيئة وتتبع إعلانات جوجل المباشر (Google Ads Direct Tracking)
+  googleAdsId: "AW-XXXXXXXX",                        // رقم تعريف حساب الإعلانات الأساسي
+  phoneConversionLabel: "PHONE_CONVERSION_LABEL",     // تسمية التحويل الخاصة بالاتصال الهاتفي
+  whatsappConversionLabel: "WHATS_CONVERSION_LABEL",  // تسمية التحويل الخاصة بنقرة الواتساب
+  formConversionLabel: "FORM_CONVERSION_LABEL",        // تسمية التحويل الخاصة بإرسال النموذج بنجاح
+  
+  // مفتاح الوصول لنموذج Web3Forms
   web3FormsKey: "XXXXXXXX"
 };
 
@@ -36,12 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
   initMobileMenu();
   initSmoothScroll();
   initFormHandler();
-  initGlobalTracking(); // تشغيل التتبع العالمي الدقيق
+  initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   updateCopyrightYear();
 });
 
 /**
- * دالة مخصصة لعرض الإشعارات المنبثقة التفاعلية (Toast Notification) بدلاً من alert التقليدي
+ * دالة مخصصة لعرض الإشعارات المنبثقة التفاعلية (Toast Notification)
  * @param {string} message - نص الإشعار المراد عرضه للعميل
  */
 function showToast(message) {
@@ -50,7 +54,6 @@ function showToast(message) {
     toastContainer = document.createElement("div");
     toastContainer.id = "toast-container";
     
-    // تنسيق حاوية الإشعارات برمجياً لضمان التوافق المطلق
     toastContainer.style.cssText = `
       position: fixed;
       top: 20px;
@@ -76,7 +79,6 @@ function showToast(message) {
   toastContainer.style.opacity = "1";
   toastContainer.style.transform = "translateX(-50%) translateY(0)";
 
-  // إخفاء التنبيه تلقائياً بعد مرور 3 ثوانٍ
   setTimeout(() => {
     toastContainer.style.opacity = "0";
     toastContainer.style.transform = "translateX(-50%) translateY(-20px)";
@@ -94,14 +96,12 @@ function hydrateHeader() {
   const headerElement = document.querySelector(".main-header");
   if (!headerElement) return;
 
-  // منع إعادة رسم DOM بالكامل وإلغاء الحقن إذا كنا على الصفحة الرئيسية
   if (document.body.classList.contains("page-home")) {
     const logoText = headerElement.querySelector(".logo-text");
     if (logoText) logoText.textContent = APP_CONFIG.businessName;
     return;
   }
 
-  // إذا كان الهيدر فارغاً في الصفحات الفرعية الأخرى، نقوم بحقنه بالكامل
   if (headerElement.children.length === 0) {
     headerElement.innerHTML = `
       <div class="header-container">
@@ -141,7 +141,6 @@ function hydrateFooter() {
   const footerElement = document.querySelector(".main-footer");
   if (!footerElement) return;
 
-  // منع إعادة رسم DOM بالكامل وإلغاء الحقن إذا كنا على الصفحة الرئيسية
   if (document.body.classList.contains("page-home")) {
     const footerLogo = footerElement.querySelector(".footer-logo");
     if (footerLogo) footerLogo.textContent = APP_CONFIG.businessName;
@@ -232,7 +231,7 @@ function hydrateFloatingButtons() {
     document.body.appendChild(floatingContainer);
   }
 
-  // تطبيق توافق آيفون للشاشات التي تحتوي على نتوء سفلي (Safe Area Insets)
+  // تم ضبط المعادلة وحذف أي قوس زائد
   floatingContainer.style.bottom = "calc(20px + env(safe-area-inset-bottom))";
 
   floatingContainer.innerHTML = `
@@ -302,7 +301,7 @@ function initSmoothScroll() {
         e.preventDefault();
         const headerOffset = 75; 
         const elementPosition = targetElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - headerOffset; // تم تحديث pageYOffset المتوقف برمجياً بـ scrollY
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
         window.scrollTo({
           top: offsetPosition,
@@ -315,7 +314,7 @@ function initSmoothScroll() {
 
 /**
  * ==========================================================================
- * 6. معالجة النموذج والواتساب البديل والتحقق من صحة البيانات (Form Validation & Submission)
+ * 6. معالجة النموذج والتحويل التلقائي المباشر لواتساب (Form Submission & WhatsApp Redirect)
  * ==========================================================================
  */
 function initFormHandler() {
@@ -337,19 +336,19 @@ function initFormHandler() {
     const serviceType = document.getElementById("service_type").value;
     const projectDetails = document.getElementById("project_details").value.trim();
 
-    // التحقق من صحة البيانات قبل الإرسال لمنع البريد المزعج
     if (clientName.length < 3 || !clientPhone.startsWith("05") || clientPhone.length !== 10) {
-      showToast("الرجاء إدخال بيانات صحيحة");
+      showToast("الرجاء إدخل بيانات صحيحة");
       return;
     }
 
     submitBtn.disabled = true;
     const originalBtnText = submitBtn.textContent;
-    submitBtn.textContent = "جاري إرسال طلبك...";
+    submitBtn.textContent = "جاري إرسال طلبك وحفظ البيانات...";
 
     const formData = new FormData(form);
 
     try {
+      // 1. إرسال البيانات أولاً إلى Web3Forms لتسجيل البيانات وتفعيل التتبع
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: formData,
@@ -361,14 +360,19 @@ function initFormHandler() {
       const result = await response.json();
 
       if (response.status === 200 && result.success) {
-        showToast(`شكراً لك يا ${clientName}، تم استلام طلبك بنجاح وسيتواصل معك مهندسونا في أسرع وقت.`);
+        // تفعيل تتبع تحويل النموذج لـ Google Ads
         trackConversion("form_submission");
         form.reset();
+        
+        // التحويل المباشر والتلقائي للواتساب بعد نجاح الإرسال
+        redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, false);
       } else {
-        triggerWhatsAppFallback(clientName, clientPhone, serviceType, projectDetails);
+        // في حال فشل الاستجابة يتم نقله فوراً للواتساب كبديل فني
+        redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
       }
     } catch (error) {
-      triggerWhatsAppFallback(clientName, clientPhone, serviceType, projectDetails);
+      // في حال انقطاع الشبكة أو أي خطأ برمي يتم نقله فوراً للواتساب كبديل فني
+      redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = originalBtnText;
@@ -376,8 +380,20 @@ function initFormHandler() {
   });
 }
 
-function triggerWhatsAppFallback(name, phone, service, details) {
-  showToast("نعتذر عن الخطأ الفني، سيتم توجيهك للواتساب لإتمام إرسال طلبك مجاناً.");
+/**
+ * دالة مستقلة لتوليد رسالة الواتساب المنسقة وتحويل العميل مباشرة
+ * @param {string} name - اسم العميل
+ * @param {string} phone - هاتف العميل
+ * @param {string} service - الخدمة المختارة
+ * @param {string} details - التفاصيل الإضافية
+ * @param {boolean} isFallback - تحديد ما إذا كان التحويل حدث كبديل بسبب فشل الاتصال بالخادم
+ */
+function redirectToWhatsAppWithMessage(name, phone, service, details, isFallback) {
+  if (isFallback) {
+    showToast("نعتذر عن الخطأ الفني، سيتم توجيهك للواتساب لإتمام إرسال طلبك مجاناً.");
+  } else {
+    showToast("تم تسجيل طلبك بنجاح! جاري تحويلك الآن لمحادثة المهندس عبر واتساب لإتمام الاتفاق...");
+  }
 
   const formattedDetails = details ? details : "لا توجد تفاصيل إضافية";
   
@@ -390,8 +406,10 @@ function triggerWhatsAppFallback(name, phone, service, details) {
 
   const whatsappUrl = `https://wa.me/${APP_CONFIG.intlWhatsapp}?text=${messageText}`;
   
+  // تفعيل تتبع تحويل الواتساب الاحتياطي لـ Google Ads
   trackConversion("whatsapp_fallback");
 
+  // فتح المحادثة للعميل مباشرة في لسان جديد
   window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 }
 
@@ -407,12 +425,12 @@ function initGlobalTracking() {
 
     const hrefAttribute = targetLink.getAttribute("href") || "";
 
-    // المطابقة التامة والشاملة للهاتف من دون includes لمنع أي تداخل
+    // المطابقة التامة للهاتف من دون تداخل
     if (hrefAttribute === "tel:" + APP_CONFIG.localPhone) {
       trackConversion("phone_call");
     }
 
-    // المطابقة التامة والشاملة للرابط الخاص بواتساب العميل
+    // المطابقة التامة للرابط الخاص بواتساب العميل
     if (hrefAttribute === "https://wa.me/" + APP_CONFIG.intlWhatsapp) {
       trackConversion("whatsapp_chat");
     }
@@ -421,57 +439,53 @@ function initGlobalTracking() {
 
 /**
  * ==========================================================================
- * 8. نظام تتبع وإرسال إحداثيات التحويل ومنع التكرار (Conversion Anti-Duplication)
+ * 8. نظام تتبع وإرسال إحداثيات تحويل إعلانات جوجل المباشرة ومنع التكرار المنفصل
  * ==========================================================================
  */
 function trackConversion(actionType) {
+  // التحقق من تواجد كود التتبع gtag.js لإعلانات جوجل في الصفحة
   if (typeof gtag !== "function") return;
 
-  // التحقق لمنع إرسال التحويلات المكررة في نفس الجلسة
-  if (sessionStorage.getItem("conversion_sent")) {
+  // صياغة مفتاح حماية فريد ومستقل لكل إجراء تتبع لمنع تداخل الاستجابات
+  const sessionKey = `conversion_sent_${actionType}`;
+
+  // التحقق لمنع إرسال نفس نوع التحويل المكرر في نفس الجلسة
+  if (sessionStorage.getItem(sessionKey)) {
     return;
   }
 
+  let sendToValue = "";
+
   switch (actionType) {
     case "phone_call":
-      gtag("event", "conversion", {
-        "send_to": `${APP_CONFIG.googleAdsId}/phone_call_click`,
-        "event_category": "Contact",
-        "event_label": "Direct Call Triggered"
-      });
-      gtag("event", "click_phone", { "event_category": "Engagement" });
+      if (APP_CONFIG.phoneConversionLabel) {
+        sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.phoneConversionLabel}`;
+      }
       break;
 
     case "whatsapp_chat":
-      gtag("event", "conversion", {
-        "send_to": `${APP_CONFIG.googleAdsId}/whatsapp_chat_click`,
-        "event_category": "Contact",
-        "event_label": "WhatsApp Chat Triggered"
-      });
-      gtag("event", "click_whatsapp", { "event_category": "Engagement" });
+    case "whatsapp_fallback": // يتم دمج نقرة واتساب المباشرة والبديل تحت نفس تحويل واتساب
+      if (APP_CONFIG.whatsappConversionLabel) {
+        sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.whatsappConversionLabel}`;
+      }
       break;
 
     case "form_submission":
-      gtag("event", "conversion", {
-        "send_to": `${APP_CONFIG.googleAdsId}/form_submit_success`,
-        "event_category": "Lead",
-        "event_label": "Quote Form Submitted Successfully"
-      });
-      gtag("event", "submit_lead_form", { "event_category": "Lead Generation" });
-      break;
-
-    case "whatsapp_fallback":
-      gtag("event", "conversion", {
-        "send_to": `${APP_CONFIG.googleAdsId}/whatsapp_fallback_click`,
-        "event_category": "Lead",
-        "event_label": "WhatsApp Fallback Triggered"
-      });
-      gtag("event", "submit_lead_fallback", { "event_category": "Lead Generation Fallback" });
+      if (APP_CONFIG.formConversionLabel) {
+        sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.formConversionLabel}`;
+      }
       break;
   }
 
-  // تخزين حالة الإرسال لمنع التكرار في الجلسة الحالية للعميل
-  sessionStorage.setItem("conversion_sent", "true");
+  // إرسال التحويل مباشرة لحساب جوجل إعلانات المربوط بالسكربت
+  if (sendToValue) {
+    gtag("event", "conversion", {
+      "send_to": sendToValue
+    });
+    
+    // تخزين حالة إرسال هذا الإجراء المحدد في جلسة العمل لمنع تكراره
+    sessionStorage.setItem(sessionKey, "true");
+  }
 }
 
 /**
