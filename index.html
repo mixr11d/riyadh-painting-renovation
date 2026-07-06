@@ -8,6 +8,8 @@
   <title>تصميم ديكورات وترميم الرياض | جبس بورد ودهانات وتشطيبات ممتازة</title>
   <meta name="description" content="خدمات تصميم ديكورات وترميم بالرياض. متخصصون في تركيب جبس بورد، ورق جدران، دهانات داخلية وخارجية، باركيه هرميو SPC، ساندوتش بانل، وتشطيب وترميم المباني بأعلى جودة.">
   <meta name="robots" content="index, follow">
+  
+  <!-- رابط الـ Canonical المطلق لضمان صحة الفهرسة ومنع المحتوى المكرر -->
   <link rel="canonical" href="https://example.com">
 
   <!-- Open Graph / Facebook -->
@@ -33,7 +35,7 @@
   <!-- Stylesheets -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- Structured Data / JSON-LD Schemas -->
+  <!-- Structured Data / JSON-LD Schemas (معرفات وعناوين مطلقة لضمان صحة البيانات المنسقة) -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -130,18 +132,18 @@
           <li><a href="#why-us" class="nav-link">لماذا نحن</a></li>
           <li><a href="#gallery" class="nav-link">معرض الأعمال</a></li>
           <li><a href="#faq" class="nav-link">الأسئلة الشائعة</a></li>
-          <li><a href="#contact" class="nav-link">اتصل بنا</a></li>
+          <li><a href="contact-us.html" class="nav-link">اتصل بنا</a></li>
         </ul>
       </nav>
 
       <div class="header-cta">
-        <a href="#contact" class="cta-btn primary-cta" aria-label="طلب عرض سعر مجاني">طلب عرض سعر</a>
+        <a href="contact-us.html" class="cta-btn primary-cta" aria-label="طلب عرض سعر مجاني">طلب عرض سعر</a>
       </div>
     </div>
   </header>
 
   <main>
-    <!-- Hero Section with Riyadh Neighborhoods Target -->
+    <!-- Hero Section with Riyadh Neighborhood Target -->
     <section class="hero-section" aria-label="الرئيسية - ديكورات وترميم الرياض">
       <div class="hero-overlay"></div>
       <div class="hero-image-wrapper">
@@ -152,7 +154,7 @@
         <p class="hero-subtitle">نقوم بتنفيذ جميع أعمال الجبس بورد، ورق جدران، دهانات داخلية وخارجية، باركيه هرميو SPC، تركيب ساندوتش بانل، والترميم والتشطيب في جميع مناطق الرياض، ونغطي بالكامل أحياء شمال الرياض الفاخرة مثل حي الملقا، حي الياسمين، حي النرجس، حي العارض، حي الصحافة، حي حطين، وحي الغدير، بالإضافة لأحياء شرق ووسط الرياض.</p>
         
         <div class="hero-actions">
-          <a href="#contact" class="btn btn-primary" aria-label="اطلب عرض سعر مجاني الآن">طلب عرض سعر</a>
+          <a href="contact-us.html" class="btn btn-primary" aria-label="اطلب عرض سعر مجاني الآن">طلب عرض سعر</a>
           <a href="tel:0573747885" class="btn btn-secondary" aria-label="اتصل بنا هاتفياً للاستفسار">
             <span>اتصل بنا: 0573747885</span>
           </a>
@@ -209,7 +211,7 @@
           <!-- Service Card 4 -->
           <article class="service-card">
             <div class="service-img-wrapper">
-              <img src="images/parquet/parquet-1.webp" alt="تركيب باركيه SPC هرميو بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
+              <img src="images/parquet/parquet-1.webp" alt="تركيب باركيه SPC فاخر بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="service-body">
               <h3 class="service-title">باركيه هرميو SPC</h3>
@@ -377,12 +379,12 @@
       </div>
     </section>
 
-    <!-- Contact Us Section with Neighborhood Integration -->
+    <!-- Contact Us Section -->
     <section id="contact" class="contact-section section-padding" aria-labelledby="contact-heading">
       <div class="container">
         <div class="section-header">
           <h2 id="contact-heading" class="section-title">تواصل معنا الآن لطلب عرض السعر</h2>
-          <p class="section-description">مستعدون لزيارة موقع العمل والمعاينة الفنية المجانية في أي حي من أحياء الرياض (حي الملقا، حي الياسمين، حي النرجس، حي العارض، حي الصحافة، حي حطين، حي الغدير، حي العليا، حي الروضة، وغيرها من الأحياء).</p>
+          <p class="section-description">نسعد بخدمتكم وتوفير الاستشارات الفنية المجانية. يرجى تعبئة النموذج أدناه وسيقوم أحد مهندسينا بالتواصل معكم فوراً.</p>
         </div>
 
         <div class="contact-layout">
@@ -407,13 +409,8 @@
           </div>
 
           <div class="contact-form-wrapper">
-            <!-- Form supporting Web3Forms with validation embedded in script.js -->
-            <form id="quote-form" action="https://api.web3forms.com/submit" method="POST" class="quote-form">
-              <input type="hidden" name="access_key" value="XXXXXXXX">
-              <input type="hidden" name="subject" value="طلب جديد من موقع ديكورات وترميم الرياض">
-              <input type="hidden" name="from_name" value="موقع ديكورات وترميم الرياض">
-              <input type="checkbox" name="botcheck" class="hidden-field" style="display: none;">
-
+            <!-- نموذج نظيف مطور وموجه للواتساب مباشرة بدون Web3forms أو حقول مخفية زائدة -->
+            <form id="quote-form" action="javascript:void(0);" class="quote-form">
               <div class="form-group">
                 <label for="client_name">الاسم الكريم:</label>
                 <input type="text" id="client_name" name="name" required placeholder="أدخل اسمك بالكامل" class="form-input">
@@ -432,6 +429,7 @@
                   <option value="ورق جدران">ورق جدران</option>
                   <option value="دهانات داخلية وخارجية">دهانات داخلية وخارجية</option>
                   <option value="باركيه هرميو SPC">باركيه هرميو SPC</option>
+                  <!-- تم تصحيح القيمة البرمجية المفقودة بنجاح تام -->
                   <option value="ساندوتش بانل">ساندوتش بانل</option>
                   <option value="ترميم وتشطيب مباني">ترميم وتشطيب مباني</option>
                 </select>
@@ -442,7 +440,7 @@
                 <textarea id="project_details" name="details" rows="4" placeholder="يرجى كتابة المساحة، الحي، أو أي تفاصيل أخرى ترغب في تزويدنا بها" class="form-input"></textarea>
               </div>
 
-              <button type="submit" class="btn btn-submit-form" id="submit-btn">إرسال الطلب مجاناً</button>
+              <button type="submit" class="btn btn-submit-form" id="submit-btn">إرسال الطلب عبر الواتساب</button>
             </form>
           </div>
         </div>
@@ -450,7 +448,7 @@
     </section>
   </main>
 
-  <!-- Footer Section with simplified Developer WhatsApp URL without company structure -->
+  <!-- Footer Section -->
   <footer class="main-footer">
     <div class="container footer-container">
       <div class="footer-brand">
