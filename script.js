@@ -31,6 +31,9 @@ const APP_CONFIG = {
  * ==========================================================================
  */
 document.addEventListener("DOMContentLoaded", () => {
+  // تهيئة وحقن مكتبة تتبع إعلانات جوجل تلقائياً بالكامل برمجياً
+  initGoogleAds();
+
   // حقن وتحديث المكونات الديناميكية
   hydrateHeader();
   hydrateFooter();
@@ -43,6 +46,28 @@ document.addEventListener("DOMContentLoaded", () => {
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   updateCopyrightYear();
 });
+
+/**
+ * دالة مخصصة لتحميل وتهيئة كود تتبع إعلانات جوجل الأساسي تلقائياً برمجياً
+ */
+function initGoogleAds() {
+  if (!APP_CONFIG.googleAdsId || APP_CONFIG.googleAdsId === "AW-XXXXXXXX") return;
+
+  // إنشاء تاق الاستدعاء الخارجي
+  const gTagScript = document.createElement("script");
+  gTagScript.async = true;
+  gTagScript.src = `https://www.googletagmanager.com/gtag/js?id=${APP_CONFIG.googleAdsId}`;
+  document.head.appendChild(gTagScript);
+
+  // إعداد مصفوفات التتبع وتعريف دالة gtag العالمية
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function() {
+    window.dataLayer.push(arguments);
+  };
+  
+  gtag('js', new Date());
+  gtag('config', APP_CONFIG.googleAdsId);
+}
 
 /**
  * دالة مخصصة لعرض الإشعارات المنبثقة التفاعلية (Toast Notification)
@@ -337,7 +362,7 @@ function initFormHandler() {
     const projectDetails = document.getElementById("project_details").value.trim();
 
     if (clientName.length < 3 || !clientPhone.startsWith("05") || clientPhone.length !== 10) {
-      showToast("الرجاء إدخل بيانات صحيحة");
+      showToast("الرجاء إدخال بيانات صحيحة");
       return;
     }
 
