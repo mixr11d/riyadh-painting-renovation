@@ -1,0 +1,6 @@
+# Robots.txt - تصميم ديكورات وترميم الرياض
+User-agent: *
+Allow: /
+
+# مسار خريطة الموقع الرسمية لـ Google و Bing
+Sitemap: https://example.com/sitemap.xml
