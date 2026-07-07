@@ -364,23 +364,60 @@ ul, ol {
   overflow: hidden; /* قص حواف حركة التكبير */
 }
 
+/* نظام عرض الشرائح التفاعلي المتقاطع الفاخر والمتحرك (Multi-Image Crossfade Slideshow Styles) */
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  will-change: transform, opacity; /* تسريع حركة رندرة المتصفح */
+  animation: crossfadeSlideshow 24s infinite ease-in-out;
+}
+
+/* موازنة وضبط تتابع التوقيت للشرائح الثلاثة (8 ثوانٍ لكل صورة) */
+.hero-slide:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.hero-slide:nth-child(2) {
+  animation-delay: 8s;
+}
+
+.hero-slide:nth-child(3) {
+  animation-delay: 16s;
+}
+
 /* صورة الخلفية مضافاً إليها تأثير حركي سينمائي متميز وسلس مدعوم بـ GPU */
 .hero-bg-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-  will-change: transform; /* تهيئة كرت الشاشة لتسريع الحركة */
-  animation: kenBurnsEffect 24s infinite alternate ease-in-out;
 }
 
-/* حركة الكاميرا البطيئة لمحاكاة استعراض الأسقف والديكورات الفاخرة */
-@keyframes kenBurnsEffect {
+/* حركة الكاميرا البطيئة وتداخل الصور الشفافة لثلاثة ديكورات عالمية فاخرة */
+@keyframes crossfadeSlideshow {
   0% {
-    transform: scale(1) translate(0, 0);
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  4.16% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  29.16% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  33.33% {
+    opacity: 0;
+    transform: scale(1);
   }
   100% {
-    transform: scale(1.12) translate(-1%, -1%);
+    opacity: 0;
+    transform: scale(1.08);
   }
 }
 
