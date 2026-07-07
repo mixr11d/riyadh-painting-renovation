@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // تشغيل الميزات التفاعلية
   initMobileMenu();
-  initDropdownToggle(); // تشغيل ميزة فتح القائمة المنسدلة عند النقر بالماوس
+  initDropdownToggle(); // تشغيل ميزة فتح وغلق القائمة المنسدلة عند الضغط بالماوس
   initSmoothScroll();
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
@@ -288,7 +288,7 @@ function hydrateScrollToTop() {
   if (!scrollTopBtn) {
     scrollTopBtn = document.createElement("button");
     scrollTopBtn.className = "scroll-top-btn";
-    scrollTopBtn.setAttribute("aria-label", "صعود لأعلى الصفحة");
+    scrollTopBtn.setAttribute("aria-label", "صعود لأعلم الصفحة");
     scrollTopBtn.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="18 15 12 9 6 15"></polyline>
@@ -333,7 +333,7 @@ function initDropdownToggle() {
   if (!dropdownToggle || !dropdownMenu) return;
 
   dropdownToggle.addEventListener("click", (e) => {
-    e.preventDefault(); // منع الانتقال الفوري لـ #services لإتاحة رؤية القائمة
+    e.preventDefault(); // منع الانتقال الفوري لـ #services لإتاحة رؤية القائمة وتجربة التبويب
     e.stopPropagation(); // منع انتقال الحدث إلى بقية المستند
 
     const isExpanded = dropdownToggle.getAttribute("aria-expanded") === "true";
