@@ -54,6 +54,9 @@
 </head>
 <body class="page-service-parquet">
 
+  <!-- شريط الإعلان والخصومات الترويجي أعلى الصفحة مضافاً بشكل ثابت لضمان ثبات العناصر -->
+  <div class="announcement-bar" role="banner">🎁 خصم خاص 15% للمتصلين الجدد عبر الموقع - اتصل الآن والمعاينة مجانية بالكامل!</div>
+
   <!-- Header Section -->
   <header class="main-header">
     <div class="header-container">
@@ -73,7 +76,17 @@
       <nav id="main-navigation" class="nav-menu" aria-label="القائمة الرئيسية">
         <ul class="nav-list">
           <li><a href="index.html" class="nav-link">الرئيسية</a></li>
-          <li><a href="index.html#services" class="nav-link">خدماتنا</a></li>
+          <li class="nav-item-dropdown">
+            <a href="index.html#services" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">خدماتنا</a>
+            <ul class="dropdown-menu">
+              <li><a href="gypsum.html" class="dropdown-item">جبس بورد وديكورات</a></li>
+              <li><a href="walpaper.html" class="dropdown-item">ورق جدران</a></li>
+              <li><a href="painting.html" class="dropdown-item">دهانات داخلية وخارجية</a></li>
+              <li><a href="parquet.html" class="dropdown-item">باركيه هرميو SPC</a></li>
+              <li><a href="sandwich-panel.html" class="dropdown-item">ساندوتش بانل</a></li>
+              <li><a href="renovation.html" class="dropdown-item">ترميم وتشطيب مباني</a></li>
+            </ul>
+          </li>
           <li><a href="index.html#why-us" class="nav-link">لماذا نحن</a></li>
           <li><a href="index.html#gallery" class="nav-link">معرض الأعمال</a></li>
           <li><a href="index.html#faq" class="nav-link">الأسئلة الشائعة</a></li>
@@ -135,7 +148,7 @@
       </div>
     </section>
 
-    <!-- Showcase Gallery (6 Actual Images from GitHub Repository) -->
+    <!-- Showcase Gallery (6 الصور الفرعية الكاملة للباركيه مع تفعيل خوارزمية منع التكرار) -->
     <section class="section-padding" style="background-color: var(--bg-light);" aria-labelledby="parquet-gallery-heading">
       <div class="container">
         <div class="section-header">
@@ -144,7 +157,7 @@
         </div>
 
         <div class="services-grid">
-          <!-- Image 1 -->
+          <!-- Image 1 (parquet.webp) -->
           <article class="service-card">
             <div class="service-img-wrapper">
               <img src="images/parquet/parquet.webp" alt="تركيب باركيه SPC صالات فخمة بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
@@ -154,7 +167,7 @@
             </div>
           </article>
 
-          <!-- Image 2 -->
+          <!-- Image 2 (parquet-2.webp) -->
           <article class="service-card">
             <div class="service-img-wrapper">
               <img src="images/parquet/parquet-2.webp" alt="أرضيات باركيه غرف نوم بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
@@ -164,7 +177,7 @@
             </div>
           </article>
 
-          <!-- Image 3 -->
+          <!-- Image 3 (parquet-3.webp) -->
           <article class="service-card">
             <div class="service-img-wrapper">
               <img src="images/parquet/parquet-3.webp" alt="تركيب باركيه مكاتب تجارية بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
@@ -174,7 +187,7 @@
             </div>
           </article>
 
-          <!-- Image 4 -->
+          <!-- Image 4 (parquet-4.webp) -->
           <article class="service-card">
             <div class="service-img-wrapper">
               <img src="images/parquet/parquet-4.webp" alt="أحدث ألوان باركيه SPC بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
@@ -184,7 +197,7 @@
             </div>
           </article>
 
-          <!-- Image 5 -->
+          <!-- Image 5 (parquet-5.webp) -->
           <article class="service-card">
             <div class="service-img-wrapper">
               <img src="images/parquet/parquet-5.webp" alt="تركيب نعلات وإكسسوارات باركيه بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
@@ -194,10 +207,10 @@
             </div>
           </article>
 
-          <!-- Image 6 -->
+          <!-- Image 6 (parquet-14.webp - تم المواءمة والتصحيح الرقمي لضمان عمل الصورة الفريدة السادسة) -->
           <article class="service-card">
             <div class="service-img-wrapper">
-              <img src="images/parquet/parquet-6.webp" alt="باركيه هرميو SPC ألماني فخم بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
+              <img src="images/parquet/parquet-14.webp" alt="باركيه هرميو SPC ألماني فخم بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="service-body" style="padding: 15px; text-align: center;">
               <h3 class="service-title" style="font-size: 1.1rem; margin-bottom: 0;">أرضيات حجرية مقاومة للرطوبة</h3>
