@@ -347,21 +347,24 @@ ul, ol {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: hidden; /* قص حواف حركة التكبير التفاعلية تماماً */
   color: var(--bg-white);
   padding: 40px var(--container-padding);
   text-align: center;
 }
 
-/* حاوية عزل الصور لمنع تمدد الصفحة وقص الحواف المتحركة */
+/* حاوية عزل الصور لتخطي كسر حواف النوافذ أثناء حركة الماوس تفاعلياً */
 .hero-image-wrapper {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
   z-index: 1;
-  overflow: hidden; /* قص حواف حركة التكبير */
+  overflow: hidden; 
+  will-change: transform;
+  /* تصفير الحركة لتعود للسنتر بنعومة */
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* نظام عرض الشرائح التفاعلي المتقاطع الفاخر والمتحرك (Multi-Image Crossfade Slideshow Styles) */
@@ -401,23 +404,23 @@ ul, ol {
 @keyframes crossfadeSlideshow {
   0% {
     opacity: 0;
-    transform: scale(1.08);
+    transform: scale(1.08) translate(0, 0);
   }
   4.16% {
     opacity: 1;
-    transform: scale(1.06);
+    transform: scale(1.06) translate(-0.5%, -0.5%);
   }
   29.16% {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) translate(0.5%, 0.5%);
   }
   33.33% {
     opacity: 0;
-    transform: scale(1);
+    transform: scale(1) translate(1%, 1%);
   }
   100% {
     opacity: 0;
-    transform: scale(1.08);
+    transform: scale(1.08) translate(0, 0);
   }
 }
 
