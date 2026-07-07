@@ -112,75 +112,89 @@ function injectAnnouncementBar() {
 
 /**
  * خوارزمية ذكية متقدمة للشفاء الذاتي ومعالجة الصور المكسورة تلقائياً (Advanced Image Fallback)
- * تفحص مسارات الرفع في جيت هوب وتجرب تراكيب ترقيم الأسماء من (2 و 14) وتغير الامتدادات والصياغات الإملائية
+ * تم معالجة مشكلة المزامنة (Race Condition) لتعمل على معالجة الصور التي فشلت بالفعل قبل تحميل السكربت بالكامل
  */
 function initImageFallback() {
   const images = document.querySelectorAll("img");
-  images.forEach(img => {
-    img.addEventListener("error", function handleError() {
-      const currentSrc = this.src;
-      
-      let attempt = parseInt(this.dataset.fallbackAttempt || "0", 10);
-      attempt++;
-      this.dataset.fallbackAttempt = attempt;
-      
-      if (attempt > 10) return; // حماية المعالج من الدخول في حلقات مفرغة
-      
-      const lastSlashIndex = currentSrc.lastIndexOf("/");
-      const folderPath = currentSrc.substring(0, lastSlashIndex + 1);
-      const filenameWithExt = currentSrc.substring(lastSlashIndex + 1);
-      const dotIndex = filenameWithExt.lastIndexOf(".");
-      const filename = filenameWithExt.substring(0, dotIndex);
-      
-      // جلب الاسم النظيف للخدمة بدون ترقيم تالٍ
-      let cleanBaseName = filename.replace(/-\d+$/, "");
-      
-      // مصفوفة اختبار الاحتمالات التتابعية للصور لضمان الحصول على الملف الفعلي المرفوع
-      let fallbacks = [
-        cleanBaseName + ".webp",
-        cleanBaseName + "-1.webp",
-        cleanBaseName + "-2.webp",  // تجربة الرقم 2 في حال عدم وجود رقم 1
-        cleanBaseName + "-3.webp",
-        cleanBaseName + ".jpg",
-        cleanBaseName + "-1.jpg",
-        cleanBaseName + "-2.jpg",
-        cleanBaseName + ".png",
-        cleanBaseName + "-1.png",
-        cleanBaseName + "-2.png"
-      ];
-      
-      // المعالجة الفائقة لمجلد ورق الجدران لتخطي أي خطأ إملائي في الملفات المرفوعة
-      if (folderPath.includes("/walpaper/")) {
-        fallbacks = [
-          "walpaper.webp",
-          "walpaper-1.webp",
-          "walpaper-2.webp",
-          "wallpaper.webp",
-          "wallpaper-1.webp",
-          "wallpaper-2.webp",
-          "walpaper.jpg",
-          "walpaper-1.jpg",
-          "walpaper-2.jpg",
-          "wallpaper.jpg",
-          "wallpaper-1.jpg",
-          "wallpaper-2.jpg"
-        ];
-      }
+  
+  function triggerFallback(img) {
+    const currentSrc = img.src;
+    if (!currentSrc) return;
 
-      // جلب الاسم التالي في خطة الفحص
-      const nextName = fallbacks[attempt - 1];
-      if (nextName) {
+    let attempt = parseInt(img.dataset.fallbackAttempt || "0", 10);
+    attempt++;
+    img.dataset.fallbackAttempt = attempt;
+    
+    if (attempt > 10) return; // حماية المعالج من الدخول في حلقات مفرغة
+    
+    const lastSlashIndex = currentSrc.lastIndexOf("/");
+    const folderPath = currentSrc.substring(0, lastSlashIndex + 1);
+    const filenameWithExt = currentSrc.substring(lastSlashIndex + 1);
+    const dotIndex = filenameWithExt.lastIndexOf(".");
+    
+    if (dotIndex === -1) return;
+    
+    const filename = filenameWithExt.substring(0, dotIndex);
+    
+    // جلب الاسم النظيف للخدمة بدون ترقيم تالٍ
+    let cleanBaseName = filename.replace(/-\d+$/, "");
+    
+    // احتمالات تتابعية متطورة للصور لضمان الحصول على الملف الفعلي المرفوع
+    let fallbacks = [
+      cleanBaseName + ".webp",
+      cleanBaseName + "-1.webp",
+      cleanBaseName + "-2.webp",
+      cleanBaseName + "-3.webp",
+      cleanBaseName + ".jpg",
+      cleanBaseName + "-1.jpg",
+      cleanBaseName + "-2.jpg",
+      cleanBaseName + ".png",
+      cleanBaseName + "-1.png",
+      cleanBaseName + "-2.png"
+    ];
+    
+    // المعالجة الفائقة لمجلد ورق الجدران لتخطي أي خطأ إملائي في الملفات المرفوعة
+    if (folderPath.includes("/walpaper/")) {
+      fallbacks = [
+        "wallpaper-1.webp",
+        "wallpaper.webp",
+        "walpaper.webp",
+        "walpaper-1.webp",
+        "walpaper-2.webp",
+        "wallpaper-2.webp",
+        "wallpaper-1.jpg",
+        "wallpaper.jpg",
+        "walpaper.jpg",
+        "walpaper-1.jpg",
+        "walpaper-2.jpg",
+        "wallpaper-2.jpg"
+      ];
+    }
+
+    const nextName = fallbacks[attempt - 1];
+    if (nextName) {
+      if (nextName === filenameWithExt) {
         // حماية من تكرار تعيين نفس الرابط الفاشل
-        if (nextName === filenameWithExt) {
-          this.dataset.fallbackAttempt = attempt + 1;
-          const skipName = fallbacks[attempt];
-          if (skipName) {
-            this.src = folderPath + skipName;
-          }
-        } else {
-          this.src = folderPath + nextName;
+        img.dataset.fallbackAttempt = attempt + 1;
+        const skipName = fallbacks[attempt];
+        if (skipName) {
+          img.src = folderPath + skipName;
         }
+      } else {
+        img.src = folderPath + nextName;
       }
+    }
+  }
+
+  images.forEach(img => {
+    // 1. فحص فوري وإصلاح للصور التي فشلت في التحميل قبل تشغيل السكربت
+    if (img.complete && img.naturalWidth === 0) {
+      triggerFallback(img);
+    }
+    
+    // 2. فحص وإصلاح الصور التي تفشل أثناء التصفح النشط للزائر
+    img.addEventListener("error", function() {
+      triggerFallback(this);
     });
   });
 }
@@ -364,7 +378,7 @@ function hydrateScrollToTop() {
   if (!scrollTopBtn) {
     scrollTopBtn = document.createElement("button");
     scrollTopBtn.className = "scroll-top-btn";
-    scrollTopBtn.setAttribute("aria-label", "صعود لأعلى الصفحة");
+    scrollTopBtn.setAttribute("aria-label", "صعود لأعلم الصفحة");
     scrollTopBtn.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="18 15 12 9 6 15"></polyline>
