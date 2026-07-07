@@ -50,11 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
-  
-  // تشغيل نظام الدمج والمزامنة البرمجي المزدوج لشفاء الصور
-  initImageFallback(); // طبقة الحماية الفورية المحلية للصور
-  initGithubApiHydrator(); // طبقة المزامنة الفورية الذكية مع جيت هوب لقراءة وتسكين الصور الفعلية المرفوعة
-  
+  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة والآمنة 100% بدون اتصال خارجي
   initHeroInteractiveParallax(); // تشغيل ميزة البارالاكس التفاعلية الفخمة لعمق حركة الماوس بالبانر
   updateCopyrightYear();
 });
@@ -121,226 +117,37 @@ function injectAnnouncementBar() {
 }
 
 /**
- * طبقة الحماية الذكية الأولى (GitHub API Auto-Hydration)
- * تتصل تلقائياً وبشكل صامت بمستودع جيت هوب الخاص بك لقراءة أسماء وامتدادات وتشكيل الصور المرفوعة فعلياً،
- * وتقوم بدمجها وتوزيعها تلقائياً على الكروت الستة لكل خدمة تمنع كسر الصور أو تكرارها نهائياً.
- */
-async function initGithubApiHydrator() {
-  try {
-    const repoOwner = "mixr11d";
-    const repoName = "riyadh-painting-renovation";
-    const branch = "main";
-    
-    // الاتصال الفوري بمستودع جيت هوب لجلب شجرة الملفات بالكامل
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`);
-    if (!response.ok) throw new Error("GitHub API rate limit or offline");
-    
-    const data = await response.json();
-    const files = data.tree || [];
-    
-    // تصفية جميع ملفات الصور المدعومة في مجلد images المرفوع
-    const imgExtensions = [".webp", ".png", ".jpg", ".jpeg", ".gif"];
-    const imageFiles = files.filter(file => {
-      if (file.type !== "blob") return false;
-      const path = file.path.toLowerCase();
-      return path.startsWith("images/") && imgExtensions.some(ext => path.endsWith(ext));
-    });
-    
-    // تجميع وتصنيف الصور في مصفوفات مستقلة بناءً على المجلد (باركيه، ورق جدران، دهانات، جبس...)
-    const groups = {};
-    imageFiles.forEach(file => {
-      const parts = file.path.split("/");
-      if (parts.length >= 3) {
-        const groupName = parts[1]; // اسم مجلد الخدمة
-        if (!groups[groupName]) {
-          groups[groupName] = [];
-        }
-        groups[groupName].push(file.path);
-      }
-    });
-    
-    // دالة ترتيب طبيعي للملفات لضمان عدم حدوث لخبطة في تسلسل الكروت المعروضة
-    const naturalSort = (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-    
-    const pageImages = document.querySelectorAll("img");
-    
-    // دمج وربط الصور الفعلية الموثقة بجيت هوب بكروت الصفحات بشكل فريد وغير مكرر نهائياً
-    Object.keys(groups).forEach(groupName => {
-      groups[groupName].sort(naturalSort);
-      
-      const matchingImgs = Array.from(pageImages).filter(img => {
-        const src = (img.getAttribute("src") || "").toLowerCase();
-        return src.includes(`/${groupName}/`) || src.includes(`/${groupName}-`);
-      });
-      
-      matchingImgs.forEach((img, index) => {
-        const verifiedPath = groups[groupName][index % groups[groupName].length];
-        if (verifiedPath) {
-          img.dataset.fallbackActive = "true"; // إغلاق قفل الفحص لمنع تداخل الأحداث
-          img.src = verifiedPath; // ربط الصورة الصحيحة فوراً
-          img.dataset.fallbackActive = "false";
-        }
-      });
-    });
-    
-    console.log("GitHub API Auto-Hydration synced successfully!");
-  } catch (error) {
-    console.warn("GitHub API Sync bypass, local fallback active:", error);
-  }
-}
-
-/**
- * طبقة الحماية الذاتية الثانية والاحتياطية (Deduplicating Image Fallback Algorithm)
- * تعمل بكفاءة لمنع تكرار الصور أو كسرها في حال تصفح الموقع بدون إنترنت أو تعطل API الخاص بجيت هوب.
+ * دالة حماية فائقة الأداء وذاتية الشفاء بنظام المطابقة الرقمية التبادلية للبدائل الفنية (Safe Fallback)
+ * تفحص الصور الفاشلة محلياً وتقوم بالتبديل الفوري والسريع بين صيغ وأرقام الملفات المتاحة
  */
 function initImageFallback() {
   const images = document.querySelectorAll("img");
-  
-  function triggerFallback(img) {
-    // حماية القفل البرمجي النشط لمنع تداخل الأحداث والطلب المتزامن للرابط
-    if (img.dataset.fallbackActive === "true") return;
-    img.dataset.fallbackActive = "true";
-
-    const currentSrc = img.src;
-    if (!currentSrc) {
-      img.dataset.fallbackActive = "false";
-      return;
-    }
-
-    let attempt = parseInt(img.dataset.fallbackAttempt || "0", 10);
-    attempt++;
-    img.dataset.fallbackAttempt = attempt;
-    
-    if (attempt > 15) {
-      img.dataset.fallbackActive = "false";
-      return; // التوقف الفوري بعد 15 محاولة لحماية أداء المتصفح
-    }
-    
-    const lastSlashIndex = currentSrc.lastIndexOf("/");
-    const folderPath = currentSrc.substring(0, lastSlashIndex + 1);
-    const filenameWithExt = currentSrc.substring(lastSlashIndex + 1);
-    const dotIndex = filenameWithExt.lastIndexOf(".");
-    
-    if (dotIndex === -1) {
-      img.dataset.fallbackActive = "false";
-      return;
-    }
-    
-    const filename = filenameWithExt.substring(0, dotIndex);
-    
-    // استخراج الرقم التسلسلي الأصلي للصورة المكسورة
-    const numberMatch = filename.match(/-(\d+)$/);
-    const numberSuffix = numberMatch ? numberMatch[1] : "";
-    
-    // جلب الاسم النظيف للخدمة بدون ترقيم تالٍ
-    let cleanBaseName = filename.replace(/-\d+$/, "");
-    
-    let isWallpaper = folderPath.includes("/walpaper/");
-    let isParquet = folderPath.includes("/parquet/");
-    let isSandwich = folderPath.includes("/sandwich-panel/");
-    
-    let candidateName = "";
-    const suffix = numberSuffix ? "-" + numberSuffix : "";
-    
-    // 1. توليد الخيارات والمطابقات الصارمة لورق الجدران مع حماية الترقيم الأصلي
-    if (isWallpaper) {
-      const list = [
-        "walpaper" + suffix + ".webp",
-        "wallpaper" + suffix + ".webp",
-        "walpaper" + suffix + ".jpg",
-        "wallpaper" + suffix + ".jpg",
-        "walpaper" + suffix + ".png",
-        "wallpaper" + suffix + ".png",
-        "wallpaper-2.webp",
-        "wallpaper-3.webp",
-        "wallpaper-4.webp",
-        "wallpaper-5.webp",
-        "wallpaper-6.webp",
-        "wallpaper-14.webp"
-      ];
-      candidateName = list[attempt - 1];
-    } 
-    // 2. توليد الخيارات والامتدادات للباركيه
-    else if (isParquet) {
-      const list = [
-        "parquet" + suffix + ".webp",
-        "parquet" + suffix + ".jpg",
-        "parquet" + suffix + ".png",
-        "parquet-2.webp",
-        "parquet-3.webp",
-        "parquet-4.webp",
-        "parquet-5.webp",
-        "parquet-14.webp",
-        "parquet.webp"
-      ];
-      candidateName = list[attempt - 1];
-    } 
-    // 3. توليد الخيارات والامتدادات للساندوتش بانل
-    else if (isSandwich) {
-      const list = [
-        "sandwich-panel" + suffix + ".webp",
-        "sandwich-panel" + suffix + ".jpg",
-        "sandwich-panel" + suffix + ".png",
-        "sandwich-panel-2.webp",
-        "sandwich-panel-3.webp",
-        "sandwich-panel-4.webp",
-        "sandwich-panel-5.webp",
-        "sandwich-panel-14.webp",
-        "sandwich-panel.webp"
-      ];
-      candidateName = list[attempt - 1];
-    } 
-    // 4. بقية الخدمات
-    else {
-      const list = [
-        cleanBaseName + suffix + ".webp",
-        cleanBaseName + suffix + ".jpg",
-        cleanBaseName + suffix + ".png",
-        cleanBaseName + ".webp"
-      ];
-      candidateName = list[attempt - 1];
-    }
-
-    if (candidateName) {
-      const candidateSrc = folderPath + candidateName;
-      
-      // --- فحص منع التكرار البرمجي الصارم والكامل (Strict Deduplication Check) ---
-      // التحقق مما إذا كان هذا الرابط البديل مطلوباً بواسطة أي كارت آخر بالصفحة تماماً لتجنب التكرار المزدوج
-      let isDuplicate = false;
-      const allImgs = document.querySelectorAll("img");
-      for (let otherImg of allImgs) {
-        if (otherImg !== img && otherImg.src === candidateSrc) {
-          isDuplicate = true;
-          break;
-        }
-      }
-      
-      // إذا كانت مكررة أو تطابق الرابط الفاشل، نقوم بتخطيها فوراً وفحص الاحتمال التالي برمجياً
-      if (isDuplicate || candidateSrc === currentSrc) {
-        img.dataset.fallbackAttempt = attempt;
-        img.dataset.fallbackActive = "false";
-        setTimeout(() => {
-          triggerFallback(img);
-        }, 10);
-      } else {
-        img.dataset.fallbackActive = "false";
-        img.src = candidateSrc;
-      }
-    } else {
-      img.dataset.fallbackActive = "false";
-    }
-  }
-
   images.forEach(img => {
-    // فحص فوري وإصلاح للصور التي فشلت في التحميل قبل تشغيل السكربت
-    if (img.complete && img.naturalWidth === 0) {
-      triggerFallback(img);
-    }
-    
-    // فحص وإصلاح الصور التي تفشل أثناء التصفح النشط للزائر
-    img.addEventListener("error", function() {
-      triggerFallback(this);
+    img.addEventListener("error", function handleError() {
+      const currentSrc = this.src;
+      if (!currentSrc || this.dataset.fallbackAttempted === "true") return;
+      this.dataset.fallbackAttempted = "true";
+
+      // 1. مواءمة تبادلية ذكية في حال كان الملف المرفوع يحمل الرقم 14 بدلاً من 6 أو العكس
+      if (currentSrc.includes("-14.webp")) {
+        this.src = currentSrc.replace("-14.webp", "-6.webp");
+      } else if (currentSrc.includes("-6.webp")) {
+        this.src = currentSrc.replace("-6.webp", "-14.webp");
+      }
+      // 2. مواءمة في حال كان الملف ينتهي بـ -1 وفشل، يتم تجربته بالاسم الافتراضي النظيف بدون رقم
+      else if (currentSrc.includes("-1.webp")) {
+        this.src = currentSrc.replace("-1.webp", ".webp");
+      } 
+      // 3. مواءمة في حال كان الملف ينتهي باسم نظيف وفشل، يتم تجربته بالرقم 1
+      else if (!currentSrc.match(/-\d+\.webp$/) && currentSrc.endsWith(".webp")) {
+        this.src = currentSrc.replace(".webp", "-1.webp");
+      }
     });
+    
+    // تشغيل فوري للصور التي تعطلت كاشاتها قبل تشغيل السكربت المبرمج
+    if (img.complete && img.naturalWidth === 0) {
+      img.dispatchEvent(new Event("error"));
+    }
   });
 }
 
