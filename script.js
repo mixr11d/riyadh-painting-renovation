@@ -128,17 +128,27 @@ function initImageFallback() {
       if (!currentSrc || this.dataset.fallbackAttempted === "true") return;
       this.dataset.fallbackAttempted = "true";
 
-      // 1. مواءمة تبادلية ذكية في حال كان الملف المرفوع يحمل الرقم 14 بدلاً من 6 أو العكس
+      // 1. مواءمة تبادلية ذكية لورق الجدران لحل مشكلة التكرار ومطابقة حرف L
+      if (currentSrc.includes("/walpaper/")) {
+        if (currentSrc.includes("wallpaper")) {
+          this.src = currentSrc.replace(/wallpaper/g, "walpaper");
+        } else {
+          this.src = currentSrc.replace(/walpaper/g, "wallpaper");
+        }
+        return;
+      }
+
+      // 2. مواءمة في حال كان الباركيه أو الساندوتش بانل ينتهي بالرقم 14 وفشل، يتم تحويله للرقم 6 والعكس
       if (currentSrc.includes("-14.webp")) {
         this.src = currentSrc.replace("-14.webp", "-6.webp");
       } else if (currentSrc.includes("-6.webp")) {
         this.src = currentSrc.replace("-6.webp", "-14.webp");
       }
-      // 2. مواءمة في حال كان الملف ينتهي بـ -1 وفشل، يتم تجربته بالاسم الافتراضي النظيف بدون رقم
+      // 3. مواءمة في حال كان الملف ينتهي بـ -1 وفشل، يتم تجربته بالاسم الافتراضي النظيف بدون رقم
       else if (currentSrc.includes("-1.webp")) {
         this.src = currentSrc.replace("-1.webp", ".webp");
       } 
-      // 3. مواءمة في حال كان الملف ينتهي باسم نظيف وفشل، يتم تجربته بالرقم 1
+      // 4. مواءمة في حال كان الملف ينتهي باسم نظيف وفشل، يتم تجربته بالرقم 1
       else if (!currentSrc.match(/-\d+\.webp$/) && currentSrc.endsWith(".webp")) {
         this.src = currentSrc.replace(".webp", "-1.webp");
       }
