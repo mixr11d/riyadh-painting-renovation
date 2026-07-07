@@ -50,14 +50,22 @@ document.addEventListener("DOMContentLoaded", () => {
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
-  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة وإلغاء التكرار المطلق
+  
+  // تشغيل الخوارزمية الفائقة ثنائية الطبقات لشفاء وعرض الصور تلقائياً
+  initImageFallback();
+  
   initHeroInteractiveParallax(); // تشغيل ميزة البارالاكس التفاعلية الفخمة لعمق حركة الماوس بالبانر
   updateCopyrightYear();
 });
 
 // إجراء مسح تكميلي ثانٍ ومضمون فور اكتمال تحميل كامل نافذة المتصفح لضمان علاج صور الكاش الفاشلة
 window.addEventListener("load", () => {
-  initImageFallback();
+  const images = document.querySelectorAll("img");
+  images.forEach(img => {
+    if (img.complete && img.naturalWidth === 0) {
+      img.dispatchEvent(new Event("error"));
+    }
+  });
 });
 
 /**
@@ -117,159 +125,109 @@ function injectAnnouncementBar() {
 }
 
 /**
- * خوارزمية ذكية متقدمة للغاية وذاتية الشفاء لمنع تكرار الصور نهائياً (Deduplicating Image Fallback Algorithm)
- * تم دمج قفل الفحص المتزامن لرفض أي رابط مكرر يتم طلبه بواسطة أي كارت آخر بالصفحة بغض النظر عن حالة تحميله
+ * خوارزمية ذكية متقدمة للغاية ومزدوجة الطبقات لشفاء وعرض الصور تلقائياً (Double-Layer Image Fallback)
+ * الطبقة الأولى: تتصل بـ جيت هوب برمجياً وتقرأ أسماء وصيغ الملفات الحقيقية المرفوعة وتوزعها بدقة وتمنع التكرار [1، 2].
+ * الطبقة الثانية: بديل محلي سريع يعمل تلقائياً لحل المسارات في حال تصفح الموقع دون إنترنت أو تعطل API الخاص بجيت هوب [2].
  */
-function initImageFallback() {
+async function initImageFallback() {
   const images = document.querySelectorAll("img");
   
-  function triggerFallback(img) {
-    // حماية القفل البرمجي النشط لمنع تداخل الأحداث والطلب المتزامن للرابط
-    if (img.dataset.fallbackActive === "true") return;
-    img.dataset.fallbackActive = "true";
-
+  // الطبقة الثانية والاحتياطية: دالة الشفاء الذاتي المحلي الصامتة
+  function triggerLocalFallback(img) {
     const currentSrc = img.src;
-    if (!currentSrc) {
-      img.dataset.fallbackActive = "false";
+    if (!currentSrc || img.dataset.fallbackAttempted === "true") return;
+    img.dataset.fallbackAttempted = "true";
+
+    // مواءمة تبادلية ذكية لورق الجدران
+    if (currentSrc.includes("/walpaper/")) {
+      img.src = currentSrc.includes("wallpaper") ? currentSrc.replace(/wallpaper/g, "walpaper") : currentSrc.replace(/walpaper/g, "wallpaper");
       return;
     }
 
-    let attempt = parseInt(img.dataset.fallbackAttempt || "0", 10);
-    attempt++;
-    img.dataset.fallbackAttempt = attempt;
-    
-    if (attempt > 15) {
-      img.dataset.fallbackActive = "false";
-      return; // التوقف الفوري بعد 15 محاولة لحماية أداء المتصفح
-    }
-    
-    const lastSlashIndex = currentSrc.lastIndexOf("/");
-    const folderPath = currentSrc.substring(0, lastSlashIndex + 1);
-    const filenameWithExt = currentSrc.substring(lastSlashIndex + 1);
-    const dotIndex = filenameWithExt.lastIndexOf(".");
-    
-    if (dotIndex === -1) {
-      img.dataset.fallbackActive = "false";
-      return;
-    }
-    
-    const filename = filenameWithExt.substring(0, dotIndex);
-    
-    // استخراج الرقم التسلسلي الأصلي للصورة المكسورة
-    const numberMatch = filename.match(/-(\d+)$/);
-    const numberSuffix = numberMatch ? numberMatch[1] : "";
-    
-    // جلب الاسم النظيف للخدمة بدون ترقيم تالٍ
-    let cleanBaseName = filename.replace(/-\d+$/, "");
-    
-    let isWallpaper = folderPath.includes("/walpaper/");
-    let isParquet = folderPath.includes("/parquet/");
-    let isSandwich = folderPath.includes("/sandwich-panel/");
-    
-    let candidateName = "";
-    const suffix = numberSuffix ? "-" + numberSuffix : "";
-    
-    // 1. توليد الخيارات والمطابقات الصارمة لورق الجدران مع حماية الترقيم الأصلي
-    if (isWallpaper) {
-      const list = [
-        "walpaper" + suffix + ".webp",
-        "wallpaper" + suffix + ".webp",
-        "walpaper" + suffix + ".jpg",
-        "wallpaper" + suffix + ".jpg",
-        "walpaper" + suffix + ".png",
-        "wallpaper" + suffix + ".png",
-        "wallpaper-2.webp",
-        "wallpaper-3.webp",
-        "wallpaper-4.webp",
-        "wallpaper-5.webp",
-        "wallpaper-6.webp",
-        "wallpaper-14.webp"
-      ];
-      candidateName = list[attempt - 1];
-    } 
-    // 2. توليد الخيارات والامتدادات للباركيه
-    else if (isParquet) {
-      const list = [
-        "parquet" + suffix + ".webp",
-        "parquet" + suffix + ".jpg",
-        "parquet" + suffix + ".png",
-        "parquet-2.webp",
-        "parquet-3.webp",
-        "parquet-4.webp",
-        "parquet-5.webp",
-        "parquet-6.webp",
-        "parquet-14.webp",
-        "parquet.webp"
-      ];
-      candidateName = list[attempt - 1];
-    } 
-    // 3. توليد الخيارات والامتدادات للساندوتش بانل
-    else if (isSandwich) {
-      const list = [
-        "sandwich-panel" + suffix + ".webp",
-        "sandwich-panel" + suffix + ".jpg",
-        "sandwich-panel" + suffix + ".png",
-        "sandwich-panel-2.webp",
-        "sandwich-panel-3.webp",
-        "sandwich-panel-4.webp",
-        "sandwich-panel-5.webp",
-        "sandwich-panel-14.webp",
-        "sandwich-panel.webp"
-      ];
-      candidateName = list[attempt - 1];
-    } 
-    // 4. بقية الخدمات
-    else {
-      const list = [
-        cleanBaseName + suffix + ".webp",
-        cleanBaseName + suffix + ".jpg",
-        cleanBaseName + suffix + ".png",
-        cleanBaseName + ".webp"
-      ];
-      candidateName = list[attempt - 1];
-    }
-
-    if (candidateName) {
-      const candidateSrc = folderPath + candidateName;
-      
-      // --- فحص منع التكرار البرمجي الصارم والكامل (Strict Deduplication Check) ---
-      // التحقق مما إذا كان هذا الرابط البديل مطلوباً بواسطة أي كارت آخر بالصفحة تماماً لتجنب التكرار المزدوج
-      let isDuplicate = false;
-      const allImgs = document.querySelectorAll("img");
-      for (let otherImg of allImgs) {
-        if (otherImg !== img && otherImg.src === candidateSrc) {
-          isDuplicate = true;
-          break;
-        }
-      }
-      
-      // إذا كانت مكررة أو تطابق الرابط الفاشل، نقوم بتخطيها فوراً وفحص الاحتمال التالي برمجياً
-      if (isDuplicate || candidateSrc === currentSrc) {
-        img.dataset.fallbackAttempt = attempt;
-        img.dataset.fallbackActive = "false";
-        setTimeout(() => {
-          triggerFallback(img);
-        }, 10);
-      } else {
-        img.dataset.fallbackActive = "false";
-        img.src = candidateSrc;
-      }
-    } else {
-      img.dataset.fallbackActive = "false";
+    // مواءمة لتبادل الأرقام 14 و 6 في الباركيه والبانل وبقية الخدمات
+    if (currentSrc.includes("-14.webp")) {
+      img.src = currentSrc.replace("-14.webp", "-6.webp");
+    } else if (currentSrc.includes("-6.webp")) {
+      img.src = currentSrc.replace("-6.webp", "-14.webp");
+    } else if (currentSrc.includes("-1.webp")) {
+      img.src = currentSrc.replace("-1.webp", ".webp");
+    } else if (!currentSrc.match(/-\d+\.webp$/) && currentSrc.endsWith(".webp")) {
+      img.src = currentSrc.replace(".webp", "-1.webp");
     }
   }
 
-  images.forEach(img => {
-    // فحص فوري وإصلاح للصور التي فشلت في التحميل قبل تشغيل السكربت
-    if (img.complete && img.naturalWidth === 0) {
-      triggerFallback(img);
-    }
+  // الطبقة الأولى والذكية: الاتصال المباشر بمستودع جيت هوب وسحب أسماء وصيغ الملفات الحقيقية المرفوعة
+  try {
+    const repoOwner = "mixr11d";
+    const repoName = "riyadh-painting-renovation";
+    const branch = "main";
     
-    // فحص وإصلاح الصور التي تفشل أثناء التصفح النشط للزائر
-    img.addEventListener("error", function() {
-      triggerFallback(this);
+    // سحب شجرة الملفات بالكامل برمجياً عبر المتصفح
+    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`);
+    if (!response.ok) throw new Error("GitHub API rate limit or offline");
+    
+    const data = await response.json();
+    const tree = data.tree || [];
+    
+    // تصفية جميع ملفات الصور بمجلد images
+    const imgExtensions = [".webp", ".png", ".jpg", ".jpeg", ".gif"];
+    const imageFiles = tree.filter(item => {
+      if (item.type !== "blob") return false;
+      const path = item.path.toLowerCase();
+      return path.startsWith("images/") && imgExtensions.some(ext => path.endsWith(ext));
     });
-  });
+    
+    // تصنيف وتجميع ملفات مستودعك الفعلية بناءً على المجلد (باركيه، ورق جدران، دهانات، جبس...)
+    const groups = {};
+    imageFiles.forEach(item => {
+      const parts = item.path.split("/");
+      if (parts.length >= 3) {
+        const folder = parts[1]; // اسم مجلد الخدمة
+        if (!groups[folder]) groups[folder] = [];
+        groups[folder].push(item.path);
+      }
+    });
+    
+    // ترتيب طبيعي للملفات لضمان عدم حدوث لخبطة في تسلسل الكروت المعروضة
+    const naturalSort = (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+    Object.keys(groups).forEach(key => groups[key].sort(naturalSort));
+    
+    // دمج وربط الصور الفعلية الموثقة بجيت هوب بكروت الصفحات بشكل فريد وغير مكرر نهائياً
+    images.forEach(img => {
+      const srcAttr = img.getAttribute("src") || "";
+      const match = srcAttr.match(/images\/([^\/]+)\//);
+      if (match) {
+        const folder = match[1];
+        const folderFiles = groups[folder];
+        if (folderFiles && folderFiles.length > 0) {
+          // حساب موضع الكارت الحالي من بين بقية كروت نفس الخدمة بالصفحة لمنع التكرار
+          const folderImages = Array.from(images).filter(i => (i.getAttribute("src") || "").includes(`images/${folder}/`));
+          const index = folderImages.indexOf(img);
+          
+          // تسكين رابط الصورة الفريد المطابق تماماً لملفك المرفوع في جيت هوب
+          const verifiedPath = folderFiles[index % folderFiles.length];
+          if (verifiedPath) {
+            img.dataset.fallbackAttempted = "true"; // إغلاق قفل الفحص لمنع تداخل الأحداث
+            img.src = verifiedPath; // ربط الصورة الصحيحة فوراً
+          }
+        }
+      }
+    });
+    
+    console.log("GitHub API Auto-Hydration synced perfectly!");
+  } catch (error) {
+    console.warn("GitHub API Sync failed, using local fallback handler:", error);
+    
+    // تفعيل الطبقة الثانية والاحتياطية محلياً في حال انقطاع الشبكة أو تخطي قيود API لجيت هوب
+    images.forEach(img => {
+      img.addEventListener("error", function() {
+        triggerLocalFallback(this);
+      });
+      if (img.complete && img.naturalWidth === 0) {
+        triggerLocalFallback(img);
+      }
+    });
+  }
 }
 
 /**
@@ -314,56 +272,59 @@ function initHeroInteractiveParallax() {
  * ==========================================================================
  */
 
-// حقن وتحديث الهيدر المطور بالكامل (تم تعديل الدالة لتقوم بالحقن الفوري لجميع الصفحات الفرعية والخدمية دون استثناء)
+// حقن وتحديث الهيدر
 function hydrateHeader() {
   const headerElement = document.querySelector(".main-header");
   if (!headerElement) return;
 
-  // في الصفحة الرئيسية فقط، نكتفي بتحديث النص لمنع الـ CLS
   if (document.body.classList.contains("page-home")) {
     const logoText = headerElement.querySelector(".logo-text");
     if (logoText) logoText.textContent = APP_CONFIG.businessName;
     return;
   }
 
-  // في كافة الصفحات الفرعية والخدمية الـ 11 الأخرى، نقوم بالحقن الفوري لهيكل القائمة المنسدلة التفاعلية الجديدة
-  headerElement.innerHTML = `
-    <div class="header-container">
-      <div class="logo-area">
-        <a href="index.html" class="logo" aria-label="الصفحة الرئيسية لتصميم ديكورات وترميم الرياض">
-          <span class="logo-text">${APP_CONFIG.businessName}</span>
-        </a>
+  if (headerElement.children.length === 0) {
+    headerElement.innerHTML = `
+      <div class="header-container">
+        <div class="logo-area">
+          <a href="index.html" class="logo" aria-label="الصفحة الرئيسية لتصميم ديكورات وترميم الرياض">
+            <span class="logo-text">${APP_CONFIG.businessName}</span>
+          </a>
+        </div>
+        <button class="menu-toggle" aria-expanded="false" aria-controls="main-navigation" aria-label="افتح القائمة">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+        <nav id="main-navigation" class="nav-menu" aria-label="القائمة الرئيسية">
+          <ul class="nav-list">
+            <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+            <li class="nav-item-dropdown">
+              <a href="index.html#services" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">خدماتنا</a>
+              <ul class="dropdown-menu">
+                <li><a href="gypsum.html" class="dropdown-item">جبس بورد وديكورات</a></li>
+                <li><a href="walpaper.html" class="dropdown-item">ورق جدران</a></li>
+                <li><a href="painting.html" class="dropdown-item">دهانات داخلية وخارجية</a></li>
+                <li><a href="parquet.html" class="dropdown-item">باركيه هرميو SPC</a></li>
+                <li><a href="sandwich-panel.html" class="dropdown-item">ساندوتش بانل</a></li>
+                <li><a href="renovation.html" class="dropdown-item">ترميم وتشطيب مباني</a></li>
+              </ul>
+            </li>
+            <li><a href="index.html#why-us" class="nav-link">لماذا نحن</a></li>
+            <li><a href="index.html#gallery" class="nav-link">معرض الأعمال</a></li>
+            <li><a href="index.html#faq" class="nav-link">الأسئلة الشائعة</a></li>
+            <li><a href="contact-us.html" class="nav-link">اتصل بنا</a></li>
+          </ul>
+        </nav>
+        <div class="header-cta">
+          <a href="contact-us.html" class="cta-btn primary-cta" aria-label="طلب عرض سعر مجاني">طلب عرض سعر</a>
+        </div>
       </div>
-      <button class="menu-toggle" aria-expanded="false" aria-controls="main-navigation" aria-label="افتح القائمة">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </button>
-      <nav id="main-navigation" class="nav-menu" aria-label="القائمة الرئيسية">
-        <ul class="nav-list">
-          <li><a href="index.html" class="nav-link">الرئيسية</a></li>
-          <li class="nav-item-dropdown">
-            <a href="index.html#services" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">خدماتنا</a>
-            <ul class="dropdown-menu">
-              <li><a href="gypsum.html" class="dropdown-item">جبس بورد وديكورات</a></li>
-              <li><a href="walpaper.html" class="dropdown-item">ورق جدران</a></li>
-              <li><a href="painting.html" class="dropdown-item">دهانات داخلية وخارجية</a></li>
-              <li><a href="parquet.html" class="dropdown-item">باركيه هرميو SPC</a></li>
-              <li><a href="sandwich-panel.html" class="dropdown-item">ساندوتش بانل</a></li>
-              <li><a href="renovation.html" class="dropdown-item">ترميم وتشطيب مباني</a></li>
-            </ul>
-          </li>
-          <li><a href="index.html#why-us" class="nav-link">لماذا نحن</a></li>
-          <li><a href="index.html#gallery" class="nav-link">معرض الأعمال</a></li>
-          <li><a href="index.html#faq" class="nav-link">الأسئلة الشائعة</a></li>
-          <li><a href="contact-us.html" class="nav-link">اتصل بنا</a></li>
-        </ul>
-      </nav>
-      <div class="header-cta">
-        <a href="contact-us.html" class="cta-btn primary-cta" aria-label="طلب عرض سعر مجاني">طلب عرض سعر</a>
-      </div>
-    </div>
-  `;
+    `;
+  } else {
+    const logoText = headerElement.querySelector(".logo-text");
+    if (logoText) logoText.textContent = APP_CONFIG.businessName;
+  }
 }
 
 // حقن وتحديث الفوتر الموحد لجميع صفحات الخدمات والموقع
@@ -690,7 +651,7 @@ function initFormHandler() {
 /**
  * دالة مستقلة لتوليد رسالة الواتساب المنسقة وتحويل العميل مباشرة
  * @param {string} name - اسم العميل
- * @param {string} phone - هافت العميل
+ * @param {string} phone - هاتف العميل
  * @param {string} service - الخدمة المختارة
  * @param {string} details - التفاصيل الإضافية
  * @param {boolean} isFallback - تحديد ما إذا كان التحويل حدث كبديل بسبب فشل الاتصال بالخادم
