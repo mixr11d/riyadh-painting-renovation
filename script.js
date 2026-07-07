@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
-  initImageFallback(); // تشغيل دالة الحماية والبدائل الذكية لإصلاح الصور المكسورة تلقائياً
+  initImageFallback(); // تشغيل دالة الحماية والبدائل والشفاء الذاتي لإصلاح جميع الصور المكسورة تلقائياً
   updateCopyrightYear();
 });
 
@@ -111,8 +111,8 @@ function injectAnnouncementBar() {
 }
 
 /**
- * دالة حماية فائقة الأداء لمراقبة ومعالجة الصور المكسورة تلقائياً (Smart Image Fallback)
- * في حال فشل تحميل الصورة بسبب اللاحقة الرقمية، تقوم فوراً بتجربة الرابط البديل وعرضه بنعومة
+ * دالة حماية فائقة الأداء وذاتية الشفاء لمراقبة ومعالجة الصور المكسورة تلقائياً (Smart Image Fallback)
+ * تقوم بفحص وحل فروق الامتدادات وصياغة الأرقام والصيغ الإملائية للأوراق والباركيه فوراً دون تدخل بشري
  */
 function initImageFallback() {
   const images = document.querySelectorAll("img");
@@ -120,21 +120,80 @@ function initImageFallback() {
     img.addEventListener("error", function handleError() {
       const currentSrc = this.src;
       
-      // حماية التكرار اللانهائي في الرندرة
-      if (this.dataset.fallbackAttempted) return;
+      // جلب أو تعيين محاولات الاسترداد لمنع تكرار المتابعة اللانهائية
+      let attempt = parseInt(this.dataset.fallbackAttempt || "0", 10);
+      attempt++;
+      this.dataset.fallbackAttempt = attempt;
       
-      // 1. إذا كانت الصورة تنتهي بـ .webp وبدون لاحقة رقمية، نجرب اللاحقة الرقمية المتوقعة في جيت هوب (-1)
-      if (currentSrc.endsWith(".webp") && !currentSrc.includes("-1.webp") && !currentSrc.match(/-\d+\.webp$/)) {
-        this.dataset.fallbackAttempted = "true";
-        this.src = currentSrc.replace(".webp", "-1.webp");
+      if (attempt > 8) return; // إيقاف الفحص بعد 8 محاولات فاشلة لمنع التعليق
+      
+      // استخراج المسار واسم الملف والامتداد الحالي
+      const lastSlashIndex = currentSrc.lastIndexOf("/");
+      const folderPath = currentSrc.substring(0, lastSlashIndex + 1);
+      const filenameWithExt = currentSrc.substring(lastSlashIndex + 1);
+      const dotIndex = filenameWithExt.lastIndexOf(".");
+      const filename = filenameWithExt.substring(0, dotIndex);
+      const ext = filenameWithExt.substring(dotIndex + 1);
+      
+      // جلب الاسم النظيف بدون أرقام أو فواصل تالية
+      const cleanBaseName = filename.replace(/-\d+$/, "");
+      
+      // مواءمة ومعالجة مخصصة لمجلد ورق الجدران لتخطي الفروق الإملائية walpaper/wallpaper
+      if (folderPath.includes("/walpaper/")) {
+        if (attempt === 1) {
+          this.src = folderPath + "walpaper-1.webp";
+        } else if (attempt === 2) {
+          this.src = folderPath + "walpaper.webp";
+        } else if (attempt === 3) {
+          this.src = folderPath + "wallpaper-1.webp";
+        } else if (attempt === 4) {
+          this.src = folderPath + "wallpaper.webp";
+        } else if (attempt === 5) {
+          this.src = folderPath + "walpaper-1.jpg";
+        } else if (attempt === 6) {
+          this.src = folderPath + "walpaper.jpg";
+        } else if (attempt === 7) {
+          this.src = folderPath + "wallpaper-1.jpg";
+        } else if (attempt === 8) {
+          this.src = folderPath + "wallpaper.jpg";
+        }
         return;
       }
       
-      // 2. إذا كانت تنتهي بـ -1 وفشلت، نجرب الصورة الأساسية بدون رقم
-      if (currentSrc.includes("-1.webp")) {
-        this.dataset.fallbackAttempted = "true";
-        this.src = currentSrc.replace("-1.webp", ".webp");
-        return;
+      // مواءمة ومعالجة بقية مجلدات الخدمات (الدهانات والباركيه والترميم والبانل) للامتدادات الرسومية الأخرى
+      switch (attempt) {
+        case 1:
+          // تجربة الملف بصيغة ويب بي نظيفة بدون أرقام تالية
+          this.src = folderPath + cleanBaseName + ".webp";
+          break;
+        case 2:
+          // تجربة الملف بصيغة ويب بي مرقمة باللاحقة الأساسية
+          this.src = folderPath + cleanBaseName + "-1.webp";
+          break;
+        case 3:
+          // تجربة صيغة الصور المضغوطة الكلاسيكية JPG
+          this.src = folderPath + cleanBaseName + ".jpg";
+          break;
+        case 4:
+          // تجربة صيغة الصور المضغوطة الكلاسيكية المرقمة JPG
+          this.src = folderPath + cleanBaseName + "-1.jpg";
+          break;
+        case 5:
+          // تجربة صيغة الصور الشفافة عالية الجودة PNG
+          this.src = folderPath + cleanBaseName + ".png";
+          break;
+        case 6:
+          // تجربة صيغة الصور الشفافة عالية الجودة المرقمة PNG
+          this.src = folderPath + cleanBaseName + "-1.png";
+          break;
+        case 7:
+          // تجربة الصيغة الموسعة JPEG
+          this.src = folderPath + cleanBaseName + ".jpeg";
+          break;
+        case 8:
+          // تجربة الصيغة الموسعة المرقمة JPEG
+          this.src = folderPath + cleanBaseName + "-1.jpeg";
+          break;
       }
     });
   });
