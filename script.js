@@ -50,10 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
-  
-  // تشغيل الخوارزمية الفائقة ثنائية الطبقات لشفاء وعرض الصور تلقائياً
-  initImageFallback();
-  
+  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة والآمنة 100% بدون اتصال خارجي
   initHeroInteractiveParallax(); // تشغيل ميزة البارالاكس التفاعلية الفخمة لعمق حركة الماوس بالبانر
   updateCopyrightYear();
 });
@@ -125,109 +122,136 @@ function injectAnnouncementBar() {
 }
 
 /**
- * خوارزمية ذكية متقدمة للغاية ومزدوجة الطبقات لشفاء وعرض الصور تلقائياً (Double-Layer Image Fallback)
- * الطبقة الأولى: تتصل بـ جيت هوب برمجياً وتقرأ أسماء وصيغ الملفات الحقيقية المرفوعة وتوزعها بدقة وتمنع التكرار [1، 2].
- * الطبقة الثانية: بديل محلي سريع يعمل تلقائياً لحل المسارات في حال تصفح الموقع دون إنترنت أو تعطل API الخاص بجيت هوب [2].
+ * دالة حماية فائقة الأداء وذاتية الشفاء بنظام تتابع الامتدادات والأرقام التبادلية (Robust Image Fallback)
+ * تفحص الصور الفاشلة محلياً وتقوم بالتبديل التلقائي والسريع بين الصيغ (webp, jpg, png, jpeg) والأرقام (1, 2, 3, 4, 5, 14)
+ * لضمان العثور الفوري على الصورة الحقيقية التي رفعتها في مستودعك وعرضها دون أي تكرار
  */
-async function initImageFallback() {
+function initImageFallback() {
   const images = document.querySelectorAll("img");
   
-  // الطبقة الثانية والاحتياطية: دالة الشفاء الذاتي المحلي الصامتة
-  function triggerLocalFallback(img) {
-    const currentSrc = img.src;
-    if (!currentSrc || img.dataset.fallbackAttempted === "true") return;
-    img.dataset.fallbackAttempted = "true";
+  function triggerFallback(img) {
+    // قفل الحماية النشط لمنع تداخل الأحداث أثناء التحميل
+    if (img.dataset.fallbackActive === "true") return;
+    img.dataset.fallbackActive = "true";
 
-    // مواءمة تبادلية ذكية لورق الجدران
-    if (currentSrc.includes("/walpaper/")) {
-      img.src = currentSrc.includes("wallpaper") ? currentSrc.replace(/wallpaper/g, "walpaper") : currentSrc.replace(/walpaper/g, "wallpaper");
+    const currentSrc = img.src;
+    if (!currentSrc) {
+      img.dataset.fallbackActive = "false";
       return;
     }
 
-    // مواءمة لتبادل الأرقام 14 و 6 في الباركيه والبانل وبقية الخدمات
-    if (currentSrc.includes("-14.webp")) {
-      img.src = currentSrc.replace("-14.webp", "-6.webp");
-    } else if (currentSrc.includes("-6.webp")) {
-      img.src = currentSrc.replace("-6.webp", "-14.webp");
-    } else if (currentSrc.includes("-1.webp")) {
-      img.src = currentSrc.replace("-1.webp", ".webp");
-    } else if (!currentSrc.match(/-\d+\.webp$/) && currentSrc.endsWith(".webp")) {
-      img.src = currentSrc.replace(".webp", "-1.webp");
+    let attempt = parseInt(img.dataset.fallbackAttempt || "0", 10);
+    attempt++;
+    img.dataset.fallbackAttempt = attempt;
+    
+    if (attempt > 14) {
+      img.dataset.fallbackActive = "false";
+      return; // التوقف الفوري بعد 14 محاولة لحماية المتصفح
+    }
+    
+    const lastSlashIndex = currentSrc.lastIndexOf("/");
+    const folderPath = currentSrc.substring(0, lastSlashIndex + 1);
+    const filenameWithExt = currentSrc.substring(lastSlashIndex + 1);
+    const dotIndex = filenameWithExt.lastIndexOf(".");
+    
+    if (dotIndex === -1) {
+      img.dataset.fallbackActive = "false";
+      return;
+    }
+    
+    const filename = filenameWithExt.substring(0, dotIndex);
+    
+    // استخراج الرقم التسلسلي الأصلي للصورة المكسورة
+    const numberMatch = filename.match(/-(\d+)$/);
+    const numberSuffix = numberMatch ? numberMatch[1] : "";
+    
+    // جلب الاسم النظيف للخدمة بدون ترقيم تالٍ
+    let cleanBaseName = filename.replace(/-\d+$/, "");
+    
+    let isWallpaper = folderPath.includes("/walpaper/");
+    let nextName = "";
+    const suffix = numberSuffix ? "-" + numberSuffix : "";
+    
+    // 1. معالجة ورق الجدران للامتدادات والأحرف الإملائية
+    if (isWallpaper) {
+      const list = [
+        "wallpaper-1.webp",
+        "wallpaper-2.webp",
+        "wallpaper-3.webp",
+        "wallpaper-4.webp",
+        "wallpaper-5.webp",
+        "wallpaper-14.webp",
+        "wallpaper.webp",
+        "walpaper-1.webp",
+        "walpaper-2.webp",
+        "walpaper-3.webp",
+        "walpaper-4.webp",
+        "walpaper-5.webp",
+        "walpaper-14.webp",
+        "walpaper.webp",
+        "wallpaper-1.jpg",
+        "wallpaper-1.png",
+        "walpaper-1.jpg"
+      ];
+      nextName = list[attempt - 1];
+    } else {
+      // 2. تدوير شامل للامتدادات والأرقام لجميع الخدمات الأخرى (دهانات، باركيه، بانل، ترميم)
+      const list = [
+        cleanBaseName + suffix + ".webp",
+        cleanBaseName + "-1.webp",
+        cleanBaseName + "-2.webp",
+        cleanBaseName + "-3.webp",
+        cleanBaseName + "-4.webp",
+        cleanBaseName + "-5.webp",
+        cleanBaseName + "-14.webp",
+        cleanBaseName + ".webp",
+        cleanBaseName + ".jpg",
+        cleanBaseName + "-1.jpg",
+        cleanBaseName + "-2.jpg",
+        cleanBaseName + ".png",
+        cleanBaseName + "-1.png",
+        cleanBaseName + "-2.png",
+        cleanBaseName + ".jpeg"
+      ];
+      nextName = list[attempt - 1];
+    }
+
+    if (nextName) {
+      const candidateSrc = folderPath + nextName;
+      
+      // فحص منع التكرار البرمجي المزدوج
+      let isDuplicate = false;
+      const allImgs = document.querySelectorAll("img");
+      for (let otherImg of allImgs) {
+        if (otherImg !== img && otherImg.src === candidateSrc && otherImg.complete && otherImg.naturalWidth > 0) {
+          isDuplicate = true;
+          break;
+        }
+      }
+      
+      if (isDuplicate || candidateSrc === currentSrc) {
+        img.dataset.fallbackActive = "false";
+        triggerFallback(img); // تجربة الملف التالي فوراً
+      } else {
+        img.dataset.fallbackActive = "false";
+        img.src = candidateSrc; // تطبيق المسار البديل المكتشف
+      }
+    } else {
+      img.dataset.fallbackActive = "false";
     }
   }
 
-  // الطبقة الأولى والذكية: الاتصال المباشر بمستودع جيت هوب وسحب أسماء وصيغ الملفات الحقيقية المرفوعة
-  try {
-    const repoOwner = "mixr11d";
-    const repoName = "riyadh-painting-renovation";
-    const branch = "main";
+  images.forEach(img => {
+    // فحص فوري وإصلاح للصور التي فشلت في التحميل قبل تشغيل السكربت
+    if (img.complete && img.naturalWidth === 0) {
+      triggerFallback(img);
+    }
     
-    // سحب شجرة الملفات بالكامل برمجياً عبر المتصفح
-    const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${branch}?recursive=1`);
-    if (!response.ok) throw new Error("GitHub API rate limit or offline");
-    
-    const data = await response.json();
-    const tree = data.tree || [];
-    
-    // تصفية جميع ملفات الصور بمجلد images
-    const imgExtensions = [".webp", ".png", ".jpg", ".jpeg", ".gif"];
-    const imageFiles = tree.filter(item => {
-      if (item.type !== "blob") return false;
-      const path = item.path.toLowerCase();
-      return path.startsWith("images/") && imgExtensions.some(ext => path.endsWith(ext));
+    // فحص وإصلاح الصور التي تفشل أثناء التصفح النشط للزائر
+    img.addEventListener("error", function() {
+      triggerFallback(this);
     });
-    
-    // تصنيف وتجميع ملفات مستودعك الفعلية بناءً على المجلد (باركيه، ورق جدران، دهانات، جبس...)
-    const groups = {};
-    imageFiles.forEach(item => {
-      const parts = item.path.split("/");
-      if (parts.length >= 3) {
-        const folder = parts[1]; // اسم مجلد الخدمة
-        if (!groups[folder]) groups[folder] = [];
-        groups[folder].push(item.path);
-      }
-    });
-    
-    // ترتيب طبيعي للملفات لضمان عدم حدوث لخبطة في تسلسل الكروت المعروضة
-    const naturalSort = (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-    Object.keys(groups).forEach(key => groups[key].sort(naturalSort));
-    
-    // دمج وربط الصور الفعلية الموثقة بجيت هوب بكروت الصفحات بشكل فريد وغير مكرر نهائياً
-    images.forEach(img => {
-      const srcAttr = img.getAttribute("src") || "";
-      const match = srcAttr.match(/images\/([^\/]+)\//);
-      if (match) {
-        const folder = match[1];
-        const folderFiles = groups[folder];
-        if (folderFiles && folderFiles.length > 0) {
-          // حساب موضع الكارت الحالي من بين بقية كروت نفس الخدمة بالصفحة لمنع التكرار
-          const folderImages = Array.from(images).filter(i => (i.getAttribute("src") || "").includes(`images/${folder}/`));
-          const index = folderImages.indexOf(img);
-          
-          // تسكين رابط الصورة الفريد المطابق تماماً لملفك المرفوع في جيت هوب
-          const verifiedPath = folderFiles[index % folderFiles.length];
-          if (verifiedPath) {
-            img.dataset.fallbackAttempted = "true"; // إغلاق قفل الفحص لمنع تداخل الأحداث
-            img.src = verifiedPath; // ربط الصورة الصحيحة فوراً
-          }
-        }
-      }
-    });
-    
-    console.log("GitHub API Auto-Hydration synced perfectly!");
-  } catch (error) {
-    console.warn("GitHub API Sync failed, using local fallback handler:", error);
-    
-    // تفعيل الطبقة الثانية والاحتياطية محلياً في حال انقطاع الشبكة أو تخطي قيود API لجيت هوب
-    images.forEach(img => {
-      img.addEventListener("error", function() {
-        triggerLocalFallback(this);
-      });
-      if (img.complete && img.naturalWidth === 0) {
-        triggerLocalFallback(img);
-      }
-    });
-  }
+  });
 }
 
 /**
@@ -405,365 +429,5 @@ function hydrateFooter() {
     if (devLink) {
       devLink.href = `https://wa.me/${APP_CONFIG.intlDev}`;
     }
-  }
-}
-
-// حقن وتحديث الأزرار العائمة للتواصل السريع مع التوافق التام للآيفون (على اليمين)
-function hydrateFloatingButtons() {
-  let floatingContainer = document.querySelector(".floating-actions");
-  
-  if (!floatingContainer) {
-    floatingContainer = document.createElement("div");
-    floatingContainer.className = "floating-actions";
-    floatingContainer.setAttribute("role", "region");
-    floatingContainer.setAttribute("aria-label", "أزرار التواصل السريع");
-    document.body.appendChild(floatingContainer);
-  }
-
-  // تم ضبط المعادلة وحذف أي قوس زائد
-  floatingContainer.style.bottom = "calc(20px + env(safe-area-inset-bottom))";
-
-  floatingContainer.innerHTML = `
-    <a href="tel:${APP_CONFIG.localPhone}" class="float-btn float-phone" aria-label="اتصل بنا الآن على رقم الجوال">
-      <span class="btn-text">اتصل بنا</span>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-phone" aria-hidden="true">
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-      </svg>
-    </a>
-    <a href="https://wa.me/${APP_CONFIG.intlWhatsapp}" class="float-btn float-whatsapp" aria-label="تواصل معنا عبر واتساب" target="_blank" rel="noopener noreferrer">
-      <span class="btn-text">واتساب</span>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-whatsapp" aria-hidden="true">
-        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-      </svg>
-    </a>
-  `;
-}
-
-// حقن زر الصعود للأعلى برمجياً على اليسار (Scroll To Top)
-function hydrateScrollToTop() {
-  let scrollTopBtn = document.querySelector(".scroll-top-btn");
-  if (!scrollTopBtn) {
-    scrollTopBtn = document.createElement("button");
-    scrollTopBtn.className = "scroll-top-btn";
-    scrollTopBtn.setAttribute("aria-label", "صعود لأعلى الصفحة");
-    scrollTopBtn.innerHTML = `
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="18 15 12 9 6 15"></polyline>
-      </svg>
-    `;
-    document.body.appendChild(scrollTopBtn);
-
-    // تفعيل حدث الانتقال للأعلى بسلاسة عند الضغط
-    scrollTopBtn.addEventListener("click", () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    });
-  }
-}
-
-// مراقبة النزول في الصفحة للتحكم في ظهور أو إخفاء زر الصعود للأعلى
-function initScrollTopVisibility() {
-  const scrollTopBtn = document.querySelector(".scroll-top-btn");
-  if (!scrollTopBtn) return;
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-      scrollTopBtn.classList.add("show");
-    } else {
-      scrollTopBtn.classList.remove("show");
-    }
-  });
-}
-
-/**
- * ==========================================================================
- * 4. نظام فتح وإغلاق القائمة المنسدلة تفاعلياً عند الضغط (Dropdown Click Toggle)
- * ==========================================================================
- */
-function initDropdownToggle() {
-  const dropdownToggle = document.querySelector(".dropdown-toggle");
-  const dropdownMenu = document.querySelector(".dropdown-menu");
-  const dropdownWrapper = document.querySelector(".nav-item-dropdown");
-
-  if (!dropdownToggle || !dropdownMenu) return;
-
-  dropdownToggle.addEventListener("click", (e) => {
-    e.preventDefault(); // منع الانتقال الفوري لـ #services لإتاحة رؤية القائمة وتجربة التبويب
-    e.stopPropagation(); // منع انتقال الحدث إلى بقية المستند
-
-    const isExpanded = dropdownToggle.getAttribute("aria-expanded") === "true";
-    dropdownToggle.setAttribute("aria-expanded", !isExpanded);
-    dropdownMenu.classList.toggle("show");
-    
-    if (dropdownWrapper) {
-      dropdownWrapper.classList.toggle("active");
-    }
-  });
-
-  // إغلاق القائمة تلقائياً عند النقر في أي مكان آخر خارج نطاق القائمة المنسدلة
-  document.addEventListener("click", (e) => {
-    if (dropdownWrapper && !dropdownWrapper.contains(e.target)) {
-      dropdownToggle.setAttribute("aria-expanded", "false");
-      dropdownMenu.classList.remove("show");
-      dropdownWrapper.classList.remove("active");
-    }
-  });
-}
-
-/**
- * ==========================================================================
- * 5. نظام القائمة المتنقلة (Mobile Menu Functionality)
- * ==========================================================================
- */
-function initMobileMenu() {
-  const toggleBtn = document.querySelector(".menu-toggle");
-  const navMenu = document.querySelector(".nav-menu");
-
-  if (!toggleBtn || !navMenu) return;
-
-  toggleBtn.addEventListener("click", () => {
-    const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
-    toggleBtn.setAttribute("aria-expanded", !isExpanded);
-    navMenu.classList.toggle("nav-active");
-  });
-
-  const navLinks = document.querySelectorAll(".nav-link, .dropdown-item");
-  navLinks.forEach(link => {
-    link.addEventListener("click", () => {
-      toggleBtn.setAttribute("aria-expanded", "false");
-      navMenu.classList.remove("nav-active");
-    });
-  });
-
-  document.addEventListener("click", (event) => {
-    if (!navMenu.contains(event.target) && !toggleBtn.contains(event.target)) {
-      toggleBtn.setAttribute("aria-expanded", "false");
-      navMenu.classList.remove("nav-active");
-    }
-  });
-}
-
-/**
- * ==========================================================================
- * 6. التمرير السلس (Smooth Scroll Functionality)
- * ==========================================================================
- */
-function initSmoothScroll() {
-  const internalLinks = document.querySelectorAll('a[href^="#"], a[href^="index.html#"]');
-  
-  internalLinks.forEach(link => {
-    link.addEventListener("click", function(e) {
-      let targetId = this.getAttribute("href");
-      
-      // إذا كان الرابط في صفحة فرعية ويشير إلى الرئيسية مثل index.html#services
-      if (targetId.startsWith("index.html#")) {
-        targetId = targetId.replace("index.html", "");
-      }
-      
-      if (targetId === "#") return;
-
-      const targetElement = document.querySelector(targetId);
-      if (targetElement) {
-        e.preventDefault();
-        const headerOffset = 110; // متوافق مع ارتفاع الهيدر وشريط الإعلانات الجديد
-        const elementPosition = targetElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - headerOffset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth"
-        });
-      }
-    });
-  });
-}
-
-/**
- * ==========================================================================
- * 7. معالجة النموذج والتحويل التلقائي المباشر لواتساب (Form Submission & WhatsApp Redirect)
- * ==========================================================================
- */
-function initFormHandler() {
-  const form = document.getElementById("quote-form");
-  const submitBtn = document.getElementById("submit-btn");
-
-  if (!form || !submitBtn) return;
-
-  const accessKeyInput = form.querySelector('input[name="access_key"]');
-  if (accessKeyInput) {
-    accessKeyInput.value = APP_CONFIG.web3FormsKey;
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const clientName = document.getElementById("client_name").value.trim();
-    const clientPhone = document.getElementById("client_phone").value.trim();
-    const serviceType = document.getElementById("service_type").value;
-    const projectDetails = document.getElementById("project_details").value.trim();
-
-    if (clientName.length < 3 || !clientPhone.startsWith("05") || clientPhone.length !== 10) {
-      showToast("الرجاء إدخال بيانات صحيحة");
-      return;
-    }
-
-    submitBtn.disabled = true;
-    const originalBtnText = submitBtn.textContent;
-    submitBtn.textContent = "جاري إرسال طلبك وحفظ البيانات...";
-
-    const formData = new FormData(form);
-
-    try {
-      // 1. إرسال البيانات أولاً إلى Web3Forms لتسجيل البيانات وتفعيل التتبع
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Accept": "application/json"
-        }
-      });
-
-      const result = await response.json();
-
-      if (response.status === 200 && result.success) {
-        // تفعيل تتبع تحويل النموذج لـ Google Ads
-        trackConversion("form_submission");
-        form.reset();
-        
-        // التحويل المباشر والتلقائي للواتساب بعد نجاح الإرسال
-        redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, false);
-      } else {
-        // في حال فشل الاستجابة يتم نقله فوراً للواتساب كبديل فني
-        redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
-      }
-    } catch (error) {
-      // في حال انقطاع الشبكة أو أي خطأ برمي يتم نقله فوراً للواتساب كبديل فني
-      redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = originalBtnText;
-    }
-  });
-}
-
-/**
- * دالة مستقلة لتوليد رسالة الواتساب المنسقة وتحويل العميل مباشرة
- * @param {string} name - اسم العميل
- * @param {string} phone - هاتف العميل
- * @param {string} service - الخدمة المختارة
- * @param {string} details - التفاصيل الإضافية
- * @param {boolean} isFallback - تحديد ما إذا كان التحويل حدث كبديل بسبب فشل الاتصال بالخادم
- */
-function redirectToWhatsAppWithMessage(name, phone, service, details, isFallback) {
-  if (isFallback) {
-    showToast("نعتذر عن الخطأ الفني، سيتم توجيهك للواتساب لإتمام إرسال طلبك مجاناً.");
-  } else {
-    showToast("تم تسجيل طلبك بنجاح! جاري تحويلك الآن لمحادثة المهندس عبر واتساب لإتمام الاتفاق...");
-  }
-
-  const formattedDetails = details ? details : "لا توجد تفاصيل إضافية";
-  
-  const messageText = `السلام عليكم ورحمة الله وبركاته،%0A` +
-                      `أود طلب عرض سعر من خلال موقعكم الفني الإلكتروني.%0A%0A` +
-                      `*الاسم الكريم:* ${encodeURIComponent(name)}%0A` +
-                      `*رقم الجوال:* ${encodeURIComponent(phone)}%0A` +
-                      `*الخدمة المطلوبة:* ${encodeURIComponent(service)}%0A` +
-                      `*التفاصيل الإضافية:* ${encodeURIComponent(formattedDetails)}`;
-
-  const whatsappUrl = `https://wa.me/${APP_CONFIG.intlWhatsapp}?text=${messageText}`;
-  
-  // تفعيل تتبع تحويل الواتساب الاحتياطي لـ Google Ads
-  trackConversion("whatsapp_fallback");
-
-  // فتح المحادثة للعميل مباشرة في لسان جديد
-  window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-}
-
-/**
- * ==========================================================================
- * 7. نظام تتبع النقرات العالمي والمطابقة الدقيقة (Global Event-Based Tracking)
- * ==========================================================================
- */
-function initGlobalTracking() {
-  document.body.addEventListener("click", (e) => {
-    const targetLink = e.target.closest("a");
-    if (!targetLink) return;
-
-    const hrefAttribute = targetLink.getAttribute("href") || "";
-
-    // :المطابقة التامة للهاتف من دون تداخل (فقط لرقم صاحب الموقع)
-    if (hrefAttribute === "tel:" + APP_CONFIG.localPhone) {
-      trackConversion("phone_call");
-    }
-
-    // :المطابقة التامة للرابط الخاص بواتساب العميل (فقط لرقم صاحب الموقع)
-    if (hrefAttribute === "https://wa.me/" + APP_CONFIG.intlWhatsapp) {
-      trackConversion("whatsapp_chat");
-    }
-  });
-}
-
-/**
- * ==========================================================================
- * 8. نظام تتبع وإرسال إحداثيات تحويل إعلانات جوجل المباشرة ومنع التكرار المنفصل
- * ==========================================================================
- */
-function trackConversion(actionType) {
-  // التحقق من تواجد كود التتبع gtag.js لإعلانات جوجل في الصفحة
-  if (typeof gtag !== "function") return;
-
-  // صياغة مفتاح حماية فريد ومستقل لكل إجراء تتبع لمنع تداخل الاستجابات
-  const sessionKey = `conversion_sent_${actionType}`;
-
-  // التحقق لمنع إرسال نفس نوع التحويل المكرر في نفس الجلسة
-  if (sessionStorage.getItem(sessionKey)) {
-    return;
-  }
-
-  let sendToValue = "";
-
-  switch (actionType) {
-    case "phone_call":
-      if (APP_CONFIG.phoneConversionLabel) {
-        sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.phoneConversionLabel}`;
-      }
-      break;
-
-    case "whatsapp_chat":
-    case "whatsapp_fallback": // يتم دمج نقرة واتساب المباشرة والبديل تحت نفس تحويل واتساب
-      if (APP_CONFIG.whatsappConversionLabel) {
-        sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.whatsappConversionLabel}`;
-      }
-      break;
-
-    case "form_submission":
-      if (APP_CONFIG.formConversionLabel) {
-        sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.formConversionLabel}`;
-      }
-      break;
-  }
-
-  // إرسال التحويل مباشرة لحساب جوجل إعلانات المربوط بالسكربت
-  if (sendToValue) {
-    gtag("event", "conversion", {
-      "send_to": sendToValue
-    });
-    
-    // تخزين حالة إرسال هذا الإجراء المحدد في جلسة العمل لمنع تكراره
-    sessionStorage.setItem(sessionKey, "true");
-  }
-}
-
-/**
- * ==========================================================================
- * 9. تحديث السنة تلقائياً (Copyright Auto-Update Helper)
- * ==========================================================================
- */
-function updateCopyrightYear() {
-  const yearElement = document.getElementById("current-year");
-  if (yearElement) {
-    yearElement.textContent = new Date().getFullYear();
   }
 }
