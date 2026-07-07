@@ -57,7 +57,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // إجراء مسح تكميلي ثانٍ ومضمون فور اكتمال تحميل كامل نافذة المتصفح لضمان علاج صور الكاش الفاشلة
 window.addEventListener("load", () => {
-  initImageFallback();
+  const images = document.querySelectorAll("img");
+  images.forEach(img => {
+    if (img.complete && img.naturalWidth === 0) {
+      img.dispatchEvent(new Event("error"));
+    }
+  });
 });
 
 /**
@@ -117,8 +122,9 @@ function injectAnnouncementBar() {
 }
 
 /**
- * دالة حماية فائقة الأداء وذاتية الشفاء بنظام المطابقة الرقمية التبادلية للبدائل الفنية (Safe Fallback)
- * تفحص الصور الفاشلة محلياً وتقوم بالتبديل الفوري والسريع بين صيغ وأرقام الملفات المتاحة
+ * دالة حماية فائقة الأداء وذاتية الشفاء بنظام تتابع الامتدادات والأرقام التبادلية (Robust Image Fallback)
+ * تفحص الصور الفاشلة محلياً وتقوم بالتبديل التلقائي والسريع بين الصيغ (webp, jpg, png, jpeg) والأرقام (1, 2, 3, 4, 5, 14)
+ * لضمان العثور الفوري على الصورة الحقيقية التي رفعتها في مستودعك وعرضها دون أي تكرار
  */
 function initImageFallback() {
   const images = document.querySelectorAll("img");
