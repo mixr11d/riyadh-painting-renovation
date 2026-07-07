@@ -339,7 +339,7 @@ ul, ol {
 }
 
 /* ==========================================================================
-   4. قسم الهيرو الرئيسي (Hero Section)
+   4. قسم الهيرو الرئيسي الفخم مع التدرج الحركي (Ken Burns Hero Effect)
    ========================================================================== */
 .hero-section {
   position: relative;
@@ -353,6 +353,7 @@ ul, ol {
   text-align: center;
 }
 
+/* حاوية عزل الصور لمنع تمدد الصفحة وقص الحواف المتحركة */
 .hero-image-wrapper {
   position: absolute;
   top: 0;
@@ -360,13 +361,38 @@ ul, ol {
   width: 100%;
   height: 100%;
   z-index: 1;
+  overflow: hidden; /* قص حواف حركة التكبير */
 }
 
+/* صورة الخلفية مضافاً إليها تأثير حركي سينمائي متميز وسلس مدعوم بـ GPU */
 .hero-bg-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  will-change: transform; /* تهيئة كرت الشاشة لتسريع الحركة */
+  animation: kenBurnsEffect 24s infinite alternate ease-in-out;
+}
+
+/* حركة الكاميرا البطيئة لمحاكاة استعراض الأسقف والديكورات الفاخرة */
+@keyframes kenBurnsEffect {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.12) translate(-1%, -1%);
+  }
+}
+
+/* تراكب الظلال المعتمة لتعزيز وضوح النص في الهيرو */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(30, 32, 34, 0.85), rgba(30, 32, 34, 0.7));
+  z-index: 2;
 }
 
 .hero-content {
