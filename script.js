@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // تشغيل الميزات التفاعلية
   initMobileMenu();
+  initDropdownToggle(); // تشغيل ميزة فتح القائمة المنسدلة عند النقر بالماوس
   initSmoothScroll();
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
@@ -321,7 +322,42 @@ function initScrollTopVisibility() {
 
 /**
  * ==========================================================================
- * 4. نظام القائمة المتنقلة (Mobile Menu Functionality)
+ * 4. نظام فتح وإغلاق القائمة المنسدلة تفاعلياً عند الضغط (Dropdown Click Toggle)
+ * ==========================================================================
+ */
+function initDropdownToggle() {
+  const dropdownToggle = document.querySelector(".dropdown-toggle");
+  const dropdownMenu = document.querySelector(".dropdown-menu");
+  const dropdownWrapper = document.querySelector(".nav-item-dropdown");
+
+  if (!dropdownToggle || !dropdownMenu) return;
+
+  dropdownToggle.addEventListener("click", (e) => {
+    e.preventDefault(); // منع الانتقال الفوري لـ #services لإتاحة رؤية القائمة
+    e.stopPropagation(); // منع انتقال الحدث إلى بقية المستند
+
+    const isExpanded = dropdownToggle.getAttribute("aria-expanded") === "true";
+    dropdownToggle.setAttribute("aria-expanded", !isExpanded);
+    dropdownMenu.classList.toggle("show");
+    
+    if (dropdownWrapper) {
+      dropdownWrapper.classList.toggle("active");
+    }
+  });
+
+  // إغلاق القائمة تلقائياً عند النقر في أي مكان آخر خارج نطاق القائمة المنسدلة
+  document.addEventListener("click", (e) => {
+    if (dropdownWrapper && !dropdownWrapper.contains(e.target)) {
+      dropdownToggle.setAttribute("aria-expanded", "false");
+      dropdownMenu.classList.remove("show");
+      dropdownWrapper.classList.remove("active");
+    }
+  });
+}
+
+/**
+ * ==========================================================================
+ * 5. نظام القائمة المتنقلة (Mobile Menu Functionality)
  * ==========================================================================
  */
 function initMobileMenu() {
@@ -354,7 +390,7 @@ function initMobileMenu() {
 
 /**
  * ==========================================================================
- * 5. التمرير السلس (Smooth Scroll Functionality)
+ * 6. التمرير السلس (Smooth Scroll Functionality)
  * ==========================================================================
  */
 function initSmoothScroll() {
@@ -389,7 +425,7 @@ function initSmoothScroll() {
 
 /**
  * ==========================================================================
- * 6. معالجة النموذج والتحويل التلقائي المباشر لواتساب (Form Submission & WhatsApp Redirect)
+ * 7. معالجة النموذج والتحويل التلقائي المباشر لواتساب (Form Submission & WhatsApp Redirect)
  * ==========================================================================
  */
 function initFormHandler() {
@@ -500,12 +536,12 @@ function initGlobalTracking() {
 
     const hrefAttribute = targetLink.getAttribute("href") || "";
 
-    // المطابقة التامة للهاتف من دون تداخل (فقط لرقم صاحب الموقع)
+    // :المطابقة التامة للهاتف من دون تداخل (فقط لرقم صاحب الموقع)
     if (hrefAttribute === "tel:" + APP_CONFIG.localPhone) {
       trackConversion("phone_call");
     }
 
-    // المطابقة التامة للرابط الخاص بواتساب العميل (فقط لرقم صاحب الموقع)
+    // :المطابقة التامة للرابط الخاص بواتساب العميل (فقط لرقم صاحب الموقع)
     if (hrefAttribute === "https://wa.me/" + APP_CONFIG.intlWhatsapp) {
       trackConversion("whatsapp_chat");
     }
