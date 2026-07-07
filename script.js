@@ -122,94 +122,12 @@ function injectAnnouncementBar() {
 }
 
 /**
- * دالة حماية فائقة الأداء وذاتية الشفاء بنظام تتابع الامتدادات والأرقام التبادلية (Robust Image Fallback)
- * تفحص الصور الفاشلة محلياً وتقوم بالتبديل التلقائي والسريع بين الصيغ (webp, jpg, png, jpeg) والأرقام (1, 2, 3, 4, 5, 14)
- * لضمان العثور الفوري على الصورة الحقيقية التي رفعتها في مستودعك وعرضها دون أي تكرار
- */
-function initImageFallback() {
-  const images = document.querySelectorAll("img");
-  images.forEach(img => {
-    img.addEventListener("error", function handleError() {
-      const currentSrc = this.src;
-      if (!currentSrc || this.dataset.fallbackAttempted === "true") return;
-      this.dataset.fallbackAttempted = "true";
-
-      // 1. مواءمة تبادلية ذكية لورق الجدران لحل مشكلة التكرار ومطابقة حرف L
-      if (currentSrc.includes("/walpaper/")) {
-        if (currentSrc.includes("wallpaper")) {
-          this.src = currentSrc.replace(/wallpaper/g, "walpaper");
-        } else {
-          this.src = currentSrc.replace(/walpaper/g, "wallpaper");
-        }
-        return;
-      }
-
-      // 2. مواءمة في حال كان الباركيه أو الساندوتش بانل ينتهي بالرقم 14 وفشل، يتم تحويله للرقم 6 والعكس
-      if (currentSrc.includes("-14.webp")) {
-        this.src = currentSrc.replace("-14.webp", "-6.webp");
-      } else if (currentSrc.includes("-6.webp")) {
-        this.src = currentSrc.replace("-6.webp", "-14.webp");
-      }
-      // 3. مواءمة في حال كان الملف ينتهي بـ -1 وفشل، يتم تجربته بالاسم الافتراضي النظيف بدون رقم
-      else if (currentSrc.includes("-1.webp")) {
-        this.src = currentSrc.replace("-1.webp", ".webp");
-      } 
-      // 4. مواءمة في حال كان الملف ينتهي باسم نظيف وفشل، يتم تجربته بالرقم 1
-      else if (!currentSrc.match(/-\d+\.webp$/) && currentSrc.endsWith(".webp")) {
-        this.src = currentSrc.replace(".webp", "-1.webp");
-      }
-    });
-    
-    // تشغيل فوري للصور التي تعطلت كاشاتها قبل تشغيل السكربت المبرمج
-    if (img.complete && img.naturalWidth === 0) {
-      img.dispatchEvent(new Event("error"));
-    }
-  });
-}
-
-/**
- * دالة لتأثير البارالاكس التفاعلي العميق ثلاثي الأبعاد مع حركة الماوس بالهيرو (Interactive Mouse Parallax)
- * تحرك الخلفية المتقاطعة بنسبة تدرجية دقيقة وسلسة عكس اتجاه الماوس لتعطي إيحاء بالعمق ثلاثي الأبعاد الفاخر
- */
-function initHeroInteractiveParallax() {
-  const hero = document.querySelector(".hero-section");
-  const bgWrapper = document.querySelector(".hero-image-wrapper");
-  if (!hero || !bgWrapper) return;
-
-  // الاستماع المباشر لحركة الماوس فوق منطقة الهيرو فقط
-  hero.addEventListener("mousemove", (e) => {
-    const width = hero.offsetWidth;
-    const height = hero.offsetHeight;
-    
-    // حساب موقع الفأرة نسبة إلى مركز الهيرو (-0.5 إلى 0.5)
-    const moveX = (e.clientX / width) - 0.5;
-    const moveY = (e.clientY / height) - 0.5;
-    
-    // إزاحة خفيفة بمعدل أقصاه 16 بكسل لعدم التأثير على تجربة القراءة وتجنب تشتيت الانتباه
-    const translateX = moveX * -16;
-    const translateY = moveY * -16;
-    
-    // رندرة الحركة باستخدام تسريع الرسوميات المباشر 3D
-    bgWrapper.style.transform = `translate3d(${translateX}px, ${translateY}px, 0)`;
-  });
-  
-  // إعادة توسيط وتصفير موضع الخلفية بسلاسة تامة بمجرد خروج الماوس من الهيرو
-  hero.addEventListener("mouseleave", () => {
-    bgWrapper.style.transition = "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)";
-    bgWrapper.style.transform = "translate3d(0, 0, 0)";
-    setTimeout(() => {
-      bgWrapper.style.transition = "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)"; // استعادة الانتقال السريع للفأرة بعد الانتهاء
-    }, 500);
-  });
-}
-
-/**
  * ==========================================================================
  * 3. حقن وهدرجة المكونات (Dynamic Hydration Functions) - مكرر للفوتر والهيدر
  * ==========================================================================
  */
 
-// حقن وتحديث الهيدر المطور بالكامل (تم تعديل الدالة لتقوم بالحقن الفوري لجميع الصفحات الفرعية والخدمية دون استثناء)
+// حقن وتحديث الهيدر المطور بالكامل لجميع الصفحات الفرعية والخدمية الـ 11 دون استثناء
 function hydrateHeader() {
   const headerElement = document.querySelector(".main-header");
   if (!headerElement) return;
@@ -692,7 +610,77 @@ function trackConversion(actionType) {
 
 /**
  * ==========================================================================
- * 9. تحديث السنة تلقائياً (Copyright Auto-Update Helper)
+ * 9. دالة حماية فائقة الأداء وذاتية الشفاء بنظام تتابع الامتدادات والأرقام التبادلية (Robust Image Fallback)
+ * تفتح وتعالج الصور محلياً تماماً دون أي تعليق أو تداخل برمجية
+ * ==========================================================================
+ */
+function initImageFallback() {
+  const images = document.querySelectorAll("img");
+  images.forEach(img => {
+    img.addEventListener("error", function handleError() {
+      const currentSrc = this.src;
+      if (!currentSrc || this.dataset.fallbackAttempted === "true") return;
+      this.dataset.fallbackAttempted = "true";
+
+      // 1. مواءمة تبادلية ذكية لورق الجدران لحل مشكلة ورق الحائط وحرف L
+      if (currentSrc.includes("/walpaper/")) {
+        if (currentSrc.includes("wallpaper")) {
+          this.src = currentSrc.replace(/wallpaper/g, "walpaper");
+        } else {
+          this.src = currentSrc.replace(/walpaper/g, "wallpaper");
+        }
+        return;
+      }
+
+      // 2. مواءمة في حال كان الباركيه أو الساندوتش بانل أو بقية الخدمات مكسورة
+      if (currentSrc.includes("-14.webp")) {
+        this.src = currentSrc.replace("-14.webp", "-6.webp");
+      } else if (currentSrc.includes("-6.webp")) {
+        this.src = currentSrc.replace("-6.webp", "-14.webp");
+      } else if (currentSrc.includes("-1.webp")) {
+        this.src = currentSrc.replace("-1.webp", ".webp");
+      } else if (!currentSrc.match(/-\d+\.webp$/) && currentSrc.endsWith(".webp")) {
+        this.src = currentSrc.replace(".webp", "-1.webp");
+      }
+    });
+  });
+}
+
+/**
+ * ==========================================================================
+ * 10. دالة لتأثير البارالاكس التفاعلي العميق ثلاثي الأبعاد مع حركة الماوس بالهيرو (Interactive Mouse Parallax)
+ * ==========================================================================
+ */
+function initHeroInteractiveParallax() {
+  const hero = document.querySelector(".hero-section");
+  const bgWrapper = document.querySelector(".hero-image-wrapper");
+  if (!hero || !bgWrapper) return;
+
+  hero.addEventListener("mousemove", (e) => {
+    const width = hero.offsetWidth;
+    const height = hero.offsetHeight;
+    
+    const moveX = (e.clientX / width) - 0.5;
+    const moveY = (e.clientY / height) - 0.5;
+    
+    const translateX = moveX * -16;
+    const translateY = moveY * -16;
+    
+    bgWrapper.style.transform = `translate3d(${translateX}px, ${translateY}px, 0)`;
+  });
+  
+  hero.addEventListener("mouseleave", () => {
+    bgWrapper.style.transition = "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)";
+    bgWrapper.style.transform = "translate3d(0, 0, 0)";
+    setTimeout(() => {
+      bgWrapper.style.transition = "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)";
+    }, 500);
+  });
+}
+
+/**
+ * ==========================================================================
+ * 11. تحديث السنة تلقائياً (Copyright Auto-Update Helper)
  * ==========================================================================
  */
 function updateCopyrightYear() {
