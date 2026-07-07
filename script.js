@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
-  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة لإصلاح جميع الصور بالرياض
+  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة لإصلاح جميع الصور بالرياض وحفظ الترقيم
   initHeroInteractiveParallax(); // تشغيل ميزة البارالاكس التفاعلية الفخمة لعمق حركة الماوس بالبانر
   updateCopyrightYear();
 });
@@ -112,8 +112,8 @@ function injectAnnouncementBar() {
 }
 
 /**
- * خوارزمية ذكية متقدمة للشفاء الذاتي ومعالجة الصور المكسورة تلقائياً (Advanced Image Fallback)
- * تم معالجة مشكلة المزامنة (Race Condition) لتعمل على معالجة الصور التي فشلت بالفعل قبل تحميل السكربت بالكامل
+ * خوارزمية ذكية متقدمة وذاتية الشفاء لمراقبة ومعالجة الصور المكسورة تلقائياً (Advanced Image Fallback)
+ * تقوم بفحص وحفظ الرقم التسلسلي الأصلي للصورة وتجربة البدائل دون تحويلها لروابط مكررة
  */
 function initImageFallback() {
   const images = document.querySelectorAll("img");
@@ -137,50 +137,49 @@ function initImageFallback() {
     
     const filename = filenameWithExt.substring(0, dotIndex);
     
+    // استخراج الرقم التسلسلي الأصلي للصورة المكسورة (مثل الرقم 4 من wallpaper-4 أو الرقم 14)
+    const numberMatch = filename.match(/-(\d+)$/);
+    const numberSuffix = numberMatch ? numberMatch[1] : "";
+    
     // جلب الاسم النظيف للخدمة بدون ترقيم تالٍ
     let cleanBaseName = filename.replace(/-\d+$/, "");
     
-    // احتمالات تتابعية متطورة للصور لضمان الحصول على الملف الفعلي المرفوع
-    let fallbacks = [
-      cleanBaseName + ".webp",
-      cleanBaseName + "-1.webp",
-      cleanBaseName + "-2.webp",
-      cleanBaseName + "-3.webp",
-      cleanBaseName + ".jpg",
-      cleanBaseName + "-1.jpg",
-      cleanBaseName + "-2.jpg",
-      cleanBaseName + ".png",
-      cleanBaseName + "-1.png",
-      cleanBaseName + "-2.png"
-    ];
+    let nextName = "";
+    const suffix = numberSuffix ? "-" + numberSuffix : "";
     
-    // المعالجة الفائقة لمجلد ورق الجدران لتخطي أي خطأ إملائي في الملفات المرفوعة
+    // المعالجة الفائقة لمجلد ورق الجدران للحفاظ على الترقيم الأصلي المرفوع وتخطي أخطاء الإملاء
     if (folderPath.includes("/walpaper/")) {
-      fallbacks = [
-        "wallpaper-1.webp",
-        "wallpaper.webp",
-        "walpaper.webp",
-        "walpaper-1.webp",
-        "walpaper-2.webp",
-        "wallpaper-2.webp",
-        "wallpaper-1.jpg",
-        "wallpaper.jpg",
-        "walpaper.jpg",
-        "walpaper-1.jpg",
-        "walpaper-2.jpg",
-        "wallpaper-2.jpg"
+      const list = [
+        "walpaper" + suffix + ".webp",
+        "wallpaper" + suffix + ".webp",
+        "walpaper" + suffix + ".jpg",
+        "wallpaper" + suffix + ".jpg",
+        "walpaper" + suffix + ".png",
+        "wallpaper" + suffix + ".png",
+        "walpaper-14.webp",
+        "wallpaper-14.webp"
       ];
+      nextName = list[attempt - 1];
+    } else {
+      // الحفاظ على الترقيم لبقية الخدمات وتدوير الامتدادات
+      const list = [
+        cleanBaseName + suffix + ".webp",
+        cleanBaseName + suffix + ".jpg",
+        cleanBaseName + suffix + ".png",
+        cleanBaseName + suffix + ".jpeg",
+        cleanBaseName + ".webp",
+        cleanBaseName + ".jpg",
+        cleanBaseName + ".png"
+      ];
+      nextName = list[attempt - 1];
     }
 
-    const nextName = fallbacks[attempt - 1];
     if (nextName) {
       if (nextName === filenameWithExt) {
         // حماية من تكرار تعيين نفس الرابط الفاشل
         img.dataset.fallbackAttempt = attempt + 1;
-        const skipName = fallbacks[attempt];
-        if (skipName) {
-          img.src = folderPath + skipName;
-        }
+        const skipName = folderPath.includes("/walpaper/") ? "wallpaper-" + (numberSuffix || "1") + ".webp" : cleanBaseName + ".webp";
+        img.src = folderPath + skipName;
       } else {
         img.src = folderPath + nextName;
       }
