@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
+  initImageFallback(); // تشغيل دالة الحماية والبدائل الذكية لإصلاح الصور المكسورة تلقائياً
   updateCopyrightYear();
 });
 
@@ -107,6 +108,36 @@ function injectAnnouncementBar() {
     bar.innerHTML = `🎁 خصم خاص 15% للمتصلين الجدد عبر الموقع - اتصل الآن والمعاينة مجانية بالكامل!`;
     document.body.insertBefore(bar, document.body.firstChild);
   }
+}
+
+/**
+ * دالة حماية فائقة الأداء لمراقبة ومعالجة الصور المكسورة تلقائياً (Smart Image Fallback)
+ * في حال فشل تحميل الصورة بسبب اللاحقة الرقمية، تقوم فوراً بتجربة الرابط البديل وعرضه بنعومة
+ */
+function initImageFallback() {
+  const images = document.querySelectorAll("img");
+  images.forEach(img => {
+    img.addEventListener("error", function handleError() {
+      const currentSrc = this.src;
+      
+      // حماية التكرار اللانهائي في الرندرة
+      if (this.dataset.fallbackAttempted) return;
+      
+      // 1. إذا كانت الصورة تنتهي بـ .webp وبدون لاحقة رقمية، نجرب اللاحقة الرقمية المتوقعة في جيت هوب (-1)
+      if (currentSrc.endsWith(".webp") && !currentSrc.includes("-1.webp") && !currentSrc.match(/-\d+\.webp$/)) {
+        this.dataset.fallbackAttempted = "true";
+        this.src = currentSrc.replace(".webp", "-1.webp");
+        return;
+      }
+      
+      // 2. إذا كانت تنتهي بـ -1 وفشلت، نجرب الصورة الأساسية بدون رقم
+      if (currentSrc.includes("-1.webp")) {
+        this.dataset.fallbackAttempted = "true";
+        this.src = currentSrc.replace("-1.webp", ".webp");
+        return;
+      }
+    });
+  });
 }
 
 /**
@@ -288,7 +319,7 @@ function hydrateScrollToTop() {
   if (!scrollTopBtn) {
     scrollTopBtn = document.createElement("button");
     scrollTopBtn.className = "scroll-top-btn";
-    scrollTopBtn.setAttribute("aria-label", "صعود لأعلم الصفحة");
+    scrollTopBtn.setAttribute("aria-label", "صعود لأعلى الصفحة");
     scrollTopBtn.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="18 15 12 9 6 15"></polyline>
