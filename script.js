@@ -50,9 +50,14 @@ document.addEventListener("DOMContentLoaded", () => {
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
-  initImageFallback(); // تشغيل دالة الشفاء الذاتي المطورة والمانعة لتكرار الصور نهائياً
+  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة وإلغاء التكرار المطلق
   initHeroInteractiveParallax(); // تشغيل ميزة البارالاكس التفاعلية الفخمة لعمق حركة الماوس بالبانر
   updateCopyrightYear();
+});
+
+// إجراء مسح تكميلي ثانٍ ومضمون فور اكتمال تحميل كامل نافذة المتصفح لضمان علاج صور الكاش الفاشلة
+window.addEventListener("load", () => {
+  initImageFallback();
 });
 
 /**
@@ -112,32 +117,45 @@ function injectAnnouncementBar() {
 }
 
 /**
- * خوارزمية متقدمة للغاية وذاتية الشفاء لمنع تكرار الصور نهائياً (Deduplicating Image Fallback Algorithm)
- * تضمن عدم رندرة أي صورة مكررة عبر تصفية الصور الناجحة وتخطيها لتعرض صوراً فريدة بالكامل في كل كارت
+ * خوارزمية ذكية متقدمة للغاية وذاتية الشفاء لمنع تكرار الصور نهائياً (Deduplicating Image Fallback Algorithm)
+ * تم دمج قفل الفحص المتزامن لرفض أي رابط مكرر يتم طلبه بواسطة أي كارت آخر بالصفحة بغض النظر عن حالة تحميله
  */
 function initImageFallback() {
   const images = document.querySelectorAll("img");
   
   function triggerFallback(img) {
+    // حماية القفل البرمجي النشط لمنع تداخل الأحداث والطلب المتزامن للرابط
+    if (img.dataset.fallbackActive === "true") return;
+    img.dataset.fallbackActive = "true";
+
     const currentSrc = img.src;
-    if (!currentSrc) return;
+    if (!currentSrc) {
+      img.dataset.fallbackActive = "false";
+      return;
+    }
 
     let attempt = parseInt(img.dataset.fallbackAttempt || "0", 10);
     attempt++;
     img.dataset.fallbackAttempt = attempt;
     
-    if (attempt > 15) return; // حماية المعالج من الدخول في حلقات مفرغة بعد 15 محاولة
+    if (attempt > 15) {
+      img.dataset.fallbackActive = "false";
+      return; // التوقف الفوري بعد 15 محاولة لحماية أداء المتصفح
+    }
     
     const lastSlashIndex = currentSrc.lastIndexOf("/");
     const folderPath = currentSrc.substring(0, lastSlashIndex + 1);
     const filenameWithExt = currentSrc.substring(lastSlashIndex + 1);
     const dotIndex = filenameWithExt.lastIndexOf(".");
     
-    if (dotIndex === -1) return;
+    if (dotIndex === -1) {
+      img.dataset.fallbackActive = "false";
+      return;
+    }
     
     const filename = filenameWithExt.substring(0, dotIndex);
     
-    // استخراج الرقم التسلسلي الأصلي للصورة المكسورة
+    // استخراج الرقم التسلسلي الأصلي للصورة المكسورة لحمايته بالملي
     const numberMatch = filename.match(/-(\d+)$/);
     const numberSuffix = numberMatch ? numberMatch[1] : "";
     
@@ -151,28 +169,25 @@ function initImageFallback() {
     let candidateName = "";
     const suffix = numberSuffix ? "-" + numberSuffix : "";
     
-    // 1. توليد الخيارات لورق الجدران
+    // 1. توليد الخيارات والمطابقات الصارمة لورق الجدران مع حماية الترقيم الأصلي
     if (isWallpaper) {
       const list = [
         "walpaper" + suffix + ".webp",
         "wallpaper" + suffix + ".webp",
         "walpaper" + suffix + ".jpg",
         "wallpaper" + suffix + ".jpg",
+        "walpaper" + suffix + ".png",
+        "wallpaper" + suffix + ".png",
         "wallpaper-2.webp",
         "wallpaper-3.webp",
         "wallpaper-4.webp",
         "wallpaper-5.webp",
         "wallpaper-6.webp",
-        "wallpaper-14.webp",
-        "walpaper-2.webp",
-        "walpaper-3.webp",
-        "walpaper-4.webp",
-        "walpaper-5.webp",
-        "walpaper-14.webp"
+        "wallpaper-14.webp"
       ];
       candidateName = list[attempt - 1];
     } 
-    // 2. توليد الخيارات للباركيه
+    // 2. توليد الخيارات والامتدادات للباركيه
     else if (isParquet) {
       const list = [
         "parquet" + suffix + ".webp",
@@ -182,13 +197,12 @@ function initImageFallback() {
         "parquet-3.webp",
         "parquet-4.webp",
         "parquet-5.webp",
-        "parquet-6.webp",
         "parquet-14.webp",
         "parquet.webp"
       ];
       candidateName = list[attempt - 1];
     } 
-    // 3. توليد الخيارات للساندوتش بانل
+    // 3. توليد الخيارات والامتدادات للساندوتش بانل
     else if (isSandwich) {
       const list = [
         "sandwich-panel" + suffix + ".webp",
@@ -198,7 +212,6 @@ function initImageFallback() {
         "sandwich-panel-3.webp",
         "sandwich-panel-4.webp",
         "sandwich-panel-5.webp",
-        "sandwich-panel-6.webp",
         "sandwich-panel-14.webp",
         "sandwich-panel.webp"
       ];
@@ -210,8 +223,7 @@ function initImageFallback() {
         cleanBaseName + suffix + ".webp",
         cleanBaseName + suffix + ".jpg",
         cleanBaseName + suffix + ".png",
-        cleanBaseName + ".webp",
-        cleanBaseName + ".jpg"
+        cleanBaseName + ".webp"
       ];
       candidateName = list[attempt - 1];
     }
@@ -219,12 +231,12 @@ function initImageFallback() {
     if (candidateName) {
       const candidateSrc = folderPath + candidateName;
       
-      // --- فحص منع التكرار البرمجي (Deduplication Check) ---
-      // التحقق مما إذا كان هذا الرابط البديل معروضاً ومحملاً بنجاح في كارت آخر بالصفحة
+      // --- فحص منع التكرار البرمجي الصارم (Strict Deduplication Check) ---
+      // التحقق مما إذا كان هذا الرابط البديل مطلوباً بواسطة أي كارت آخر بالصفحة بغض النظر عن حالة تحميله
       let isDuplicate = false;
       const allImgs = document.querySelectorAll("img");
       for (let otherImg of allImgs) {
-        if (otherImg !== img && otherImg.src === candidateSrc && otherImg.complete && otherImg.naturalWidth > 0) {
+        if (otherImg !== img && otherImg.src === candidateSrc) {
           isDuplicate = true;
           break;
         }
@@ -233,12 +245,16 @@ function initImageFallback() {
       // إذا كانت مكررة أو تطابق الرابط الفاشل، نقوم بتخطيها فوراً وفحص الاحتمال التالي برمجياً
       if (isDuplicate || candidateSrc === currentSrc) {
         img.dataset.fallbackAttempt = attempt;
+        img.dataset.fallbackActive = "false";
         setTimeout(() => {
           triggerFallback(img);
-        }, 0);
+        }, 10);
       } else {
+        img.dataset.fallbackActive = "false";
         img.src = candidateSrc;
       }
+    } else {
+      img.dataset.fallbackActive = "false";
     }
   }
 
