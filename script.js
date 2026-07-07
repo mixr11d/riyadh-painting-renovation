@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
-  initImageFallback(); // تشغيل دالة الحماية والبدائل والشفاء الذاتي لإصلاح جميع الصور المكسورة تلقائياً
+  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة لإصلاح جميع الصور بالرياض
   updateCopyrightYear();
 });
 
@@ -111,8 +111,8 @@ function injectAnnouncementBar() {
 }
 
 /**
- * دالة حماية فائقة الأداء وذاتية الشفاء لمراقبة ومعالجة الصور المكسورة تلقائياً (Smart Image Fallback)
- * تقوم بفحص وحل فروق الامتدادات وصياغة الأرقام والصيغ الإملائية للأوراق والباركيه فوراً دون تدخل بشري
+ * خوارزمية ذكية متقدمة للشفاء الذاتي ومعالجة الصور المكسورة تلقائياً (Advanced Image Fallback)
+ * تفحص مسارات الرفع في جيت هوب وتجرب تراكيب ترقيم الأسماء من (2 و 14) وتغير الامتدادات والصياغات الإملائية
  */
 function initImageFallback() {
   const images = document.querySelectorAll("img");
@@ -120,80 +120,66 @@ function initImageFallback() {
     img.addEventListener("error", function handleError() {
       const currentSrc = this.src;
       
-      // جلب أو تعيين محاولات الاسترداد لمنع تكرار المتابعة اللانهائية
       let attempt = parseInt(this.dataset.fallbackAttempt || "0", 10);
       attempt++;
       this.dataset.fallbackAttempt = attempt;
       
-      if (attempt > 8) return; // إيقاف الفحص بعد 8 محاولات فاشلة لمنع التعليق
+      if (attempt > 10) return; // حماية المعالج من الدخول في حلقات مفرغة
       
-      // استخراج المسار واسم الملف والامتداد الحالي
       const lastSlashIndex = currentSrc.lastIndexOf("/");
       const folderPath = currentSrc.substring(0, lastSlashIndex + 1);
       const filenameWithExt = currentSrc.substring(lastSlashIndex + 1);
       const dotIndex = filenameWithExt.lastIndexOf(".");
       const filename = filenameWithExt.substring(0, dotIndex);
-      const ext = filenameWithExt.substring(dotIndex + 1);
       
-      // جلب الاسم النظيف بدون أرقام أو فواصل تالية
-      const cleanBaseName = filename.replace(/-\d+$/, "");
+      // جلب الاسم النظيف للخدمة بدون ترقيم تالٍ
+      let cleanBaseName = filename.replace(/-\d+$/, "");
       
-      // مواءمة ومعالجة مخصصة لمجلد ورق الجدران لتخطي الفروق الإملائية walpaper/wallpaper
+      // مصفوفة اختبار الاحتمالات التتابعية للصور لضمان الحصول على الملف الفعلي المرفوع
+      let fallbacks = [
+        cleanBaseName + ".webp",
+        cleanBaseName + "-1.webp",
+        cleanBaseName + "-2.webp",  // تجربة الرقم 2 في حال عدم وجود رقم 1
+        cleanBaseName + "-3.webp",
+        cleanBaseName + ".jpg",
+        cleanBaseName + "-1.jpg",
+        cleanBaseName + "-2.jpg",
+        cleanBaseName + ".png",
+        cleanBaseName + "-1.png",
+        cleanBaseName + "-2.png"
+      ];
+      
+      // المعالجة الفائقة لمجلد ورق الجدران لتخطي أي خطأ إملائي في الملفات المرفوعة
       if (folderPath.includes("/walpaper/")) {
-        if (attempt === 1) {
-          this.src = folderPath + "walpaper-1.webp";
-        } else if (attempt === 2) {
-          this.src = folderPath + "walpaper.webp";
-        } else if (attempt === 3) {
-          this.src = folderPath + "wallpaper-1.webp";
-        } else if (attempt === 4) {
-          this.src = folderPath + "wallpaper.webp";
-        } else if (attempt === 5) {
-          this.src = folderPath + "walpaper-1.jpg";
-        } else if (attempt === 6) {
-          this.src = folderPath + "walpaper.jpg";
-        } else if (attempt === 7) {
-          this.src = folderPath + "wallpaper-1.jpg";
-        } else if (attempt === 8) {
-          this.src = folderPath + "wallpaper.jpg";
-        }
-        return;
+        fallbacks = [
+          "walpaper.webp",
+          "walpaper-1.webp",
+          "walpaper-2.webp",
+          "wallpaper.webp",
+          "wallpaper-1.webp",
+          "wallpaper-2.webp",
+          "walpaper.jpg",
+          "walpaper-1.jpg",
+          "walpaper-2.jpg",
+          "wallpaper.jpg",
+          "wallpaper-1.jpg",
+          "wallpaper-2.jpg"
+        ];
       }
-      
-      // مواءمة ومعالجة بقية مجلدات الخدمات (الدهانات والباركيه والترميم والبانل) للامتدادات الرسومية الأخرى
-      switch (attempt) {
-        case 1:
-          // تجربة الملف بصيغة ويب بي نظيفة بدون أرقام تالية
-          this.src = folderPath + cleanBaseName + ".webp";
-          break;
-        case 2:
-          // تجربة الملف بصيغة ويب بي مرقمة باللاحقة الأساسية
-          this.src = folderPath + cleanBaseName + "-1.webp";
-          break;
-        case 3:
-          // تجربة صيغة الصور المضغوطة الكلاسيكية JPG
-          this.src = folderPath + cleanBaseName + ".jpg";
-          break;
-        case 4:
-          // تجربة صيغة الصور المضغوطة الكلاسيكية المرقمة JPG
-          this.src = folderPath + cleanBaseName + "-1.jpg";
-          break;
-        case 5:
-          // تجربة صيغة الصور الشفافة عالية الجودة PNG
-          this.src = folderPath + cleanBaseName + ".png";
-          break;
-        case 6:
-          // تجربة صيغة الصور الشفافة عالية الجودة المرقمة PNG
-          this.src = folderPath + cleanBaseName + "-1.png";
-          break;
-        case 7:
-          // تجربة الصيغة الموسعة JPEG
-          this.src = folderPath + cleanBaseName + ".jpeg";
-          break;
-        case 8:
-          // تجربة الصيغة الموسعة المرقمة JPEG
-          this.src = folderPath + cleanBaseName + "-1.jpeg";
-          break;
+
+      // جلب الاسم التالي في خطة الفحص
+      const nextName = fallbacks[attempt - 1];
+      if (nextName) {
+        // حماية من تكرار تعيين نفس الرابط الفاشل
+        if (nextName === filenameWithExt) {
+          this.dataset.fallbackAttempt = attempt + 1;
+          const skipName = fallbacks[attempt];
+          if (skipName) {
+            this.src = folderPath + skipName;
+          }
+        } else {
+          this.src = folderPath + nextName;
+        }
       }
     });
   });
