@@ -283,4 +283,294 @@ function hydrateFloatingButtons() {
 
 // حقن زر الصعود للأعلى برمجياً على اليسار (Scroll To Top)
 function hydrateScrollToTop() {
-  let scrollTopBtn = document.querySe
+  let scrollTopBtn = document.querySelector(".scroll-top-btn");
+  if (!scrollTopBtn) {
+    scrollTopBtn = document.createElement("button");
+    scrollTopBtn.className = "scroll-top-btn";
+    scrollTopBtn.setAttribute("aria-label", "صعود لأعلى الصفحة");
+    scrollTopBtn.innerHTML = `
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    `;
+    document.body.appendChild(scrollTopBtn);
+
+    // تفعيل حدث الانتقال للأعلى بسلاسة عند الضغط
+    scrollTopBtn.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  }
+}
+
+// مراقبة النزول في الصفحة للتحكم في ظهور أو إخفاء زر الصعود للأعلى
+function initScrollTopVisibility() {
+  const scrollTopBtn = document.querySelector(".scroll-top-btn");
+  if (!scrollTopBtn) return;
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 300) {
+      scrollTopBtn.classList.add("show");
+    } else {
+      scrollTopBtn.classList.remove("show");
+    }
+  });
+}
+
+/**
+ * ==========================================================================
+ * 4. نظام القائمة المتنقلة (Mobile Menu Functionality)
+ * ==========================================================================
+ */
+function initMobileMenu() {
+  const toggleBtn = document.querySelector(".menu-toggle");
+  const navMenu = document.querySelector(".nav-menu");
+
+  if (!toggleBtn || !navMenu) return;
+
+  toggleBtn.addEventListener("click", () => {
+    const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
+    toggleBtn.setAttribute("aria-expanded", !isExpanded);
+    navMenu.classList.toggle("nav-active");
+  });
+
+  const navLinks = document.querySelectorAll(".nav-link, .dropdown-item");
+  navLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      toggleBtn.setAttribute("aria-expanded", "false");
+      navMenu.classList.remove("nav-active");
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!navMenu.contains(event.target) && !toggleBtn.contains(event.target)) {
+      toggleBtn.setAttribute("aria-expanded", "false");
+      navMenu.classList.remove("nav-active");
+    }
+  });
+}
+
+/**
+ * ==========================================================================
+ * 5. التمرير السلس (Smooth Scroll Functionality)
+ * ==========================================================================
+ */
+function initSmoothScroll() {
+  const internalLinks = document.querySelectorAll('a[href^="#"], a[href^="index.html#"]');
+  
+  internalLinks.forEach(link => {
+    link.addEventListener("click", function(e) {
+      let targetId = this.getAttribute("href");
+      
+      // إذا كان الرابط في صفحة فرعية ويشير إلى الرئيسية مثل index.html#services
+      if (targetId.startsWith("index.html#")) {
+        targetId = targetId.replace("index.html", "");
+      }
+      
+      if (targetId === "#") return;
+
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        const headerOffset = 110; // متوافق مع ارتفاع الهيدر وشريط الإعلانات الجديد
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
+    });
+  });
+}
+
+/**
+ * ==========================================================================
+ * 6. معالجة النموذج والتحويل التلقائي المباشر لواتساب (Form Submission & WhatsApp Redirect)
+ * ==========================================================================
+ */
+function initFormHandler() {
+  const form = document.getElementById("quote-form");
+  const submitBtn = document.getElementById("submit-btn");
+
+  if (!form || !submitBtn) return;
+
+  const accessKeyInput = form.querySelector('input[name="access_key"]');
+  if (accessKeyInput) {
+    accessKeyInput.value = APP_CONFIG.web3FormsKey;
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const clientName = document.getElementById("client_name").value.trim();
+    const clientPhone = document.getElementById("client_phone").value.trim();
+    const serviceType = document.getElementById("service_type").value;
+    const projectDetails = document.getElementById("project_details").value.trim();
+
+    if (clientName.length < 3 || !clientPhone.startsWith("05") || clientPhone.length !== 10) {
+      showToast("الرجاء إدخال بيانات صحيحة");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.textContent = "جاري إرسال طلبك وحفظ البيانات...";
+
+    const formData = new FormData(form);
+
+    try {
+      // 1. إرسال البيانات أولاً إلى Web3Forms لتسجيل البيانات وتفعيل التتبع
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+
+      const result = await response.json();
+
+      if (response.status === 200 && result.success) {
+        // تفعيل تتبع تحويل النموذج لـ Google Ads
+        trackConversion("form_submission");
+        form.reset();
+        
+        // التحويل المباشر والتلقائي للواتساب بعد نجاح الإرسال
+        redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, false);
+      } else {
+        // في حال فشل الاستجابة يتم نقله فوراً للواتساب كبديل فني
+        redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
+      }
+    } catch (error) {
+      // في حال انقطاع الشبكة أو أي خطأ برمي يتم نقله فوراً للواتساب كبديل فني
+      redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalBtnText;
+    }
+  });
+}
+
+/**
+ * دالة مستقلة لتوليد رسالة الواتساب المنسقة وتحويل العميل مباشرة
+ * @param {string} name - اسم العميل
+ * @param {string} phone - هاتف العميل
+ * @param {string} service - الخدمة المختارة
+ * @param {string} details - التفاصيل الإضافية
+ * @param {boolean} isFallback - تحديد ما إذا كان التحويل حدث كبديل بسبب فشل الاتصال بالخادم
+ */
+function redirectToWhatsAppWithMessage(name, phone, service, details, isFallback) {
+  if (isFallback) {
+    showToast("نعتذر عن الخطأ الفني، سيتم توجيهك للواتساب لإتمام إرسال طلبك مجاناً.");
+  } else {
+    showToast("تم تسجيل طلبك بنجاح! جاري تحويلك الآن لمحادثة المهندس عبر واتساب لإتمام الاتفاق...");
+  }
+
+  const formattedDetails = details ? details : "لا توجد تفاصيل إضافية";
+  
+  const messageText = `السلام عليكم ورحمة الله وبركاته،%0A` +
+                      `أود طلب عرض سعر من خلال موقعكم الفني الإلكتروني.%0A%0A` +
+                      `*الاسم الكريم:* ${encodeURIComponent(name)}%0A` +
+                      `*رقم الجوال:* ${encodeURIComponent(phone)}%0A` +
+                      `*الخدمة المطلوبة:* ${encodeURIComponent(service)}%0A` +
+                      `*التفاصيل الإضافية:* ${encodeURIComponent(formattedDetails)}`;
+
+  const whatsappUrl = `https://wa.me/${APP_CONFIG.intlWhatsapp}?text=${messageText}`;
+  
+  // تفعيل تتبع تحويل الواتساب الاحتياطي لـ Google Ads
+  trackConversion("whatsapp_fallback");
+
+  // فتح المحادثة للعميل مباشرة في لسان جديد
+  window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+}
+
+/**
+ * ==========================================================================
+ * 7. نظام تتبع النقرات العالمي والمطابقة الدقيقة (Global Event-Based Tracking)
+ * ==========================================================================
+ */
+function initGlobalTracking() {
+  document.body.addEventListener("click", (e) => {
+    const targetLink = e.target.closest("a");
+    if (!targetLink) return;
+
+    const hrefAttribute = targetLink.getAttribute("href") || "";
+
+    // المطابقة التامة للهاتف من دون تداخل (فقط لرقم صاحب الموقع)
+    if (hrefAttribute === "tel:" + APP_CONFIG.localPhone) {
+      trackConversion("phone_call");
+    }
+
+    // المطابقة التامة للرابط الخاص بواتساب العميل (فقط لرقم صاحب الموقع)
+    if (hrefAttribute === "https://wa.me/" + APP_CONFIG.intlWhatsapp) {
+      trackConversion("whatsapp_chat");
+    }
+  });
+}
+
+/**
+ * ==========================================================================
+ * 8. نظام تتبع وإرسال إحداثيات تحويل إعلانات جوجل المباشرة ومنع التكرار المنفصل
+ * ==========================================================================
+ */
+function trackConversion(actionType) {
+  // التحقق من تواجد كود التتبع gtag.js لإعلانات جوجل في الصفحة
+  if (typeof gtag !== "function") return;
+
+  // صياغة مفتاح حماية فريد ومستقل لكل إجراء تتبع لمنع تداخل الاستجابات
+  const sessionKey = `conversion_sent_${actionType}`;
+
+  // التحقق لمنع إرسال نفس نوع التحويل المكرر في نفس الجلسة
+  if (sessionStorage.getItem(sessionKey)) {
+    return;
+  }
+
+  let sendToValue = "";
+
+  switch (actionType) {
+    case "phone_call":
+      if (APP_CONFIG.phoneConversionLabel) {
+        sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.phoneConversionLabel}`;
+      }
+      break;
+
+    case "whatsapp_chat":
+    case "whatsapp_fallback": // يتم دمج نقرة واتساب المباشرة والبديل تحت نفس تحويل واتساب
+      if (APP_CONFIG.whatsappConversionLabel) {
+        sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.whatsappConversionLabel}`;
+      }
+      break;
+
+    case "form_submission":
+      if (APP_CONFIG.formConversionLabel) {
+        sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.formConversionLabel}`;
+      }
+      break;
+  }
+
+  // إرسال التحويل مباشرة لحساب جوجل إعلانات المربوط بالسكربت
+  if (sendToValue) {
+    gtag("event", "conversion", {
+      "send_to": sendToValue
+    });
+    
+    // تخزين حالة إرسال هذا الإجراء المحدد في جلسة العمل لمنع تكراره
+    sessionStorage.setItem(sessionKey, "true");
+  }
+}
+
+/**
+ * ==========================================================================
+ * 9. تحديث السنة تلقائياً (Copyright Auto-Update Helper)
+ * ==========================================================================
+ */
+function updateCopyrightYear() {
+  const yearElement = document.getElementById("current-year");
+  if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+  }
+}
