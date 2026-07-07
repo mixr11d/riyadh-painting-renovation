@@ -51,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
   initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة لإصلاح جميع الصور بالرياض
+  initHeroInteractiveParallax(); // تشغيل ميزة البارالاكس التفاعلية الفخمة لعمق حركة الماوس بالبانر
   updateCopyrightYear();
 });
 
@@ -200,8 +201,44 @@ function initImageFallback() {
 }
 
 /**
+ * دالة لتأثير البارالاكس التفاعلي العميق ثلاثي الأبعاد مع حركة الماوس بالهيرو (Interactive Mouse Parallax)
+ * تحرك الخلفية المتقاطعة بنسبة تدرجية دقيقة وسلسة عكس اتجاه الماوس لتعطي إيحاء بالعمق ثلاثي الأبعاد الفاخر
+ */
+function initHeroInteractiveParallax() {
+  const hero = document.querySelector(".hero-section");
+  const bgWrapper = document.querySelector(".hero-image-wrapper");
+  if (!hero || !bgWrapper) return;
+
+  // الاستماع المباشر لحركة الماوس فوق منطقة الهيرو فقط
+  hero.addEventListener("mousemove", (e) => {
+    const width = hero.offsetWidth;
+    const height = hero.offsetHeight;
+    
+    // حساب موقع الفأرة نسبة إلى مركز الهيرو (-0.5 إلى 0.5)
+    const moveX = (e.clientX / width) - 0.5;
+    const moveY = (e.clientY / height) - 0.5;
+    
+    // إزاحة خفيفة بمعدل أقصاه 16 بكسل لعدم التأثير على تجربة القراءة وتجنب تشتيت الانتباه
+    const translateX = moveX * -16;
+    const translateY = moveY * -16;
+    
+    // رندرة الحركة باستخدام تسريع الرسوميات المباشر 3D
+    bgWrapper.style.transform = `translate3d(${translateX}px, ${translateY}px, 0)`;
+  });
+  
+  // إعادة توسيط وتصفير موضع الخلفية بسلاسة تامة بمجرد خروج الماوس من الهيرو
+  hero.addEventListener("mouseleave", () => {
+    bgWrapper.style.transition = "transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)";
+    bgWrapper.style.transform = "translate3d(0, 0, 0)";
+    setTimeout(() => {
+      bgWrapper.style.transition = "transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)"; // استعادة الانتقال السريع للفأرة بعد الانتهاء
+    }, 500);
+  });
+}
+
+/**
  * ==========================================================================
- * 3. حقن وهدرجة المكونات (Dynamic Hydration Functions)
+ * 3. حقن وهدرجة المكونات (Dynamic Hydration Functions) - مكرر للفوتر والهيدر
  * ==========================================================================
  */
 
@@ -378,7 +415,7 @@ function hydrateScrollToTop() {
   if (!scrollTopBtn) {
     scrollTopBtn = document.createElement("button");
     scrollTopBtn.className = "scroll-top-btn";
-    scrollTopBtn.setAttribute("aria-label", "صعود لأعلم الصفحة");
+    scrollTopBtn.setAttribute("aria-label", "صعود لأعلى الصفحة");
     scrollTopBtn.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="18 15 12 9 6 15"></polyline>
