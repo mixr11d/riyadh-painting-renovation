@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
-  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة لإصلاح جميع الصور بالرياض وحفظ الترقيم
+  initImageFallback(); // تشغيل دالة الشفاء الذاتي المطورة والمانعة لتكرار الصور نهائياً
   initHeroInteractiveParallax(); // تشغيل ميزة البارالاكس التفاعلية الفخمة لعمق حركة الماوس بالبانر
   updateCopyrightYear();
 });
@@ -112,8 +112,8 @@ function injectAnnouncementBar() {
 }
 
 /**
- * خوارزمية ذكية متقدمة وذاتية الشفاء لمراقبة ومعالجة الصور المكسورة تلقائياً (Advanced Image Fallback)
- * تقوم بفحص وحفظ الرقم التسلسلي الأصلي للصورة وتجربة البدائل دون تحويلها لروابط مكررة
+ * خوارزمية متقدمة للغاية وذاتية الشفاء لمنع تكرار الصور نهائياً (Deduplicating Image Fallback Algorithm)
+ * تضمن عدم رندرة أي صورة مكررة عبر تصفية الصور الناجحة وتخطيها لتعرض صوراً فريدة بالكامل في كل كارت
  */
 function initImageFallback() {
   const images = document.querySelectorAll("img");
@@ -126,7 +126,7 @@ function initImageFallback() {
     attempt++;
     img.dataset.fallbackAttempt = attempt;
     
-    if (attempt > 10) return; // حماية المعالج من الدخول في حلقات مفرغة
+    if (attempt > 15) return; // حماية المعالج من الدخول في حلقات مفرغة بعد 15 محاولة
     
     const lastSlashIndex = currentSrc.lastIndexOf("/");
     const folderPath = currentSrc.substring(0, lastSlashIndex + 1);
@@ -137,62 +137,118 @@ function initImageFallback() {
     
     const filename = filenameWithExt.substring(0, dotIndex);
     
-    // استخراج الرقم التسلسلي الأصلي للصورة المكسورة (مثل الرقم 4 من wallpaper-4 أو الرقم 14)
+    // استخراج الرقم التسلسلي الأصلي للصورة المكسورة
     const numberMatch = filename.match(/-(\d+)$/);
     const numberSuffix = numberMatch ? numberMatch[1] : "";
     
     // جلب الاسم النظيف للخدمة بدون ترقيم تالٍ
     let cleanBaseName = filename.replace(/-\d+$/, "");
     
-    let nextName = "";
+    let isWallpaper = folderPath.includes("/walpaper/");
+    let isParquet = folderPath.includes("/parquet/");
+    let isSandwich = folderPath.includes("/sandwich-panel/");
+    
+    let candidateName = "";
     const suffix = numberSuffix ? "-" + numberSuffix : "";
     
-    // المعالجة الفائقة لمجلد ورق الجدران للحفاظ على الترقيم الأصلي المرفوع وتخطي أخطاء الإملاء
-    if (folderPath.includes("/walpaper/")) {
+    // 1. توليد الخيارات لورق الجدران
+    if (isWallpaper) {
       const list = [
         "walpaper" + suffix + ".webp",
         "wallpaper" + suffix + ".webp",
         "walpaper" + suffix + ".jpg",
         "wallpaper" + suffix + ".jpg",
-        "walpaper" + suffix + ".png",
-        "wallpaper" + suffix + ".png",
-        "walpaper-14.webp",
-        "wallpaper-14.webp"
+        "wallpaper-2.webp",
+        "wallpaper-3.webp",
+        "wallpaper-4.webp",
+        "wallpaper-5.webp",
+        "wallpaper-6.webp",
+        "wallpaper-14.webp",
+        "walpaper-2.webp",
+        "walpaper-3.webp",
+        "walpaper-4.webp",
+        "walpaper-5.webp",
+        "walpaper-14.webp"
       ];
-      nextName = list[attempt - 1];
-    } else {
-      // الحفاظ على الترقيم لبقية الخدمات وتدوير الامتدادات
+      candidateName = list[attempt - 1];
+    } 
+    // 2. توليد الخيارات للباركيه
+    else if (isParquet) {
+      const list = [
+        "parquet" + suffix + ".webp",
+        "parquet" + suffix + ".jpg",
+        "parquet" + suffix + ".png",
+        "parquet-2.webp",
+        "parquet-3.webp",
+        "parquet-4.webp",
+        "parquet-5.webp",
+        "parquet-6.webp",
+        "parquet-14.webp",
+        "parquet.webp"
+      ];
+      candidateName = list[attempt - 1];
+    } 
+    // 3. توليد الخيارات للساندوتش بانل
+    else if (isSandwich) {
+      const list = [
+        "sandwich-panel" + suffix + ".webp",
+        "sandwich-panel" + suffix + ".jpg",
+        "sandwich-panel" + suffix + ".png",
+        "sandwich-panel-2.webp",
+        "sandwich-panel-3.webp",
+        "sandwich-panel-4.webp",
+        "sandwich-panel-5.webp",
+        "sandwich-panel-6.webp",
+        "sandwich-panel-14.webp",
+        "sandwich-panel.webp"
+      ];
+      candidateName = list[attempt - 1];
+    } 
+    // 4. بقية الخدمات
+    else {
       const list = [
         cleanBaseName + suffix + ".webp",
         cleanBaseName + suffix + ".jpg",
         cleanBaseName + suffix + ".png",
-        cleanBaseName + suffix + ".jpeg",
         cleanBaseName + ".webp",
-        cleanBaseName + ".jpg",
-        cleanBaseName + ".png"
+        cleanBaseName + ".jpg"
       ];
-      nextName = list[attempt - 1];
+      candidateName = list[attempt - 1];
     }
 
-    if (nextName) {
-      if (nextName === filenameWithExt) {
-        // حماية من تكرار تعيين نفس الرابط الفاشل
-        img.dataset.fallbackAttempt = attempt + 1;
-        const skipName = folderPath.includes("/walpaper/") ? "wallpaper-" + (numberSuffix || "1") + ".webp" : cleanBaseName + ".webp";
-        img.src = folderPath + skipName;
+    if (candidateName) {
+      const candidateSrc = folderPath + candidateName;
+      
+      // --- فحص منع التكرار البرمجي (Deduplication Check) ---
+      // التحقق مما إذا كان هذا الرابط البديل معروضاً ومحملاً بنجاح في كارت آخر بالصفحة
+      let isDuplicate = false;
+      const allImgs = document.querySelectorAll("img");
+      for (let otherImg of allImgs) {
+        if (otherImg !== img && otherImg.src === candidateSrc && otherImg.complete && otherImg.naturalWidth > 0) {
+          isDuplicate = true;
+          break;
+        }
+      }
+      
+      // إذا كانت مكررة أو تطابق الرابط الفاشل، نقوم بتخطيها فوراً وفحص الاحتمال التالي برمجياً
+      if (isDuplicate || candidateSrc === currentSrc) {
+        img.dataset.fallbackAttempt = attempt;
+        setTimeout(() => {
+          triggerFallback(img);
+        }, 0);
       } else {
-        img.src = folderPath + nextName;
+        img.src = candidateSrc;
       }
     }
   }
 
   images.forEach(img => {
-    // 1. فحص فوري وإصلاح للصور التي فشلت في التحميل قبل تشغيل السكربت
+    // فحص فوري وإصلاح للصور التي فشلت في التحميل قبل تشغيل السكربت
     if (img.complete && img.naturalWidth === 0) {
       triggerFallback(img);
     }
     
-    // 2. فحص وإصلاح الصور التي تفشل أثناء التصفح النشط للزائر
+    // فحص وإصلاح الصور التي تفشل أثناء التصفح النشط للزائر
     img.addEventListener("error", function() {
       triggerFallback(this);
     });
