@@ -1194,7 +1194,7 @@ textarea.form-input {
   position: relative;
 }
 
-/* القائمة المنسدلة الافتراضية على الديسكتوب */
+/* القائمة المنسدلة الافتراضية */
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -1203,15 +1203,22 @@ textarea.form-input {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   box-shadow: 0 8px 24px rgba(30, 32, 34, 0.12);
-  display: none;
+  display: none; /* يتم التحكم بالظهور عبر كلاس .show */
   min-width: 220px;
   z-index: 1000;
   padding: 10px 0;
-  /* تسريع حركة رندرة القائمة */
   transform: translateY(10px);
   opacity: 0;
-  pointer-events: none;
+  /* تسريع حركة رندرة القائمة */
+  will-change: transform, opacity;
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* كلاس الفتح عند النقر */
+.dropdown-menu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .dropdown-item {
@@ -1230,28 +1237,23 @@ textarea.form-input {
   padding-right: 25px; /* إزاحة تفاعلية متميزة عند التمرير */
 }
 
-/* إظهار القائمة المنسدلة عند تمرير الماوس فوق كلمة خدماتنا في الديسكتوب */
-@media (min-width: 1024px) {
-  .nav-item-dropdown:hover .dropdown-menu {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-}
-
 /* تنسيق متجاوب وسهل الاستخدام للقائمة المنسدلة على شاشات الجوال */
 @media (max-width: 1023px) {
   .dropdown-menu {
     position: static;
-    display: block; /* جعلها منبثقة بشكل ثابت داخل القائمة المنسدلة الجانبية للجوال */
+    display: none; /* تفتح فقط عند النقر على الجوال أيضاً! */
     box-shadow: none;
     border: none;
     padding: 5px 20px 0 0; /* إزاحة لليمين لتوضيح التبعية */
     background-color: transparent;
     transform: none;
+    opacity: 0;
+    transition: none;
+  }
+  
+  .dropdown-menu.show {
+    display: block;
     opacity: 1;
-    pointer-events: auto;
   }
   
   .dropdown-item {
