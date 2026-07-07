@@ -12,7 +12,7 @@
   <!-- رابط الـ Canonical المطلق لضمان صحة الفهرسة ومنع المحتوى المكرر -->
   <link rel="canonical" href="https://example.com">
 
-  <!-- Open Graph / Facebook -->
+  <!-- Open Graph / Facebook (روابط مطلقة كاملة لضمان جودة المشاركة على فيسبوك) -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://example.com">
   <meta property="og:title" content="تصميم ديكورات وترميم الرياض | جبس بورد ودهانات وتشطيبات ممتازة">
@@ -20,7 +20,7 @@
   <meta property="og:image" content="https://example.com/images/hero-decor.webp">
   <meta property="og:locale" content="ar_SA">
 
-  <!-- Twitter -->
+  <!-- Twitter (روابط مطلقة لضمان ظهور الكروت بشكل سليم على منصة X) -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://example.com">
   <meta property="twitter:title" content="تصميم ديكورات وترميم الرياض | جبس بورد ودهانات وتشطيبات ممتازة">
@@ -109,6 +109,9 @@
 </head>
 <body class="page-home">
 
+  <!-- شريط الإعلان والخصومات الترويجي أعلى الصفحة مضافاً بشكل ثابت لضمان ثبات العناصر -->
+  <div class="announcement-bar" role="banner">🎁 خصم خاص 15% للمتصلين الجدد عبر الموقع - اتصل الآن والمعاينة مجانية بالكامل!</div>
+
   <!-- Header Section -->
   <header class="main-header">
     <div class="header-container">
@@ -127,8 +130,18 @@
 
       <nav id="main-navigation" class="nav-menu" aria-label="القائمة الرئيسية">
         <ul class="nav-list">
-          <li><a href="index.html" class="nav-link" aria-current="page">الرئيسية</a></li>
-          <li><a href="#services" class="nav-link">خدماتنا</a></li>
+          <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+          <li class="nav-item-dropdown">
+            <a href="index.html#services" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">خدماتنا</a>
+            <ul class="dropdown-menu">
+              <li><a href="gypsum.html" class="dropdown-item">جبس بورد وديكورات</a></li>
+              <li><a href="walpaper.html" class="dropdown-item">ورق جدران</a></li>
+              <li><a href="painting.html" class="dropdown-item">دهانات داخلية وخارجية</a></li>
+              <li><a href="parquet.html" class="dropdown-item">باركيه هرميو SPC</a></li>
+              <li><a href="sandwich-panel.html" class="dropdown-item">ساندوتش بانل</a></li>
+              <li><a href="renovation.html" class="dropdown-item">ترميم وتشطيب مباني</a></li>
+            </ul>
+          </li>
           <li><a href="#why-us" class="nav-link">لماذا نحن</a></li>
           <li><a href="#gallery" class="nav-link">معرض الأعمال</a></li>
           <li><a href="#faq" class="nav-link">الأسئلة الشائعة</a></li>
@@ -178,7 +191,7 @@
           <!-- Service Card 1 -->
           <article class="service-card">
             <div class="service-img-wrapper">
-              <img src="images/decor/decor-1.webp" alt="تركيب ديكورات جبس بورد متميزة في الرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
+              <img src="images/gypsum/gypsum.webp" alt="تركيب ديكورات جبس بورد متميزة في الرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="service-body">
               <h3 class="service-title">جبس بورد وديكورات</h3>
@@ -189,7 +202,7 @@
           <!-- Service Card 2 -->
           <article class="service-card">
             <div class="service-img-wrapper">
-              <img src="images/wallpaper/wallpaper-1.webp" alt="تركيب ورق جدران فاخر بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
+              <img src="images/walpaper/walpaper.webp" alt="تركيب ورق جدران فاخر بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="service-body">
               <h3 class="service-title">ورق جدران</h3>
@@ -200,7 +213,7 @@
           <!-- Service Card 3 -->
           <article class="service-card">
             <div class="service-img-wrapper">
-              <img src="images/painting/painting-1.webp" alt="أعمال دهانات داخلية وخارجية في الرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
+              <img src="images/painting/painting.webp" alt="أعمال دهانات داخلية وخارجية في الرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="service-body">
               <h3 class="service-title">دهانات داخلية وخارجية</h3>
@@ -211,7 +224,7 @@
           <!-- Service Card 4 -->
           <article class="service-card">
             <div class="service-img-wrapper">
-              <img src="images/parquet/parquet-1.webp" alt="تركيب باركيه SPC فاخر بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
+              <img src="images/parquet/parquet.webp" alt="تركيب باركيه SPC فاخر بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="service-body">
               <h3 class="service-title">باركيه هرميو SPC</h3>
@@ -222,7 +235,7 @@
           <!-- Service Card 5 -->
           <article class="service-card">
             <div class="service-img-wrapper">
-              <img src="images/sandwich-panel/sandwich-panel-1.webp" alt="تركيب ساندوتش بانل عازل بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
+              <img src="images/sandwich-panel/sandwich-panel.webp" alt="تركيب ساندوتش بانل عازل بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="service-body">
               <h3 class="service-title">ساندوتش بانل</h3>
@@ -233,7 +246,7 @@
           <!-- Service Card 6 -->
           <article class="service-card">
             <div class="service-img-wrapper">
-              <img src="images/renovation/renovation-1.webp" alt="أعمال ترميم وتشطيب المباني بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
+              <img src="images/renovation/renovation.webp" alt="أعمال ترميم وتشطيب المباني بالرياض" class="service-img" width="400" height="300" loading="lazy" decoding="async">
             </div>
             <div class="service-body">
               <h3 class="service-title">ترميم وتشطيب مباني</h3>
@@ -291,19 +304,19 @@
 
         <div class="gallery-grid">
           <div class="gallery-item">
-            <img src="images/decor/decor-1.webp" alt="تنفيذ ديكورات سقف فاخر بالرياض" class="gallery-img" width="400" height="300" loading="lazy" decoding="async">
+            <img src="images/gypsum/gypsum.webp" alt="تنفيذ ديكورات سقف فاخر بالرياض" class="gallery-img" width="400" height="300" loading="lazy" decoding="async">
             <div class="gallery-caption">ديكورات جبس حديثة</div>
           </div>
           <div class="gallery-item">
-            <img src="images/painting/painting-1.webp" alt="دهان حوائط داخلي بجودة ممتازة" class="gallery-img" width="400" height="300" loading="lazy" decoding="async">
+            <img src="images/painting/painting.webp" alt="دهان حوائط داخلي بجودة ممتازة" class="gallery-img" width="400" height="300" loading="lazy" decoding="async">
             <div class="gallery-caption">دهانات وتشطيبات داخلية</div>
           </div>
           <div class="gallery-item">
-            <img src="images/parquet/parquet-1.webp" alt="تركيب باركيه SPC فاخر بالرياض" class="gallery-img" width="400" height="300" loading="lazy" decoding="async">
+            <img src="images/parquet/parquet.webp" alt="تركيب باركيه SPC فاخر بالرياض" class="gallery-img" width="400" height="300" loading="lazy" decoding="async">
             <div class="gallery-caption">أرضيات باركيه SPC هرميو</div>
           </div>
           <div class="gallery-item">
-            <img src="images/renovation/renovation-1.webp" alt="مشروع ترميم وتشطيب متكامل في الرياض" class="gallery-img" width="400" height="300" loading="lazy" decoding="async">
+            <img src="images/renovation/renovation.webp" alt="مشروع ترميم وتشطيب متكامل في الرياض" class="gallery-img" width="400" height="300" loading="lazy" decoding="async">
             <div class="gallery-caption">ترميم وتشطيب واجهات ومباني</div>
           </div>
         </div>
@@ -429,7 +442,6 @@
                   <option value="ورق جدران">ورق جدران</option>
                   <option value="دهانات داخلية وخارجية">دهانات داخلية وخارجية</option>
                   <option value="باركيه هرميو SPC">باركيه هرميو SPC</option>
-                  <!-- تم تصحيح القيمة البرمجية المفقودة بنجاح تام -->
                   <option value="ساندوتش بانل">ساندوتش بانل</option>
                   <option value="ترميم وتشطيب مباني">ترميم وتشطيب مباني</option>
                 </select>
