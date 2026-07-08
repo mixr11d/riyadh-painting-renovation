@@ -1,8 +1,8 @@
 /* ==========================================================================
-   إصلاحات الأمان لمنع الالتفاف الجانبي تماماً (Anti-Horizontal Scroll Fixes)
+   تنسيقات تجربة الجوال المتكاملة والبديهية (Mobile UX Enhancements)
    ========================================================================== */
 
-/* 1. فرض قيود صارمة على أبعاد الموقع لمنع التصفح الجانبي نهائياً */
+/* منع التصفح الجانبي نهائياً على كل الأجهزة */
 html, body {
   max-width: 100%;
   overflow-x: hidden;
@@ -10,112 +10,165 @@ html, body {
   box-sizing: border-box;
 }
 
-/* 2. إصلاح حاوية صور الخلفية (الهيرو) وتأمينها داخل الشاشة */
-.hero-image-wrapper {
+/* 1. ضبط انتقال البانر المتحرك بسلاسة تامة بدون أي فواصل زمنية */
+.hero-slide {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  opacity: 0;
   z-index: 1;
-  overflow: hidden; 
-  will-change: transform;
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  animation: seamlessSlideshow 15s infinite linear;
 }
 
-.hero-bg-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+.hero-slide:nth-child(1) {
+  animation-delay: 0s;
 }
 
-/* 3. إصلاح شريط الروابط السريعة وضبطه ليتصفح داخلياً فقط دون تخريب الصفحة */
+.hero-slide:nth-child(2) {
+  animation-delay: 5s;
+}
+
+.hero-slide:nth-child(3) {
+  animation-delay: 10s;
+}
+
+@keyframes seamlessSlideshow {
+  0% {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+  5% {
+    opacity: 1;
+  }
+  33.33% {
+    opacity: 1;
+  }
+  38.33% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 2. روابط الخدمات السريعة بشكل ناعم وبسيط تحت البانر */
 .quick-links-container {
-  margin: 20px auto 10px auto;
+  margin: 15px auto;
   width: 100%;
-  max-width: 100%;
-  overflow: hidden; /* يمنع خروج أي محتوى خارج الصندوق */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  position: relative;
+  text-align: center;
   z-index: 10;
-  box-sizing: border-box;
+  position: relative;
 }
 
 .quick-links-title {
-  font-size: 0.9rem;
-  font-weight: 800;
+  font-size: 0.85rem;
   color: #eae5db;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-  margin-bottom: 5px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: block;
 }
 
 .quick-links-scroll {
   display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 8px;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto; /* التصفح يمين ويسار يكون محصوراً داخل هذا الشريط فقط */
-  overflow-y: hidden;
-  padding: 6px 15px;
-  box-sizing: border-box;
-  scrollbar-width: none; /* إخفاء شريط التمرير الافتراضي */
-  -webkit-overflow-scrolling: touch; /* سلاسة وسرعة التصفح بالإصبع على الآيفون */
-  justify-content: flex-start;
+  padding: 0 10px;
 }
 
-/* إخفاء شريط التمرير على متصفحات سفاري وجوجل كروم */
-.quick-links-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-/* تعديل أبعاد الرقاقات (Chips) لتكون متناسقة ومريحة للمس العين */
 .quick-link-chip {
-  background-color: rgba(20, 21, 23, 0.85); /* لون داكن بتباين ممتاز لحماية وضوح النص */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: var(--bg-white);
-  border: 1px solid rgba(197, 168, 128, 0.5);
-  padding: 8px 14px;
-  border-radius: 30px;
-  font-size: 0.8rem; /* حجم خط مثالي متناسق مع الجوال */
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
   font-weight: 700;
-  white-space: nowrap;
+  text-decoration: none;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  transition: var(--transition-smooth);
-  min-height: 38px; /* ارتفاع مريح جداً للمس بالإصبع */
-  box-sizing: border-box;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  min-height: 35px;
 }
 
-.quick-link-chip .dot {
-  width: 6px;
-  height: 6px;
-  background-color: var(--primary-color);
-  border-radius: 50%;
-  display: inline-block;
-}
-
-/* تأثيرات التمرير والنقر للجوال */
 .quick-link-chip:active, .quick-link-chip:hover {
   background-color: var(--primary-color);
   color: var(--secondary-color);
   border-color: var(--primary-color);
 }
 
-.quick-link-chip:active .dot, .quick-link-chip:hover .dot {
-  background-color: var(--secondary-color);
-}
+/* 3. شاشات الجوال - عرض صورتين بجانب بعض وتصغير التفاصيل */
+@media (max-width: 767px) {
+  
+  /* تباعد الأقسام على الجوال ليكون ملموماً ومريحاً */
+  .section-padding {
+    padding: 35px 0;
+  }
+  
+  .section-header {
+    margin-bottom: 25px;
+  }
 
-@media (min-width: 768px) {
-  .quick-links-scroll {
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 8px 0;
+  /* عرض كروت الخدمات: صورتين في كل صف */
+  .services-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 0 5px;
+  }
+
+  .service-card {
+    border-radius: 6px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+  }
+
+  .service-body {
+    padding: 10px !important; /* تقليل المساحة الداخلية ليظهر المحتوى بوضوح */
+  }
+
+  .service-title {
+    font-size: 0.9rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 5px !important;
+    line-height: 1.3 !important;
+  }
+
+  .service-text {
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+    color: var(--text-muted) !important;
+    margin-bottom: 8px !important;
+    /* تحديد النص في 3 أسطر كحد أقصى لمنع استطالة الكروت */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .service-link {
+    font-size: 0.75rem !important;
+    margin-top: 5px !important;
+  }
+
+  /* عرض معرض الأعمال: صورتين في كل صف */
+  .gallery-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    padding: 0 5px;
+  }
+
+  .gallery-item {
+    border-radius: 6px !important;
+  }
+
+  .gallery-caption {
+    padding: 8px !important;
+    font-size: 0.78rem !important;
   }
 }
