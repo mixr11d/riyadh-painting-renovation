@@ -1080,3 +1080,18 @@ ul, ol {
     grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
   }
 }
+/* سهم مؤشر هابط ناعم بجانب كلمة خدماتنا */
+.dropdown-toggle::after {
+  content: ' ▾'; /* سهم مثلث هابط ناعم */
+  font-size: 0.85rem;
+  vertical-align: middle;
+  margin-right: 5px; /* مسافة تفصل السهم عن النص العربي */
+  display: inline-block;
+  color: inherit; /* يتغير لون السهم تلقائياً عند التمرير مثل الكلمة */
+  transition: transform 0.2s ease;
+}
+
+/* حركة دوران خفيفة للسهم عند تفعيل القائمة المنسدلة */
+.dropdown-toggle[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
