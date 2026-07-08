@@ -166,7 +166,6 @@ function hydrateFooter() {
   const footerElement = document.querySelector(".main-footer");
   if (!footerElement) return;
 
-  // نقوم ببناء الفوتر كاملاً بوجود أربع أعمدة منسقة
   footerElement.innerHTML = `
     <div class="container footer-container">
       <div class="footer-brand">
@@ -321,7 +320,8 @@ function initMobileMenu() {
     navMenu.classList.toggle("nav-active");
   });
 
-  const navLinks = document.querySelectorAll(".nav-link, .dropdown-item");
+  // تم التعديل هنا: منع إغلاق القائمة الجانبية عند الضغط على "خدماتنا" (التي تحتوي على dropdown-toggle)
+  const navLinks = document.querySelectorAll(".nav-link:not(.dropdown-toggle), .dropdown-item");
   navLinks.forEach(link => {
     link.addEventListener("click", () => {
       toggleBtn.setAttribute("aria-expanded", "false");
