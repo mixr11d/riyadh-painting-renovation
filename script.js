@@ -5,7 +5,7 @@
  */
 const APP_CONFIG = {
   businessName: "تصميم ديكورات وترميم الرياض",
-  servicesList: "جبس بورد وورق جدران ودهانات داخلية وخارجية وباركيه هرميو SPC وساندوتش بانل وترميم وتشطيب",
+  servicesList: "جبس بورد وورق جدران ودهانات داخلية وخارجية وباركيه هرمي و SPC وساندوتش بانل وترميم وتشطيب",
   targetCity: "الرياض",
   
   // أرقام التواصل والروابط للعميل صاحب الموقع
@@ -144,7 +144,7 @@ function hydrateHeader() {
               <li><a href="gypsum.html" class="dropdown-item">جبس بورد وديكورات</a></li>
               <li><a href="walpaper.html" class="dropdown-item">ورق جدران</a></li>
               <li><a href="painting.html" class="dropdown-item">دهانات داخلية وخارجية</a></li>
-              <li><a href="parquet.html" class="dropdown-item">باركيه هرميو SPC</a></li>
+              <li><a href="parquet.html" class="dropdown-item">باركيه هرمي و SPC</a></li>
               <li><a href="sandwich-panel.html" class="dropdown-item">ساندوتش بانل</a></li>
               <li><a href="renovation.html" class="dropdown-item">ترميم وتشطيب مباني</a></li>
             </ul>
@@ -189,7 +189,7 @@ function hydrateFooter() {
           <li><a href="gypsum.html" class="footer-link">جبس بورد وديكورات</a></li>
           <li><a href="walpaper.html" class="footer-link">ورق جدران</a></li>
           <li><a href="painting.html" class="footer-link">دهانات داخلية وخارجية</a></li>
-          <li><a href="parquet.html" class="footer-link">باركيه هرميو SPC</a></li>
+          <li><a href="parquet.html" class="footer-link">باركيه هرمي و SPC</a></li>
           <li><a href="sandwich-panel.html" class="footer-link">ساندوتش بانل</a></li>
           <li><a href="renovation.html" class="footer-link">ترميم وتشطيب مباني</a></li>
         </ul>
