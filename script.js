@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFormHandler();
   initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
   initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
-  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة والآمنة 100% بدون اتصال خارجي
+  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة
   initHeroInteractiveParallax(); // تشغيل ميزة البارالاكس التفاعلية الفخمة لعمق حركة الماوس بالبانر
   updateCopyrightYear();
 });
@@ -127,7 +127,7 @@ function injectAnnouncementBar() {
  * ==========================================================================
  */
 
-// حقن وتحديث الهيدر المطور بالكامل لجميع الصفحات الفرعية والخدمية الـ 11 دون استثناء
+// حقن وتحديث الهيدر المطور بالكامل لجميع الصفحات الفرعية والخدمية دون استثناء
 function hydrateHeader() {
   const headerElement = document.querySelector(".main-header");
   if (!headerElement) return;
@@ -139,7 +139,7 @@ function hydrateHeader() {
     return;
   }
 
-  // في كافة الصفحات الفرعية والخدمية الـ 11 الأخرى، نقوم بالحقن الفوري لهيكل القائمة المنسدلة التفاعلية الجديدة
+  // في كافة الصفحات الفرعية والخدمية الأخرى، نقوم بالحقن الفوري لهيكل القائمة المنسدلة التفاعلية الجديدة
   headerElement.innerHTML = `
     <div class="header-container">
       <div class="logo-area">
@@ -272,7 +272,6 @@ function hydrateFloatingButtons() {
     document.body.appendChild(floatingContainer);
   }
 
-  // تم ضبط المعادلة وحذف أي قوس زائد
   floatingContainer.style.bottom = "calc(20px + env(safe-area-inset-bottom))";
 
   floatingContainer.innerHTML = `
@@ -491,7 +490,7 @@ function initFormHandler() {
         redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
       }
     } catch (error) {
-      // في حال انقطاع الشبكة أو أي خطأ برمي يتم نقله فوراً للواتساب كبديل فني
+      // في حال انقطاع الشبكة أو أي خطأ يتم نقله فوراً للواتساب كبديل فني
       redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
     } finally {
       submitBtn.disabled = false;
@@ -603,7 +602,7 @@ function trackConversion(actionType) {
       "send_to": sendToValue
     });
     
-    // تخزين حالة إرسال هذا الإجراء المحدد في جلسة العمل لمنع تكراره
+    // تخزين حالة إرسال هذا الإجراء في جلسة العمل لمنع تكراره
     sessionStorage.setItem(sessionKey, "true");
   }
 }
@@ -611,7 +610,6 @@ function trackConversion(actionType) {
 /**
  * ==========================================================================
  * 9. دالة حماية فائقة الأداء وذاتية الشفاء بنظام تتابع الامتدادات والأرقام التبادلية (Robust Image Fallback)
- * تفتح وتعالج الصور محلياً تماماً دون أي تعليق أو تداخل برمجية
  * ==========================================================================
  */
 function initImageFallback() {
