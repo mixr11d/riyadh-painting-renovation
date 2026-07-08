@@ -126,7 +126,7 @@ function hydrateHeader() {
   headerElement.innerHTML = `
     <div class="header-container">
       <div class="logo-area">
-        <a href="index.html" class="logo" aria-label="الصفحة الرئيسية لتصميم ديكورات وترميم الرياض">
+        <a href="index.html" class="logo" aria-label="الصفحة الرئيسية لتصميم ديكورات وترميم وتشطيب بالرياض">
           <span class="logo-text">${APP_CONFIG.businessName}</span>
         </a>
       </div>
@@ -196,7 +196,7 @@ function hydrateFooter() {
       </div>
       <div class="footer-contact">
         <h4 class="footer-title">موقعنا والاتصال</h4>
-        <p class="footer-text">المملكة العربية السعودية، منطقة ${APP_CONFIG.targetCity}</p>
+        <p class="footer-text">الرياض حميع الأحياء ${APP_CONFIG.targetCity}</p>
         <p class="footer-text">الهاتف: <a href="tel:${APP_CONFIG.localPhone}">${APP_CONFIG.localPhone}</a></p>
         <p class="footer-text">الواتساب: <a href="https://wa.me/${APP_CONFIG.intlWhatsapp}">${APP_CONFIG.intlWhatsapp}</a></p>
       </div>
@@ -204,7 +204,7 @@ function hydrateFooter() {
     <div class="footer-bottom">
       <div class="container bottom-bar">
         <p class="copyrights">جميع الحقوق محفوظة &copy; <span id="current-year"></span> لـ ${APP_CONFIG.businessName}</p>
-        <p class="developer-info">تطوير المواقع والإعلانات: <a href="https://wa.me/${APP_CONFIG.intlDev}" target="_blank" rel="noopener noreferrer" class="dev-link">طلب تصميم موقع مماثل</a></p>
+        <p class="developer-info">تطوير المواقع والإعلانات: <a href="https://wa.me/${APP_CONFIG.intlDev}" target="_blank" rel="noopener noreferrer" class="dev-link">الرعد التقني0578539687</a></p>
       </div>
     </div>
   `;
