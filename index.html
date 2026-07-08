@@ -12,7 +12,7 @@
   <!-- رابط الـ Canonical المطلق لضمان صحة الفهرسة ومنع المحتوى المكرر -->
   <link rel="canonical" href="https://example.com">
 
-  <!-- Open Graph / Facebook (روابط مطلقة كاملة لضمان جودة المشاركة على فيسبوك) -->
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://example.com">
   <meta property="og:title" content="تصميم ديكورات وترميم الرياض | جبس بورد ودهانات وتشطيبات ممتازة">
@@ -20,7 +20,7 @@
   <meta property="og:image" content="https://example.com/images/gypsum/gypsum.webp">
   <meta property="og:locale" content="ar_SA">
 
-  <!-- Twitter (روابط مطلقة لضمان ظهور الكروت بشكل سليم على منصة X) -->
+  <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://example.com">
   <meta property="twitter:title" content="تصميم ديكورات وترميم الرياض | جبس بورد ودهانات وتشطيبات ممتازة">
@@ -91,25 +91,10 @@
       }
     }
   </script>
-
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "الرئيسية",
-          "item": "https://example.com"
-        }
-      ]
-    }
-  </script>
 </head>
 <body class="page-home">
 
-  <!-- شريط الإعلان والخصومات الترويجي أعلى الصفحة مضافاً بشكل ثابت لضمان ثبات العناصر -->
+  <!-- شريط الإعلان والخصومات الترويجي أعلى الصفحة -->
   <div class="announcement-bar" role="banner">🎁 خصم خاص 15% للمتصلين الجدد عبر الموقع - اتصل الآن والمعاينة مجانية بالكامل!</div>
 
   <!-- Header Section -->
@@ -132,7 +117,7 @@
         <ul class="nav-list">
           <li><a href="index.html" class="nav-link">الرئيسية</a></li>
           <li class="nav-item-dropdown">
-            <a href="index.html#services" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">خدماتنا</a>
+            <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">خدماتنا <i class="fas fa-caret-down"></i></a>
             <ul class="dropdown-menu">
               <li><a href="gypsum.html" class="dropdown-item">جبس بورد وديكورات</a></li>
               <li><a href="walpaper.html" class="dropdown-item">ورق جدران</a></li>
@@ -156,11 +141,10 @@
   </header>
 
   <main>
-    <!-- Hero Section with Riyadh Neighborhood Target & Live Gypsum Background -->
+    <!-- Hero Section -->
     <section class="hero-section" aria-label="الرئيسية - ديكورات وترميم الرياض">
       <div class="hero-overlay"></div>
       
-      <!-- نظام العرض الحركي المتقاطع الفاخر المربوط بصور مستودعك الفعلية لتعمل بسلاسة مطلقة -->
       <div class="hero-image-wrapper">
         <div class="hero-slide">
           <img src="images/gypsum/gypsum.webp" alt="تصميم أسقف جبس بورد صالات فاخرة" class="hero-bg-img" width="1920" height="1080" loading="eager" fetchpriority="high" decoding="async">
@@ -177,31 +161,6 @@
         <h1 class="hero-title">أفضل خدمات تصميم الديكورات والترميم في الرياض</h1>
         <p class="hero-subtitle">نقوم بتنفيذ جميع أعمال الجبس بورد، ورق جدران، دهانات داخلية وخارجية، باركيه هرميو SPC، تركيب ساندوتش بانل، والترميم والتشطيب في جميع مناطق الرياض، ونغطي بالكامل أحياء شمال الرياض الفاخرة مثل حي الملقا، حي الياسمين، حي النرجس، حي العارض، حي الصحافة، حي حطين، وحي الغدير، بالإضافة لأحياء شرق ووسط الرياض.</p>
         
-        <!-- قسم روابط تهمك (مُحسّن تماماً للجوال والحملات الإعلانية) -->
-        <div class="quick-links-container">
-          <span class="quick-links-title">روابط تهمك لصفحات الخدمات:</span>
-          <div class="quick-links-scroll">
-            <a href="gypsum.html" class="quick-link-chip">
-              <span class="dot"></span>جبس بورد وديكورات
-            </a>
-            <a href="walpaper.html" class="quick-link-chip">
-              <span class="dot"></span>ورق جدران
-            </a>
-            <a href="painting.html" class="quick-link-chip">
-              <span class="dot"></span>دهانات داخلية وخارجية
-            </a>
-            <a href="parquet.html" class="quick-link-chip">
-              <span class="dot"></span>باركيه هرميو SPC
-            </a>
-            <a href="sandwich-panel.html" class="quick-link-chip">
-              <span class="dot"></span>ساندوتش بانل
-            </a>
-            <a href="renovation.html" class="quick-link-chip">
-              <span class="dot"></span>ترميم وتشطيب مباني
-            </a>
-          </div>
-        </div>
-
         <div class="hero-actions">
           <a href="contact-us.html" class="btn btn-primary" aria-label="اطلب عرض سعر مجاني الآن">طلب عرض سعر</a>
           <a href="tel:0573747885" class="btn btn-secondary" aria-label="اتصل بنا هاتفياً للاستفسار">
@@ -224,7 +183,7 @@
 
         <div class="services-grid">
           
-          <!-- Service Card 1 (جبس بورد - gypsum.webp) -->
+          <!-- Service Card 1 -->
           <article class="service-card">
             <a href="gypsum.html" aria-label="عرض تفاصيل الجبس بورد والديكورات">
               <div class="service-img-wrapper">
@@ -238,7 +197,7 @@
             </div>
           </article>
 
-          <!-- Service Card 2 (ورق جدران - wallpaper-1.webp) -->
+          <!-- Service Card 2 -->
           <article class="service-card">
             <a href="walpaper.html" aria-label="عرض تفاصيل ورق الجدران">
               <div class="service-img-wrapper">
@@ -252,7 +211,7 @@
             </div>
           </article>
 
-          <!-- Service Card 3 (دهانات - painting.webp) -->
+          <!-- Service Card 3 -->
           <article class="service-card">
             <a href="painting.html" aria-label="عرض تفاصيل الدهانات الداخلية والخارجية">
               <div class="service-img-wrapper">
@@ -266,7 +225,7 @@
             </div>
           </article>
 
-          <!-- Service Card 4 (باركيه - تم التعديل إلى parquet-2.webp الفعلي المرفوع بملفاتك) -->
+          <!-- Service Card 4 -->
           <article class="service-card">
             <a href="parquet.html" aria-label="عرض تفاصيل الباركيه SPC">
               <div class="service-img-wrapper">
@@ -280,7 +239,7 @@
             </div>
           </article>
 
-          <!-- Service Card 5 (ساندوتش بانل - sandwich-panel-1.webp المرفوع بملفاتك) -->
+          <!-- Service Card 5 -->
           <article class="service-card">
             <a href="sandwich-panel.html" aria-label="عرض تفاصيل الساندوتش بانل">
               <div class="service-img-wrapper">
@@ -294,7 +253,7 @@
             </div>
           </article>
 
-          <!-- Service Card 6 (ترميم - renovation.webp) -->
+          <!-- Service Card 6 -->
           <article class="service-card">
             <a href="renovation.html" aria-label="عرض تفاصيل الترميم والتشطيب">
               <div class="service-img-wrapper">
@@ -366,7 +325,6 @@
             <div class="gallery-caption">دهانات وتشطيبات داخلية</div>
           </div>
           <div class="gallery-item">
-            <!-- تم التحديث المباشر للملف الفعلي المرفوع بملفات الباركيه لديك لمنع أي تكرار -->
             <img src="images/parquet/parquet-5.webp" alt="تركيب باركيه SPC فاخر بالرياض" class="gallery-img" width="400" height="300" loading="lazy" decoding="async">
             <div class="gallery-caption">أرضيات باركيه SPC هرميو</div>
           </div>
@@ -405,7 +363,7 @@
       </div>
     </section>
 
-    <!-- FAQ Section (Accordion Layout) -->
+    <!-- FAQ Section -->
     <section id="faq" class="faq-section section-padding" aria-labelledby="faq-heading">
       <div class="container">
         <div class="section-header">
@@ -477,7 +435,6 @@
           </div>
 
           <div class="contact-form-wrapper">
-            <!-- نموذج نظيف مطور وموجه للواتساب مباشرة بدون Web3forms أو حقول مخفية زائدة -->
             <form id="quote-form" action="javascript:void(0);" class="quote-form">
               <div class="form-group">
                 <label for="client_name">الاسم الكريم:</label>
@@ -532,6 +489,18 @@
           <li><a href="warranty.html" class="footer-link">الضمان والجودة</a></li>
           <li><a href="privacy-policy.html" class="footer-link">سياسة الخصوصية</a></li>
           <li><a href="terms-conditions.html" class="footer-link">الشروط والأحكام</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h4 class="footer-title">روابط تهمك</h4>
+        <ul class="footer-menu">
+          <li><a href="gypsum.html" class="footer-link">جبس بورد وديكورات</a></li>
+          <li><a href="walpaper.html" class="footer-link">ورق جدران</a></li>
+          <li><a href="painting.html" class="footer-link">دهانات داخلية وخارجية</a></li>
+          <li><a href="parquet.html" class="footer-link">باركيه هرميو SPC</a></li>
+          <li><a href="sandwich-panel.html" class="footer-link">ساندوتش بانل</a></li>
+          <li><a href="renovation.html" class="footer-link">ترميم وتشطيب مباني</a></li>
         </ul>
       </div>
 
