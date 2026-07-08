@@ -8,20 +8,20 @@ const APP_CONFIG = {
   servicesList: "جبس بورد وورق جدران ودهانات داخلية وخارجية وباركيه هرميو SPC وساندوتش بانل وترميم وتشطيب",
   targetCity: "الرياض",
   
-  // أرقام التواصل والروابط للعميل صاحب الموقع (خاضعة للتتبع بالكامل)
+  // أرقام التواصل والروابط للعميل صاحب الموقع
   localPhone: "0573747885",
   intlWhatsapp: "966573747885",
   
-  // رقم المطور المخصص للمبيعات المباشرة (معزول تماماً عن التتبع الإعلاني)
+  // رقم المطور المخصص للمبيعات المباشرة
   localDev: "0578539687", 
   intlDev: "966578539687",
   domain: "./",
 
-  // تهيئة وتتبع إعلانات جوجل المباشر (Google Ads Direct Tracking)
-  googleAdsId: "AW-XXXXXXXX",                        // رقم تعريف حساب الإعلانات الأساسي
-  phoneConversionLabel: "PHONE_CONVERSION_LABEL",     // تسمية التحويل الخاصة بالاتصال الهاتفي
-  whatsappConversionLabel: "WHATS_CONVERSION_LABEL",  // تسمية التحويل الخاصة بنقرة الواتساب
-  formConversionLabel: "FORM_CONVERSION_LABEL",        // تسمية التحويل الخاصة بإرسال النموذج بنجاح
+  // تهيئة وتتبع إعلانات جوجل المباشر
+  googleAdsId: "AW-XXXXXXXX",                        
+  phoneConversionLabel: "PHONE_CONVERSION_LABEL",     
+  whatsappConversionLabel: "WHATS_CONVERSION_LABEL",  
+  formConversionLabel: "FORM_CONVERSION_LABEL",        
   
   // مفتاح الوصول لنموذج Web3Forms
   web3FormsKey: "XXXXXXXX"
@@ -33,29 +33,27 @@ const APP_CONFIG = {
  * ==========================================================================
  */
 document.addEventListener("DOMContentLoaded", () => {
-  // تهيئة وحقن مكتبة تتبع إعلانات جوجل تلقائياً بالكامل برمجياً
   initGoogleAds();
 
   // حقن وتحديث المكونات الديناميكية
   hydrateHeader();
   hydrateFooter();
   hydrateFloatingButtons();
-  hydrateScrollToTop(); // حقن زر الصعود للأعلى برمجياً
-  injectAnnouncementBar(); // حقن شريط الخصم والعروض الترويجي برمجياً
+  hydrateScrollToTop(); 
+  injectAnnouncementBar(); 
 
   // تشغيل الميزات التفاعلية
   initMobileMenu();
-  initDropdownToggle(); // تشغيل ميزة فتح وغلق القائمة المنسدلة عند الضغط بالماوس
+  initDropdownToggle(); 
   initSmoothScroll();
   initFormHandler();
-  initGlobalTracking(); // تشغيل التتبع العالمي الدقيق لروابط العميل
-  initScrollTopVisibility(); // تشغيل حركة ومراقبة ظهور زر الصعود للأعلى
-  initImageFallback(); // تشغيل دالة الشفاء الذاتي المتطورة
-  initHeroInteractiveParallax(); // تشغيل ميزة البارالاكس التفاعلية الفخمة لعمق حركة الماوس بالبانر
+  initGlobalTracking(); 
+  initScrollTopVisibility(); 
+  initImageFallback(); 
+  initHeroInteractiveParallax(); 
   updateCopyrightYear();
 });
 
-// إجراء مسح تكميلي ثانٍ ومضمون فور اكتمال تحميل كامل نافذة المتصفح لضمان علاج صور الكاش الفاشلة
 window.addEventListener("load", () => {
   const images = document.querySelectorAll("img");
   images.forEach(img => {
@@ -65,19 +63,14 @@ window.addEventListener("load", () => {
   });
 });
 
-/**
- * دالة مخصصة لتحميل وتهيئة كود تتبع إعلانات جوجل الأساسي تلقائياً برمجياً
- */
 function initGoogleAds() {
   if (!APP_CONFIG.googleAdsId || APP_CONFIG.googleAdsId === "AW-XXXXXXXX") return;
 
-  // إنشاء تاق الاستدعاء الخارجي
   const gTagScript = document.createElement("script");
   gTagScript.async = true;
   gTagScript.src = `https://www.googletagmanager.com/gtag/js?id=${APP_CONFIG.googleAdsId}`;
   document.head.appendChild(gTagScript);
 
-  // إعداد مصفوفات التتبع وتعريف دالة gtag العالمية
   window.dataLayer = window.dataLayer || [];
   window.gtag = function() {
     window.dataLayer.push(arguments);
@@ -87,10 +80,6 @@ function initGoogleAds() {
   gtag('config', APP_CONFIG.googleAdsId);
 }
 
-/**
- * دالة مخصصة لعرض الإشعارات المنبثقة التفاعلية (Toast Notification)
- * @param {string} message - نص الإشعار المراد عرضه للعميل
- */
 function showToast(message) {
   let toastContainer = document.getElementById("toast-container");
   if (!toastContainer) {
@@ -100,16 +89,13 @@ function showToast(message) {
   }
 
   toastContainer.textContent = message;
-  toastContainer.classList.add("show"); // تفعيل كود الـ CSS برمجياً وبطريقة نظيفة
+  toastContainer.classList.add("show"); 
 
   setTimeout(() => {
-    toastContainer.classList.remove("show"); // إخفاء الإشعار
+    toastContainer.classList.remove("show"); 
   }, 3000);
 }
 
-/**
- * دالة مخصصة لحقن شريط الإعلان والخصم برمجياً في أعلى صفحات الموقع بالكامل
- */
 function injectAnnouncementBar() {
   let bar = document.querySelector(".announcement-bar");
   if (!bar) {
@@ -123,23 +109,20 @@ function injectAnnouncementBar() {
 
 /**
  * ==========================================================================
- * 3. حقن وهدرجة المكونات (Dynamic Hydration Functions) - مكرر للفوتر والهيدر
+ * 3. حقن المكونات المشتركة لجميع الصفحات (Hydration Functions)
  * ==========================================================================
  */
 
-// حقن وتحديث الهيدر المطور بالكامل لجميع الصفحات الفرعية والخدمية دون استثناء
 function hydrateHeader() {
   const headerElement = document.querySelector(".main-header");
   if (!headerElement) return;
 
-  // في الصفحة الرئيسية فقط، نكتفي بتحديث النص لمنع الـ CLS
   if (document.body.classList.contains("page-home")) {
     const logoText = headerElement.querySelector(".logo-text");
     if (logoText) logoText.textContent = APP_CONFIG.businessName;
     return;
   }
 
-  // في كافة الصفحات الفرعية والخدمية الأخرى، نقوم بالحقن الفوري لهيكل القائمة المنسدلة التفاعلية الجديدة
   headerElement.innerHTML = `
     <div class="header-container">
       <div class="logo-area">
@@ -156,7 +139,7 @@ function hydrateHeader() {
         <ul class="nav-list">
           <li><a href="index.html" class="nav-link">الرئيسية</a></li>
           <li class="nav-item-dropdown">
-            <a href="index.html#services" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">خدماتنا</a>
+            <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">خدماتنا <i class="fas fa-caret-down"></i></a>
             <ul class="dropdown-menu">
               <li><a href="gypsum.html" class="dropdown-item">جبس بورد وديكورات</a></li>
               <li><a href="walpaper.html" class="dropdown-item">ورق جدران</a></li>
@@ -179,88 +162,55 @@ function hydrateHeader() {
   `;
 }
 
-// حقن وتحديث الفوتر الموحد لجميع صفحات الخدمات والموقع
 function hydrateFooter() {
   const footerElement = document.querySelector(".main-footer");
   if (!footerElement) return;
 
-  if (document.body.classList.contains("page-home")) {
-    const footerLogo = footerElement.querySelector(".footer-logo");
-    if (footerLogo) footerLogo.textContent = APP_CONFIG.businessName;
-
-    const footerLinks = footerElement.querySelectorAll(".footer-contact a");
-    footerLinks.forEach(link => {
-      if (link.href.includes("tel:")) {
-        link.href = `tel:${APP_CONFIG.localPhone}`;
-        link.textContent = APP_CONFIG.localPhone;
-      } else if (link.href.includes("wa.me") && !link.href.includes(APP_CONFIG.intlDev)) {
-        link.href = `https://wa.me/${APP_CONFIG.intlWhatsapp}`;
-        link.textContent = APP_CONFIG.intlWhatsapp;
-      }
-    });
-
-    const devLink = footerElement.querySelector(".developer-info a");
-    if (devLink) {
-      devLink.href = `https://wa.me/${APP_CONFIG.intlDev}`;
-    }
-    return;
-  }
-
-  if (footerElement.children.length === 0) {
-    footerElement.innerHTML = `
-      <div class="container footer-container">
-        <div class="footer-brand">
-          <span class="footer-logo">${APP_CONFIG.businessName}</span>
-          <p class="footer-about">مؤسسة متخصصة في توفير حلول التشطيب الفني الفاخر والترميم المتكامل لكافة أنواع العقارات في ${APP_CONFIG.targetCity}. نتميز بالجودة، السرعة، والضمان الحقيقي.</p>
-        </div>
-        <div class="footer-links">
-          <h4 class="footer-title">روابط سريعة</h4>
-          <ul class="footer-menu">
-            <li><a href="about-us.html" class="footer-link">من نحن</a></li>
-            <li><a href="contact-us.html" class="footer-link">اتصل بنا</a></li>
-            <li><a href="faq.html" class="footer-link">الأسئلة الشائعة</a></li>
-            <li><a href="warranty.html" class="footer-link">الضمان والجودة</a></li>
-            <li><a href="privacy-policy.html" class="footer-link">سياسة الخصوصية</a></li>
-            <li><a href="terms-conditions.html" class="footer-link">الشروط والأحكام</a></li>
-          </ul>
-        </div>
-        <div class="footer-contact">
-          <h4 class="footer-title">موقعنا والاتصال</h4>
-          <p class="footer-text">المملكة العربية السعودية، منطقة ${APP_CONFIG.targetCity}</p>
-          <p class="footer-text">الهاتف: <a href="tel:${APP_CONFIG.localPhone}">${APP_CONFIG.localPhone}</a></p>
-          <p class="footer-text">الواتساب: <a href="https://wa.me/${APP_CONFIG.intlWhatsapp}">${APP_CONFIG.intlWhatsapp}</a></p>
-        </div>
+  // نقوم ببناء الفوتر كاملاً بوجود أربع أعمدة منسقة
+  footerElement.innerHTML = `
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">${APP_CONFIG.businessName}</span>
+        <p class="footer-about">مؤسسة متخصصة في توفير حلول التشطيب الفني الفاخر والترميم المتكامل لكافة أنواع العقارات في ${APP_CONFIG.targetCity}. نتميز بالجودة، السرعة، والضمان الحقيقي.</p>
       </div>
-      <div class="footer-bottom">
-        <div class="container bottom-bar">
-          <p class="copyrights">جميع الحقوق محفوظة &copy; <span id="current-year"></span> لـ ${APP_CONFIG.businessName}</p>
-          <p class="developer-info">تطوير المواقع والإعلانات: <a href="https://wa.me/${APP_CONFIG.intlDev}" target="_blank" rel="noopener noreferrer" class="dev-link">طلب تصميم موقع مماثل</a></p>
-        </div>
+      <div class="footer-links">
+        <h4 class="footer-title">روابط سريعة</h4>
+        <ul class="footer-menu">
+          <li><a href="about-us.html" class="footer-link">من نحن</a></li>
+          <li><a href="contact-us.html" class="footer-link">اتصل بنا</a></li>
+          <li><a href="faq.html" class="footer-link">الأسئلة الشائعة</a></li>
+          <li><a href="warranty.html" class="footer-link">الضمان والجودة</a></li>
+          <li><a href="privacy-policy.html" class="footer-link">سياسة الخصوصية</a></li>
+          <li><a href="terms-conditions.html" class="footer-link">الشروط والأحكام</a></li>
+        </ul>
       </div>
-    `;
-  } else {
-    const footerLogo = footerElement.querySelector(".footer-logo");
-    if (footerLogo) footerLogo.textContent = APP_CONFIG.businessName;
-
-    const footerLinks = footerElement.querySelectorAll(".footer-contact a");
-    footerLinks.forEach(link => {
-      if (link.href.includes("tel:")) {
-        link.href = `tel:${APP_CONFIG.localPhone}`;
-        link.textContent = APP_CONFIG.localPhone;
-      } else if (link.href.includes("wa.me") && !link.href.includes(APP_CONFIG.intlDev)) {
-        link.href = `https://wa.me/${APP_CONFIG.intlWhatsapp}`;
-        link.textContent = APP_CONFIG.intlWhatsapp;
-      }
-    });
-
-    const devLink = footerElement.querySelector(".developer-info a");
-    if (devLink) {
-      devLink.href = `https://wa.me/${APP_CONFIG.intlDev}`;
-    }
-  }
+      <div class="footer-links">
+        <h4 class="footer-title">روابط تهمك</h4>
+        <ul class="footer-menu">
+          <li><a href="gypsum.html" class="footer-link">جبس بورد وديكورات</a></li>
+          <li><a href="walpaper.html" class="footer-link">ورق جدران</a></li>
+          <li><a href="painting.html" class="footer-link">دهانات داخلية وخارجية</a></li>
+          <li><a href="parquet.html" class="footer-link">باركيه هرميو SPC</a></li>
+          <li><a href="sandwich-panel.html" class="footer-link">ساندوتش بانل</a></li>
+          <li><a href="renovation.html" class="footer-link">ترميم وتشطيب مباني</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4 class="footer-title">موقعنا والاتصال</h4>
+        <p class="footer-text">المملكة العربية السعودية، منطقة ${APP_CONFIG.targetCity}</p>
+        <p class="footer-text">الهاتف: <a href="tel:${APP_CONFIG.localPhone}">${APP_CONFIG.localPhone}</a></p>
+        <p class="footer-text">الواتساب: <a href="https://wa.me/${APP_CONFIG.intlWhatsapp}">${APP_CONFIG.intlWhatsapp}</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container bottom-bar">
+        <p class="copyrights">جميع الحقوق محفوظة &copy; <span id="current-year"></span> لـ ${APP_CONFIG.businessName}</p>
+        <p class="developer-info">تطوير المواقع والإعلانات: <a href="https://wa.me/${APP_CONFIG.intlDev}" target="_blank" rel="noopener noreferrer" class="dev-link">طلب تصميم موقع مماثل</a></p>
+      </div>
+    </div>
+  `;
 }
 
-// حقن وتحديث الأزرار العائمة للتواصل السريع مع التوافق التام للآيفون (على اليمين)
 function hydrateFloatingButtons() {
   let floatingContainer = document.querySelector(".floating-actions");
   
@@ -290,7 +240,6 @@ function hydrateFloatingButtons() {
   `;
 }
 
-// حقن زر الصعود للأعلى برمجياً على اليسار (Scroll To Top)
 function hydrateScrollToTop() {
   let scrollTopBtn = document.querySelector(".scroll-top-btn");
   if (!scrollTopBtn) {
@@ -304,7 +253,6 @@ function hydrateScrollToTop() {
     `;
     document.body.appendChild(scrollTopBtn);
 
-    // تفعيل حدث الانتقال للأعلى بسلاسة عند الضغط
     scrollTopBtn.addEventListener("click", () => {
       window.scrollTo({
         top: 0,
@@ -314,7 +262,6 @@ function hydrateScrollToTop() {
   }
 }
 
-// مراقبة النزول في الصفحة للتحكم في ظهور أو إخفاء زر الصعود للأعلى
 function initScrollTopVisibility() {
   const scrollTopBtn = document.querySelector(".scroll-top-btn");
   if (!scrollTopBtn) return;
@@ -330,7 +277,7 @@ function initScrollTopVisibility() {
 
 /**
  * ==========================================================================
- * 4. نظام فتح وإغلاق القائمة المنسدلة تفاعلياً عند الضغط (Dropdown Click Toggle)
+ * 4. تشغيل ميزة القائمة المنسدلة عند الضغط (Dropdown Click Toggle)
  * ==========================================================================
  */
 function initDropdownToggle() {
@@ -341,8 +288,8 @@ function initDropdownToggle() {
   if (!dropdownToggle || !dropdownMenu) return;
 
   dropdownToggle.addEventListener("click", (e) => {
-    e.preventDefault(); // منع الانتقال الفوري لـ #services لإتاحة رؤية القائمة وتجربة التبويب
-    e.stopPropagation(); // منع انتقال الحدث إلى بقية المستند
+    e.preventDefault(); 
+    e.stopPropagation(); 
 
     const isExpanded = dropdownToggle.getAttribute("aria-expanded") === "true";
     dropdownToggle.setAttribute("aria-expanded", !isExpanded);
@@ -353,7 +300,6 @@ function initDropdownToggle() {
     }
   });
 
-  // إغلاق القائمة تلقائياً عند النقر في أي مكان آخر خارج نطاق القائمة المنسدلة
   document.addEventListener("click", (e) => {
     if (dropdownWrapper && !dropdownWrapper.contains(e.target)) {
       dropdownToggle.setAttribute("aria-expanded", "false");
@@ -363,11 +309,6 @@ function initDropdownToggle() {
   });
 }
 
-/**
- * ==========================================================================
- * 5. نظام القائمة المتنقلة (Mobile Menu Functionality)
- * ==========================================================================
- */
 function initMobileMenu() {
   const toggleBtn = document.querySelector(".menu-toggle");
   const navMenu = document.querySelector(".nav-menu");
@@ -396,11 +337,6 @@ function initMobileMenu() {
   });
 }
 
-/**
- * ==========================================================================
- * 6. التمرير السلس (Smooth Scroll Functionality)
- * ==========================================================================
- */
 function initSmoothScroll() {
   const internalLinks = document.querySelectorAll('a[href^="#"], a[href^="index.html#"]');
   
@@ -408,7 +344,6 @@ function initSmoothScroll() {
     link.addEventListener("click", function(e) {
       let targetId = this.getAttribute("href");
       
-      // إذا كان الرابط في صفحة فرعية ويشير إلى الرئيسية مثل index.html#services
       if (targetId.startsWith("index.html#")) {
         targetId = targetId.replace("index.html", "");
       }
@@ -418,7 +353,7 @@ function initSmoothScroll() {
       const targetElement = document.querySelector(targetId);
       if (targetElement) {
         e.preventDefault();
-        const headerOffset = 110; // متوافق مع ارتفاع الهيدر وشريط الإعلانات الجديد
+        const headerOffset = 110; 
         const elementPosition = targetElement.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
@@ -431,11 +366,6 @@ function initSmoothScroll() {
   });
 }
 
-/**
- * ==========================================================================
- * 7. معالجة النموذج والتحويل التلقائي المباشر لواتساب (Form Submission & WhatsApp Redirect)
- * ==========================================================================
- */
 function initFormHandler() {
   const form = document.getElementById("quote-form");
   const submitBtn = document.getElementById("submit-btn");
@@ -467,7 +397,6 @@ function initFormHandler() {
     const formData = new FormData(form);
 
     try {
-      // 1. إرسال البيانات أولاً إلى Web3Forms لتسجيل البيانات وتفعيل التتبع
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: formData,
@@ -479,18 +408,13 @@ function initFormHandler() {
       const result = await response.json();
 
       if (response.status === 200 && result.success) {
-        // تفعيل تتبع تحويل النموذج لـ Google Ads
         trackConversion("form_submission");
         form.reset();
-        
-        // التحويل المباشر والتلقائي للواتساب بعد نجاح الإرسال
         redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, false);
       } else {
-        // في حال فشل الاستجابة يتم نقله فوراً للواتساب كبديل فني
         redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
       }
     } catch (error) {
-      // في حال انقطاع الشبكة أو أي خطأ يتم نقله فوراً للواتساب كبديل فني
       redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
     } finally {
       submitBtn.disabled = false;
@@ -499,14 +423,6 @@ function initFormHandler() {
   });
 }
 
-/**
- * دالة مستقلة لتوليد رسالة الواتساب المنسقة وتحويل العميل مباشرة
- * @param {string} name - اسم العميل
- * @param {string} phone - هاتف العميل
- * @param {string} service - الخدمة المختارة
- * @param {string} details - التفاصيل الإضافية
- * @param {boolean} isFallback - تحديد ما إذا كان التحويل حدث كبديل بسبب فشل الاتصال بالخادم
- */
 function redirectToWhatsAppWithMessage(name, phone, service, details, isFallback) {
   if (isFallback) {
     showToast("نعتذر عن الخطأ الفني، سيتم توجيهك للواتساب لإتمام إرسال طلبك مجاناً.");
@@ -525,18 +441,10 @@ function redirectToWhatsAppWithMessage(name, phone, service, details, isFallback
 
   const whatsappUrl = `https://wa.me/${APP_CONFIG.intlWhatsapp}?text=${messageText}`;
   
-  // تفعيل تتبع تحويل الواتساب الاحتياطي لـ Google Ads
   trackConversion("whatsapp_fallback");
-
-  // فتح المحادثة للعميل مباشرة في لسان جديد
   window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 }
 
-/**
- * ==========================================================================
- * 7. نظام تتبع النقرات العالمي والمطابقة الدقيقة (Global Event-Based Tracking)
- * ==========================================================================
- */
 function initGlobalTracking() {
   document.body.addEventListener("click", (e) => {
     const targetLink = e.target.closest("a");
@@ -544,31 +452,21 @@ function initGlobalTracking() {
 
     const hrefAttribute = targetLink.getAttribute("href") || "";
 
-    // :المطابقة التامة للهاتف من دون تداخل (فقط لرقم صاحب الموقع)
     if (hrefAttribute === "tel:" + APP_CONFIG.localPhone) {
       trackConversion("phone_call");
     }
 
-    // :المطابقة التامة للرابط الخاص بواتساب العميل (فقط لرقم صاحب الموقع)
     if (hrefAttribute === "https://wa.me/" + APP_CONFIG.intlWhatsapp) {
       trackConversion("whatsapp_chat");
     }
   });
 }
 
-/**
- * ==========================================================================
- * 8. نظام تتبع وإرسال إحداثيات تحويل إعلانات جوجل المباشرة ومنع التكرار المنفصل
- * ==========================================================================
- */
 function trackConversion(actionType) {
-  // التحقق من تواجد كود التتبع gtag.js لإعلانات جوجل في الصفحة
   if (typeof gtag !== "function") return;
 
-  // صياغة مفتاح حماية فريد ومستقل لكل إجراء تتبع لمنع تداخل الاستجابات
   const sessionKey = `conversion_sent_${actionType}`;
 
-  // التحقق لمنع إرسال نفس نوع التحويل المكرر في نفس الجلسة
   if (sessionStorage.getItem(sessionKey)) {
     return;
   }
@@ -583,7 +481,7 @@ function trackConversion(actionType) {
       break;
 
     case "whatsapp_chat":
-    case "whatsapp_fallback": // يتم دمج نقرة واتساب المباشرة والبديل تحت نفس تحويل واتساب
+    case "whatsapp_fallback": 
       if (APP_CONFIG.whatsappConversionLabel) {
         sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.whatsappConversionLabel}`;
       }
@@ -596,22 +494,14 @@ function trackConversion(actionType) {
       break;
   }
 
-  // إرسال التحويل مباشرة لحساب جوجل إعلانات المربوط بالسكربت
   if (sendToValue) {
     gtag("event", "conversion", {
       "send_to": sendToValue
     });
-    
-    // تخزين حالة إرسال هذا الإجراء في جلسة العمل لمنع تكراره
     sessionStorage.setItem(sessionKey, "true");
   }
 }
 
-/**
- * ==========================================================================
- * 9. دالة حماية فائقة الأداء وذاتية الشفاء بنظام تتابع الامتدادات والأرقام التبادلية (Robust Image Fallback)
- * ==========================================================================
- */
 function initImageFallback() {
   const images = document.querySelectorAll("img");
   images.forEach(img => {
@@ -620,7 +510,6 @@ function initImageFallback() {
       if (!currentSrc || this.dataset.fallbackAttempted === "true") return;
       this.dataset.fallbackAttempted = "true";
 
-      // 1. مواءمة تبادلية ذكية لورق الجدران لحل مشكلة ورق الحائط وحرف L
       if (currentSrc.includes("/walpaper/")) {
         if (currentSrc.includes("wallpaper")) {
           this.src = currentSrc.replace(/wallpaper/g, "walpaper");
@@ -630,7 +519,6 @@ function initImageFallback() {
         return;
       }
 
-      // 2. مواءمة في حال كان الباركيه أو الساندوتش بانل أو بقية الخدمات مكسورة
       if (currentSrc.includes("-14.webp")) {
         this.src = currentSrc.replace("-14.webp", "-6.webp");
       } else if (currentSrc.includes("-6.webp")) {
@@ -644,11 +532,6 @@ function initImageFallback() {
   });
 }
 
-/**
- * ==========================================================================
- * 10. دالة لتأثير البارالاكس التفاعلي العميق ثلاثي الأبعاد مع حركة الماوس بالهيرو (Interactive Mouse Parallax)
- * ==========================================================================
- */
 function initHeroInteractiveParallax() {
   const hero = document.querySelector(".hero-section");
   const bgWrapper = document.querySelector(".hero-image-wrapper");
@@ -676,11 +559,6 @@ function initHeroInteractiveParallax() {
   });
 }
 
-/**
- * ==========================================================================
- * 11. تحديث السنة تلقائياً (Copyright Auto-Update Helper)
- * ==========================================================================
- */
 function updateCopyrightYear() {
   const yearElement = document.getElementById("current-year");
   if (yearElement) {
