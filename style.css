@@ -1,99 +1,117 @@
 /* ==========================================================================
-   17. تنسيق روابط الخدمات السريعة (Mobile-First Quick Links UI/UX)
+   إصلاحات الأمان لمنع الالتفاف الجانبي تماماً (Anti-Horizontal Scroll Fixes)
    ========================================================================== */
-.quick-links-container {
-  margin: 25px auto 15px auto;
+
+/* 1. فرض قيود صارمة على أبعاد الموقع لمنع التصفح الجانبي نهائياً */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
   width: 100%;
-  max-width: 750px;
+  box-sizing: border-box;
+}
+
+/* 2. إصلاح حاوية صور الخلفية (الهيرو) وتأمينها داخل الشاشة */
+.hero-image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden; 
+  will-change: transform;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.hero-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* 3. إصلاح شريط الروابط السريعة وضبطه ليتصفح داخلياً فقط دون تخريب الصفحة */
+.quick-links-container {
+  margin: 20px auto 10px auto;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden; /* يمنع خروج أي محتوى خارج الصندوق */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   position: relative;
   z-index: 10;
+  box-sizing: border-box;
 }
 
 .quick-links-title {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 800;
   color: #eae5db;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  position: relative;
-  display: inline-block;
-  padding-bottom: 2px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  margin-bottom: 5px;
 }
 
-.quick-links-title::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background-color: var(--primary-color);
-  opacity: 0.7;
-}
-
-/* شريط تمرير أفقي ناعم جداً ومناسب للمس بالجوال */
 .quick-links-scroll {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  overflow-x: auto;
-  padding: 8px var(--container-padding);
-  scrollbar-width: none; /* إخفاء شريط التمرير على فايرفوكس */
-  -webkit-overflow-scrolling: touch; /* تمرير مرن وسريع على آيفون وسفاري */
+  max-width: 100%;
+  overflow-x: auto; /* التصفح يمين ويسار يكون محصوراً داخل هذا الشريط فقط */
+  overflow-y: hidden;
+  padding: 6px 15px;
+  box-sizing: border-box;
+  scrollbar-width: none; /* إخفاء شريط التمرير الافتراضي */
+  -webkit-overflow-scrolling: touch; /* سلاسة وسرعة التصفح بالإصبع على الآيفون */
   justify-content: flex-start;
 }
 
-/* إخفاء شريط التمرير على متصفحات كروم وإيدج وسفاري */
+/* إخفاء شريط التمرير على متصفحات سفاري وجوجل كروم */
 .quick-links-scroll::-webkit-scrollbar {
   display: none;
 }
 
-/* تصميم الرقاقات الفردية (Chips) */
+/* تعديل أبعاد الرقاقات (Chips) لتكون متناسقة ومريحة للمس العين */
 .quick-link-chip {
-  background-color: rgba(30, 32, 34, 0.75); /* رمادي فخمي داكن وشفاف لتجاوز تباين خلفية الهيرو الحركية */
+  background-color: rgba(20, 21, 23, 0.85); /* لون داكن بتباين ممتاز لحماية وضوح النص */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: var(--bg-white);
-  border: 1px solid rgba(197, 168, 128, 0.4); /* تباين خفيف متناسق مع اللون الذهبي الرملي */
-  padding: 10px 18px;
-  border-radius: 50px;
-  font-size: 0.88rem;
+  border: 1px solid rgba(197, 168, 128, 0.5);
+  padding: 8px 14px;
+  border-radius: 30px;
+  font-size: 0.8rem; /* حجم خط مثالي متناسق مع الجوال */
   font-weight: 700;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   transition: var(--transition-smooth);
-  min-height: 44px; /* مساحة تلامس ممتازة ومطابقة لمعايير جوجل وإمكانية الوصول */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  min-height: 38px; /* ارتفاع مريح جداً للمس بالإصبع */
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* نقطة دلالية ملونة بجانب كل خدمة */
 .quick-link-chip .dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   background-color: var(--primary-color);
   border-radius: 50%;
   display: inline-block;
 }
 
-/* تأثير التمرير والنقر التفاعلي */
-.quick-link-chip:hover, .quick-link-chip:active {
+/* تأثيرات التمرير والنقر للجوال */
+.quick-link-chip:active, .quick-link-chip:hover {
   background-color: var(--primary-color);
   color: var(--secondary-color);
   border-color: var(--primary-color);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(197, 168, 128, 0.3);
 }
 
-.quick-link-chip:hover .dot, .quick-link-chip:active .dot {
+.quick-link-chip:active .dot, .quick-link-chip:hover .dot {
   background-color: var(--secondary-color);
 }
 
-/* تحويل التمرير الأفقي إلى شبكة مرنة متناسقة في شاشات الحواسيب والأجهزة الكبيرة */
 @media (min-width: 768px) {
   .quick-links-scroll {
     justify-content: center;
