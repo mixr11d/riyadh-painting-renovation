@@ -18,10 +18,10 @@ const APP_CONFIG = {
   domain: "./",
 
   // تهيئة وتتبع إعلانات جوجل المباشر
-  googleAdsId: "AW-18290115166",                        
-  phoneConversionLabel: "gXmICKWd984cEN6EtJFE",     
-  whatsappConversionLabel: "Z_J0CKid984cEN6EtJFE",  
-  formConversionLabel: "paioCO-9984cEN6EtJFE",        
+  googleAdsId: "AW-18290xxxxx6",                        
+  phoneConversionLabel: "xxxxxxxEN6EtJFE",     
+  whatsappConversionLabel: "xxxxxxx984cEN6EtJFE",  
+  formConversionLabel: "xxxxxCO-9984cEN6EtJFE",        
   
   // مفتاح الوصول لنموذج Web3Forms
   web3FormsKey: "XXXXXXXX"
