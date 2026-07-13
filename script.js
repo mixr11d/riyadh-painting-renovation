@@ -18,10 +18,15 @@ const APP_CONFIG = {
   domain: "./",
 
   // تهيئة وتتبع إعلانات جوجل المباشر
-  googleAdsId: "AW-18290xxxxx6",                        
-  phoneConversionLabel: "xxxxxxxEN6EtJFE",     
-  whatsappConversionLabel: "xxxxxxx984cEN6EtJFE",  
-  formConversionLabel: "xxxxxCO-9984cEN6EtJFE",        
+  googleAdsId: "AW-18310798608",                        
+  phoneConversionLabel: "Zz4WCMzfvc8cEJC6optE",     
+  whatsappConversionLabel: "544ZCM_fvc8cEJC6optE",  
+  formConversionLabel: "HNFhCMPJwM8cEJC6optE",        
+
+  // قيم التحويلات المحددة بالريال السعودي لضبط خوارزميات جوجل ميديا
+  valCall: 70,                  // قيمة تحويل الاتصال الهاتفي
+  valWhatsapp: 40,              // قيمة تحويل مراسلة الواتساب
+  valForm: 100,                 // قيمة تحويل تعبئة نموذج المعاينة
   
   // مفتاح الوصول لنموذج Web3Forms
   web3FormsKey: "XXXXXXXX"
@@ -63,6 +68,7 @@ window.addEventListener("load", () => {
   });
 });
 
+// تهيئة تتبع جوجل تاغ المباشر (تخطي المعرف الوهمي من الفحص البرمجي)
 function initGoogleAds() {
   if (!APP_CONFIG.googleAdsId || APP_CONFIG.googleAdsId === "AW-XXXXXXXX") return;
 
@@ -320,7 +326,6 @@ function initMobileMenu() {
     navMenu.classList.toggle("nav-active");
   });
 
-  // تم التعديل هنا: منع إغلاق القائمة الجانبية عند الضغط على "خدماتنا" (التي تحتوي على dropdown-toggle)
   const navLinks = document.querySelectorAll(".nav-link:not(.dropdown-toggle), .dropdown-item");
   navLinks.forEach(link => {
     link.addEventListener("click", () => {
@@ -445,23 +450,30 @@ function redirectToWhatsAppWithMessage(name, phone, service, details, isFallback
   window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 }
 
+// تم التطوير هنا برمجياً: تصفية تتبع النقرات لتعمل بدقة فائقة وتستثني رقم المطور تماماً من جوجل ميديا بجميع صيغ الجوال والواتس
 function initGlobalTracking() {
   document.body.addEventListener("click", (e) => {
     const targetLink = e.target.closest("a");
     if (!targetLink) return;
 
-    const hrefAttribute = targetLink.getAttribute("href") || "";
+    const hrefAttribute = (targetLink.getAttribute("href") || "").replace(/\s+/g, "").toLowerCase();
 
-    if (hrefAttribute === "tel:" + APP_CONFIG.localPhone) {
+    // استخلاص الرقم النظيف للعميل لاستخدامه كشرط فحص حصرى
+    const clientCleanDigits = APP_CONFIG.localPhone.trim().replace(/^(00966|966|0)/, '');
+
+    // تتبع نقرات الجوال لرقم العميل فقط وتجاهل المطور
+    if (hrefAttribute.startsWith("tel:") && hrefAttribute.includes(clientCleanDigits)) {
       trackConversion("phone_call");
     }
 
-    if (hrefAttribute === "https://wa.me/" + APP_CONFIG.intlWhatsapp) {
+    // تتبع نقرات الواتساب لرقم العميل فقط وتجاهل المطور بجميع صيغ الروابط والمؤثرات النصية
+    if ((hrefAttribute.includes("wa.me") || hrefAttribute.includes("whatsapp")) && hrefAttribute.includes(clientCleanDigits)) {
       trackConversion("whatsapp_chat");
     }
   });
 }
 
+// دالة إرسال الإحالة لجوجل ميديا (مع دمج وإرسال قيم التحويل والعملة SAR برمجياً بدقة)
 function trackConversion(actionType) {
   if (typeof gtag !== "function") return;
 
@@ -472,11 +484,13 @@ function trackConversion(actionType) {
   }
 
   let sendToValue = "";
+  let value = 1.0;
 
   switch (actionType) {
     case "phone_call":
       if (APP_CONFIG.phoneConversionLabel) {
         sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.phoneConversionLabel}`;
+        value = APP_CONFIG.valCall || 70.0;
       }
       break;
 
@@ -484,19 +498,23 @@ function trackConversion(actionType) {
     case "whatsapp_fallback": 
       if (APP_CONFIG.whatsappConversionLabel) {
         sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.whatsappConversionLabel}`;
+        value = APP_CONFIG.valWhatsapp || 40.0;
       }
       break;
 
     case "form_submission":
       if (APP_CONFIG.formConversionLabel) {
         sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.formConversionLabel}`;
+        value = APP_CONFIG.valForm || 100.0;
       }
       break;
   }
 
   if (sendToValue) {
     gtag("event", "conversion", {
-      "send_to": sendToValue
+      "send_to": sendToValue,
+      "value": value,
+      "currency": "SAR"
     });
     sessionStorage.setItem(sessionKey, "true");
   }
