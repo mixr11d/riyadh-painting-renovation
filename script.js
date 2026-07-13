@@ -68,7 +68,7 @@ window.addEventListener("load", () => {
   });
 });
 
-// تهيئة تتبع جوجل تاغ المباشر (تخطي المعرف الوهمي من الفحص البرمجي)
+// تهيئة تتبع جوجل تاغ المباشر (تخطي المعرف الوهمي من الفحص المصدري)
 function initGoogleAds() {
   if (!APP_CONFIG.googleAdsId || APP_CONFIG.googleAdsId === "AW-XXXXXXXX") return;
 
@@ -395,6 +395,9 @@ function initFormHandler() {
       return;
     }
 
+    // تم التطوير برمجياً هنا: إرسال إحالة النموذج فوراً عند النقر للتأكد من قياسها تحت لابل النموذج دائماً
+    trackConversion("form_submission");
+
     submitBtn.disabled = true;
     const originalBtnText = submitBtn.textContent;
     submitBtn.textContent = "جاري إرسال طلبك وحفظ البيانات...";
@@ -413,7 +416,6 @@ function initFormHandler() {
       const result = await response.json();
 
       if (response.status === 200 && result.success) {
-        trackConversion("form_submission");
         form.reset();
         redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, false);
       } else {
@@ -446,7 +448,7 @@ function redirectToWhatsAppWithMessage(name, phone, service, details, isFallback
 
   const whatsappUrl = `https://wa.me/${APP_CONFIG.intlWhatsapp}?text=${messageText}`;
   
-  trackConversion("whatsapp_fallback");
+  // تم إلغاء تتبع تحويل الواتساب الاحتياطي هنا برمجياً لمنع التداخل والعد المزدوج للإحالات الإعلانية
   window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 }
 
