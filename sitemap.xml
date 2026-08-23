@@ -1,58 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- الصفحة الرئيسية -->
+
+  <!-- 1. الصفحة الرئيسية -->
   <url>
-    <loc>https://example.com/</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://riyadh-painting-renovation.pages.dev/</loc>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.00</priority>
   </url>
-  
-  <!-- صفحة من نحن -->
+
+  <!-- 2. صفحة بديل الشيبورد وتكسيات الجدران (جديد) -->
   <url>
-    <loc>https://example.com/about-us.html</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://riyadh-painting-renovation.pages.dev/chipboard-alternative.html</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- 3. صفحة جبس بورد وديكورات -->
+  <url>
+    <loc>https://riyadh-painting-renovation.pages.dev/gypsum.html</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- 4. صفحة ورق جدران -->
+  <url>
+    <loc>https://riyadh-painting-renovation.pages.dev/walpaper.html</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- 5. صفحة دهانات داخلية وخارجية -->
+  <url>
+    <loc>https://riyadh-painting-renovation.pages.dev/painting.html</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- 6. صفحة باركيه هرمي و SPC -->
+  <url>
+    <loc>https://riyadh-painting-renovation.pages.dev/parquet.html</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- 7. صفحة ساندوتش بانل -->
+  <url>
+    <loc>https://riyadh-painting-renovation.pages.dev/sandwich-panel.html</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- 8. صفحة ترميم وتشطيب مباني -->
+  <url>
+    <loc>https://riyadh-painting-renovation.pages.dev/renovation.html</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- 9. صفحة من نحن -->
+  <url>
+    <loc>https://riyadh-painting-renovation.pages.dev/about-us.html</loc>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
-  
-  <!-- صفحة اتصل بنا -->
+
+  <!-- 10. صفحة اتصل بنا -->
   <url>
-    <loc>https://example.com/contact-us.html</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://riyadh-painting-renovation.pages.dev/contact-us.html</loc>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
-  
-  <!-- صفحة الأسئلة الشائعة -->
+
+  <!-- 11. صفحة الأسئلة الشائعة -->
   <url>
-    <loc>https://example.com/faq.html</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://riyadh-painting-renovation.pages.dev/faq.html</loc>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
-  
-  <!-- صفحة الضمان والجودة -->
+
+  <!-- 12. صفحة الضمان والجودة -->
   <url>
-    <loc>https://example.com/warranty.html</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://riyadh-painting-renovation.pages.dev/warranty.html</loc>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
-  
-  <!-- صفحة سياسة الخصوصية -->
+
+  <!-- 13. صفحة سياسة الخصوصية -->
   <url>
-    <loc>https://example.com/privacy-policy.html</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://riyadh-painting-renovation.pages.dev/privacy-policy.html</loc>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.50</priority>
   </url>
-  
-  <!-- صفحة الشروط والأحكام -->
+
+  <!-- 14. صفحة الشروط والأحكام -->
   <url>
-    <loc>https://example.com/terms-conditions.html</loc>
-    <lastmod>2026-07-06</lastmod>
+    <loc>https://riyadh-painting-renovation.pages.dev/terms-conditions.html</loc>
+    <lastmod>2026-08-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.50</priority>
   </url>
+
 </urlset>
