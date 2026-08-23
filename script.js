@@ -5,7 +5,7 @@
  */
 const APP_CONFIG = {
   businessName: "تصميم ديكورات وترميم الرياض",
-  servicesList: "جبس بورد وورق جدران ودهانات داخلية وخارجية وباركيه هرمي و SPC وساندوتش بانل وترميم وتشطيب",
+  servicesList: "بديل الشيبورد وتكسيات الجدران وجبس بورد وورق جدران ودهانات داخلية وخارجية وباركيه هرمي و SPC وساندوتش بانل وترميم وتشطيب",
   targetCity: "الرياض",
   
   // أرقام التواصل والروابط للعميل صاحب الموقع
@@ -17,13 +17,13 @@ const APP_CONFIG = {
   intlDev: "966578539687",
   domain: "./",
 
-  // تهيئة وتتبع إعلانات جوجل المباشر
+  // تهيئة وتتبع إعلانات قوقل المباشر
   googleAdsId: "AW-18392668429",                        
   phoneConversionLabel: "weYpCOiD3OUcEI2yp8JE",     
   whatsappConversionLabel: "CSLTCMqJ3OUcEI2yp8JE",  
   formConversionLabel: "xVshCImvmOYcEI2yp8JE",        
 
-  // قيم التحويلات المحددة بالريال السعودي لضبط خوارزميات جوجل ميديا
+  // قيم التحويلات المحددة بالريال السعودي
   valCall: 70,                  // قيمة تحويل الاتصال الهاتفي
   valWhatsapp: 40,              // قيمة تحويل مراسلة الواتساب
   valForm: 100,                 // قيمة تحويل تعبئة نموذج المعاينة
@@ -40,7 +40,7 @@ const APP_CONFIG = {
 document.addEventListener("DOMContentLoaded", () => {
   initGoogleAds();
 
-  // حقن وتحديث المكونات الديناميكية
+  // حقن وتحديث المكونات الديناميكية في كافة الصفحات
   hydrateHeader();
   hydrateFooter();
   hydrateFloatingButtons();
@@ -68,22 +68,25 @@ window.addEventListener("load", () => {
   });
 });
 
-// تهيئة تتبع جوجل تاغ المباشر (تخطي المعرف الوهمي من الفحص المصدري)
+// تهيئة تتبع قوقل تاغ المباشر تلقائياً
 function initGoogleAds() {
   if (!APP_CONFIG.googleAdsId || APP_CONFIG.googleAdsId === "AW-XXXXXXXX") return;
 
-  const gTagScript = document.createElement("script");
-  gTagScript.async = true;
-  gTagScript.src = `https://www.googletagmanager.com/gtag/js?id=${APP_CONFIG.googleAdsId}`;
-  document.head.appendChild(gTagScript);
-
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function() {
+  window.gtag = window.gtag || function() {
     window.dataLayer.push(arguments);
   };
-  
-  gtag('js', new Date());
-  gtag('config', APP_CONFIG.googleAdsId);
+
+  if (!document.querySelector(`script[src*="${APP_CONFIG.googleAdsId}"]`)) {
+    const gTagScript = document.createElement("script");
+    gTagScript.async = true;
+    gTagScript.src = `https://www.googletagmanager.com/gtag/js?id=${APP_CONFIG.googleAdsId}`;
+    document.head.appendChild(gTagScript);
+
+    window.gtag('js', new Date());
+    window.gtag('config', APP_CONFIG.googleAdsId);
+    console.log('⚡ Google Ads Tag initialized successfully.');
+  }
 }
 
 function showToast(message) {
@@ -108,7 +111,7 @@ function injectAnnouncementBar() {
     bar = document.createElement("div");
     bar.className = "announcement-bar";
     bar.setAttribute("role", "banner");
-    bar.innerHTML = `🎁 خصم خاص 15% للمتصلين الجدد عبر الموقع - اتصل الآن والمعاينة مجانية بالكامل!`;
+    bar.innerHTML = `🎁 خصم خاص 15% على تكسيات بديل الشيبورد والديكورات - اتصل الآن والمعاينة مجانية!`;
     document.body.insertBefore(bar, document.body.firstChild);
   }
 }
@@ -147,6 +150,7 @@ function hydrateHeader() {
           <li class="nav-item-dropdown">
             <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false">خدماتنا <i class="fas fa-caret-down"></i></a>
             <ul class="dropdown-menu">
+              <li><a href="chipboard-alternative.html" class="dropdown-item">بديل الشيبورد وتكسيات الجدران</a></li>
               <li><a href="gypsum.html" class="dropdown-item">جبس بورد وديكورات</a></li>
               <li><a href="walpaper.html" class="dropdown-item">ورق جدران</a></li>
               <li><a href="painting.html" class="dropdown-item">دهانات داخلية وخارجية</a></li>
@@ -162,7 +166,7 @@ function hydrateHeader() {
         </ul>
       </nav>
       <div class="header-cta">
-        <a href="contact-us.html" class="cta-btn primary-cta" aria-label="طلب عرض سعر مجاني">طلب عرض سعر</a>
+        <a href="tel:${APP_CONFIG.localPhone}" class="cta-btn primary-cta" aria-label="اتصل الآن">اتصل الآن: ${APP_CONFIG.localPhone}</a>
       </div>
     </div>
   `;
@@ -176,7 +180,7 @@ function hydrateFooter() {
     <div class="container footer-container">
       <div class="footer-brand">
         <span class="footer-logo">${APP_CONFIG.businessName}</span>
-        <p class="footer-about">مؤسسة متخصصة في توفير حلول التشطيب الفني الفاخر والترميم المتكامل لكافة أنواع العقارات في ${APP_CONFIG.targetCity}. نتميز بالجودة، السرعة، والضمان الحقيقي.</p>
+        <p class="footer-about">مؤسسة متخصصة في تنفيذ تكسيات بديل الشيبورد، خلفيات الشاشات، الجبس بورد، الدهانات، والترميم المتكامل في ${APP_CONFIG.targetCity}. نتميز بالجودة، السرعة، والضمان الحقيقي.</p>
       </div>
       <div class="footer-links">
         <h4 class="footer-title">روابط سريعة</h4>
@@ -192,6 +196,7 @@ function hydrateFooter() {
       <div class="footer-links">
         <h4 class="footer-title">روابط تهمك</h4>
         <ul class="footer-menu">
+          <li><a href="chipboard-alternative.html" class="footer-link">بديل الشيبورد وتكسيات الجدران</a></li>
           <li><a href="gypsum.html" class="footer-link">جبس بورد وديكورات</a></li>
           <li><a href="walpaper.html" class="footer-link">ورق جدران</a></li>
           <li><a href="painting.html" class="footer-link">دهانات داخلية وخارجية</a></li>
@@ -202,7 +207,7 @@ function hydrateFooter() {
       </div>
       <div class="footer-contact">
         <h4 class="footer-title">موقعنا والاتصال</h4>
-        <p class="footer-text">الرياض حميع الأحياء ${APP_CONFIG.targetCity}</p>
+        <p class="footer-text">الرياض - نغطي جميع الأحياء</p>
         <p class="footer-text">الهاتف: <a href="tel:${APP_CONFIG.localPhone}">${APP_CONFIG.localPhone}</a></p>
         <p class="footer-text">الواتساب: <a href="https://wa.me/${APP_CONFIG.intlWhatsapp}">${APP_CONFIG.intlWhatsapp}</a></p>
       </div>
@@ -210,7 +215,7 @@ function hydrateFooter() {
     <div class="footer-bottom">
       <div class="container bottom-bar">
         <p class="copyrights">جميع الحقوق محفوظة &copy; <span id="current-year"></span> لـ ${APP_CONFIG.businessName}</p>
-        <p class="developer-info">تطوير المواقع والإعلانات: <a href="https://wa.me/${APP_CONFIG.intlDev}" target="_blank" rel="noopener noreferrer" class="dev-link">الرعد التقني0578539687</a></p>
+        <p class="developer-info">تطوير المواقع والإعلانات: <a href="https://wa.me/${APP_CONFIG.intlDev}" target="_blank" rel="noopener noreferrer" class="dev-link">الرعد التقني 0578539687</a></p>
       </div>
     </div>
   `;
@@ -236,7 +241,7 @@ function hydrateFloatingButtons() {
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
       </svg>
     </a>
-    <a href="https://wa.me/${APP_CONFIG.intlWhatsapp}" class="float-btn float-whatsapp" aria-label="تواصل معنا عبر واتساب" target="_blank" rel="noopener noreferrer">
+    <a href="https://wa.me/${APP_CONFIG.intlWhatsapp}?text=${encodeURIComponent('السلام عليكم، أود الاستفسار عن خدمات الديكور وبديل الشيبورد في الرياض.')}" class="float-btn float-whatsapp" aria-label="تواصل معنا عبر واتساب" target="_blank" rel="noopener noreferrer">
       <span class="btn-text">واتساب</span>
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-whatsapp" aria-hidden="true">
         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
@@ -282,7 +287,7 @@ function initScrollTopVisibility() {
 
 /**
  * ==========================================================================
- * 4. تشغيل ميزة القائمة المنسدلة عند الضغط (Dropdown Click Toggle)
+ * 4. تشغيل ميزة القوائم والتنقل
  * ==========================================================================
  */
 function initDropdownToggle() {
@@ -371,6 +376,11 @@ function initSmoothScroll() {
   });
 }
 
+/**
+ * ==========================================================================
+ * 5. إدارة النماذج وإرسال الإحالات للواتساب وقوقل
+ * ==========================================================================
+ */
 function initFormHandler() {
   const form = document.getElementById("quote-form");
   const submitBtn = document.getElementById("submit-btn");
@@ -385,74 +395,61 @@ function initFormHandler() {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const clientName = document.getElementById("client_name").value.trim();
-    const clientPhone = document.getElementById("client_phone").value.trim();
-    const serviceType = document.getElementById("service_type").value;
-    const projectDetails = document.getElementById("project_details").value.trim();
+    const nameInput = document.getElementById("client_name");
+    const phoneInput = document.getElementById("client_phone");
+    const serviceInput = document.getElementById("service_type");
+    const detailsInput = document.getElementById("project_details");
 
-    if (clientName.length < 3 || !clientPhone.startsWith("05") || clientPhone.length !== 10) {
-      showToast("الرجاء إدخال بيانات صحيحة");
+    const clientName = nameInput ? nameInput.value.trim() : "غير محدد";
+    const clientPhone = phoneInput ? phoneInput.value.trim() : "";
+    const serviceType = serviceInput ? serviceInput.value : "طلب معاينة وتكلفة";
+    const projectDetails = detailsInput ? detailsInput.value.trim() : "لا توجد تفاصيل إضافية";
+
+    if (clientPhone.length < 9) {
+      showToast("الرجاء إدخال رقم جوال صحيح");
       return;
     }
 
-    // تم التطوير برمجياً هنا: إرسال إحالة النموذج فوراً عند النقر للتأكد من قياسها تحت لابل النموذج دائماً
+    // 🎯 تسجيل إحالة النموذج في قوقل إعلانات
     trackConversion("form_submission");
 
     submitBtn.disabled = true;
     const originalBtnText = submitBtn.textContent;
-    submitBtn.textContent = "جاري إرسال طلبك وحفظ البيانات...";
+    submitBtn.textContent = "جاري التحويل للواتساب...";
 
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Accept": "application/json"
-        }
-      });
-
-      const result = await response.json();
-
-      if (response.status === 200 && result.success) {
-        form.reset();
-        redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, false);
-      } else {
-        redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
-      }
-    } catch (error) {
-      redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, true);
-    } finally {
+    // توجيه فوري للمحادثة بالواتساب
+    setTimeout(() => {
+      redirectToWhatsAppWithMessage(clientName, clientPhone, serviceType, projectDetails, false);
+      form.reset();
       submitBtn.disabled = false;
       submitBtn.textContent = originalBtnText;
-    }
+    }, 400);
   });
 }
 
-function redirectToWhatsAppWithMessage(name, phone, service, details, isFallback) {
-  if (isFallback) {
-    showToast("نعتذر عن الخطأ الفني، سيتم توجيهك للواتساب لإتمام إرسال طلبك مجاناً.");
-  } else {
-    showToast("تم تسجيل طلبك بنجاح! جاري تحويلك الآن لمحادثة المهندس عبر واتساب لإتمام الاتفاق...");
-  }
+function redirectToWhatsAppWithMessage(name, phone, service, details) {
+  showToast("تم تسجيل طلبك! جاري تحويلك الآن لمحادثة الواتساب...");
 
   const formattedDetails = details ? details : "لا توجد تفاصيل إضافية";
   
-  const messageText = `السلام عليكم ورحمة الله وبركاته،%0A` +
-                      `أود طلب عرض سعر من خلال موقعكم الفني الإلكتروني.%0A%0A` +
-                      `*الاسم الكريم:* ${encodeURIComponent(name)}%0A` +
-                      `*رقم الجوال:* ${encodeURIComponent(phone)}%0A` +
-                      `*الخدمة المطلوبة:* ${encodeURIComponent(service)}%0A` +
-                      `*التفاصيل الإضافية:* ${encodeURIComponent(formattedDetails)}`;
+  const messageText = `*طلب معاينة وعرض سعر جديد*\n` +
+                      `-------------------------------\n` +
+                      `👤 *الاسم:* ${name}\n` +
+                      `📱 *رقم الجوال:* ${phone}\n` +
+                      `🛠️ *الخدمة المطلوبة:* ${service}\n` +
+                      `📝 *التفاصيل:* ${formattedDetails}\n` +
+                      `-------------------------------\n` +
+                      `_تم الإرسال عبر الموقع الإلكتروني_`;
 
-  const whatsappUrl = `https://wa.me/${APP_CONFIG.intlWhatsapp}?text=${messageText}`;
-  
-  // تم إلغاء تتبع تحويل الواتساب الاحتياطي هنا برمجياً لمنع التداخل والعد المزدوج للإحالات الإعلانية
+  const whatsappUrl = `https://wa.me/${APP_CONFIG.intlWhatsapp}?text=${encodeURIComponent(messageText)}`;
   window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 }
 
-// تم التطوير هنا برمجياً: تصفية تتبع النقرات لتعمل بدقة فائقة وتستثني رقم المطور تماماً من جوجل ميديا بجميع صيغ الجوال والواتس
+/**
+ * ==========================================================================
+ * 6. الرصد الشامل للنقرات واستثناء المطور (Global Event Delegation)
+ * ==========================================================================
+ */
 function initGlobalTracking() {
   document.body.addEventListener("click", (e) => {
     const targetLink = e.target.closest("a");
@@ -460,29 +457,31 @@ function initGlobalTracking() {
 
     const hrefAttribute = (targetLink.getAttribute("href") || "").replace(/\s+/g, "").toLowerCase();
 
-    // استخلاص الرقم النظيف للعميل لاستخدامه كشرط فحص حصرى
-    const clientCleanDigits = APP_CONFIG.localPhone.trim().replace(/^(00966|966|0)/, '');
-
-    // تتبع نقرات الجوال لرقم العميل فقط وتجاهل المطور
-    if (hrefAttribute.startsWith("tel:") && hrefAttribute.includes(clientCleanDigits)) {
-      trackConversion("phone_call");
+    // 🛑 1. استثناء أرقام وروابط المطور تماماً
+    if (hrefAttribute.includes(APP_CONFIG.localDev) || hrefAttribute.includes(APP_CONFIG.intlDev)) {
+      return;
     }
 
-    // تتبع نقرات الواتساب لرقم العميل فقط وتجاهل المطور بجميع صيغ الروابط والمؤثرات النصية
-    if ((hrefAttribute.includes("wa.me") || hrefAttribute.includes("whatsapp")) && hrefAttribute.includes(clientCleanDigits)) {
+    // 💬 2. فحص نقرات الواتساب الخاصة بالعميل أولاً
+    if (hrefAttribute.includes("wa.me") || hrefAttribute.includes("whatsapp")) {
       trackConversion("whatsapp_chat");
+    }
+    
+    // 📞 3. فحص نقرات الاتصال الهاتفي للعميل
+    else if (hrefAttribute.startsWith("tel:")) {
+      trackConversion("phone_call");
     }
   });
 }
 
-// دالة إرسال الإحالة لجوجل ميديا (مع دمج وإرسال قيم التحويل والعملة SAR برمجياً بدقة)
+// دالة إرسال الإحالة لقوقل إعلانات
 function trackConversion(actionType) {
-  if (typeof gtag !== "function") return;
+  if (typeof window.gtag !== "function") return;
 
   const sessionKey = `conversion_sent_${actionType}`;
-
   if (sessionStorage.getItem(sessionKey)) {
-    return;
+    // لمنع التكرار المفرط في نفس الجلسة
+    console.log(`ℹ️ تم تسجيل تحويل (${actionType}) مسبقاً في هذه الجلسة.`);
   }
 
   let sendToValue = "";
@@ -497,7 +496,6 @@ function trackConversion(actionType) {
       break;
 
     case "whatsapp_chat":
-    case "whatsapp_fallback": 
       if (APP_CONFIG.whatsappConversionLabel) {
         sendToValue = `${APP_CONFIG.googleAdsId}/${APP_CONFIG.whatsappConversionLabel}`;
         value = APP_CONFIG.valWhatsapp || 40.0;
@@ -512,13 +510,19 @@ function trackConversion(actionType) {
       break;
   }
 
-  if (sendToValue) {
-    gtag("event", "conversion", {
+  if (sendToValue && !sendToValue.includes("XXXXXXXX")) {
+    window.gtag("event", "conversion", {
       "send_to": sendToValue,
       "value": value,
-      "currency": "SAR"
+      "currency": "SAR",
+      "transport_type": "beacon",
+      "event_callback": function() {
+        console.log(`🎯 تم إرسال الإحالة بنجاح لقوقل إعلانات [${actionType}]:`, sendToValue);
+      }
     });
+
     sessionStorage.setItem(sessionKey, "true");
+    console.log(`🚀 جاري إرسال إحالة [${actionType}] بقيمة ${value} ريال إلى ${sendToValue}`);
   }
 }
 
