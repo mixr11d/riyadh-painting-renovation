@@ -18,10 +18,10 @@ const APP_CONFIG = {
   domain: "./",
 
   // تهيئة وتتبع إعلانات جوجل المباشر
-  googleAdsId: "AW-18310798608",                        
-  phoneConversionLabel: "Zz4WCMzfvc8cEJC6optE",     
-  whatsappConversionLabel: "544ZCM_fvc8cEJC6optE",  
-  formConversionLabel: "HNFhCMPJwM8cEJC6optE",        
+  googleAdsId: "AW-18392668429",                        
+  phoneConversionLabel: "weYpCOiD3OUcEI2yp8JE",     
+  whatsappConversionLabel: "CSLTCMqJ3OUcEI2yp8JE",  
+  formConversionLabel: "xVshCImvmOYcEI2yp8JE",        
 
   // قيم التحويلات المحددة بالريال السعودي لضبط خوارزميات جوجل ميديا
   valCall: 70,                  // قيمة تحويل الاتصال الهاتفي
